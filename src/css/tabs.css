@@ -1,0 +1,177 @@
+.nav-tabs.nav-justified {
+    margin-bottom: -2px;
+}
+
+.nav-tabs.nav-justified>li>a {
+    border: none;
+    margin-top: -2px;
+}
+
+.nav-tabs.nav-justified>li>a:hover {
+    background-color: transparent;
+}
+
+.nav-tabs.nav-justified>.active>a, .nav-tabs.nav-justified>.active>a:hover, .nav-tabs.nav-justified>.active>a:focus {
+    border: 0;
+    border-top: 2px solid #1cc88a;
+    background-color: #fbfbfb;
+}
+
+.nav-tabs .dropdown-menu {
+    margin-top: -3px;
+}
+
+.nav-tabs.tabs-flat {
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.tabs-below>.nav-tabs {
+    top: auto;
+    margin-bottom: 0;
+    margin-top: -1px;
+    border-bottom-width: 0;
+}
+
+.tabs-below>.nav-tabs li.active>a, .tabs-below>.nav-tabs li.active>a:hover, .tabs-below>.nav-tabs li.active>a:focus {
+    border-top-width: 1px;
+    border-bottom: 2px solid #1cc88a;
+    border-top-color: transparent;
+    margin-top: 0;
+    -webkit-box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.15);
+    -moz-box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.15);
+    box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.15);
+}
+
+.tabs-below>.nav-tabs.nav-justified>li>a {
+    margin-bottom: -2px;
+}
+
+.tabs-below>.nav-tabs.nav-justified>.active>a, .tabs-below>.nav-tabs.nav-justified>.active>a:hover, .tabs-below>.nav-tabs.nav-justified>.active>a:focus {
+    border: 0;
+    border-bottom: 2px solid #1cc88a;
+}
+
+.tabs-left>.nav-tabs {
+    top: auto;
+    margin-bottom: 0;
+    float: left;
+}
+
+.tabs-left>.nav-tabs>li {
+    float: none;
+}
+
+.tabs-left>.nav-tabs>li>a, .tabs-left>.nav-tabs>li>a:focus, .tabs-left>.nav-tabs>li>a:hover {
+    margin: 0 -1px 0 0;
+}
+
+.tabs-left>.nav-tabs>li.active>a, .tabs-left>.nav-tabs>li.active>a:focus, .tabs-left>.nav-tabs>li.active>a:hover {
+    border: 0;
+    border-left: 2px solid #1cc88a;
+    border-right-color: transparent;
+    margin: 0 -1px 0 -1px;
+    -webkit-box-shadow: -2px 0 3px 0 rgba(0, 0, 0, 0.3);
+    -moz-box-shadow: -2px 0 3px 0 rgba(0, 0, 0, 0.3);
+    box-shadow: -2px 0 3px 0 rgba(0, 0, 0, 0.3);
+}
+
+.tabs-right>.nav-tabs {
+    top: auto;
+    margin-bottom: 0;
+    float: right;
+}
+
+.tabs-right>.nav-tabs>li {
+    float: none;
+}
+
+.tabs-right>.nav-tabs>li>a, .tabs-right>.nav-tabs>li>a:focus, .tabs-right>.nav-tabs>li>a:hover {
+    border-top: 0;
+    margin: 0 -1px;
+}
+
+.tabs-right>.nav-tabs>li.active>a, .tabs-right>.nav-tabs>li.active>a:focus, .tabs-right>.nav-tabs>li.active>a:hover {
+    border-top-width: 0;
+    border-right: 2px solid #1cc88a;
+    border-left-color: transparent;
+    margin: 0 -2px 0 -1px;
+    -webkit-box-shadow: 2px 0 3px 0 rgba(0, 0, 0, 0.3);
+    -moz-box-shadow: 2px 0 3px 0 rgba(0, 0, 0, 0.3);
+    box-shadow: 2px 0 3px 0 rgba(0, 0, 0, 0.3);
+}
+
+.tabs-left>.nav-tabs>li>a, .tabs-right>.nav-tabs>li>a {
+    min-width: 60px;
+}
+
+.nav-tabs li [class*=" fa-"], .nav-tabs li [class^="fa-"] {
+    width: 1.25em;
+    display: inline-block;
+    text-align: center;
+}
+
+.nav-tabs>li.open .dropdown-toggle {
+    background-color: #e5e5e5;
+    border-color: #e5e5e5;
+}
+
+.tabs-left .tab-content, .tabs-right .tab-content {
+    overflow: auto;
+}
+
+
+.rvtablecell-input {
+    border-bottom: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    line-height: 20px;
+    padding: 0px;
+    white-space: nowrap; 
+    overflow: hidden;
+    text-overflow: ellipsis;
+    background: white;
+  }
+  
+  .rvtablecell {
+    border-bottom: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    line-height: 20px;
+    padding: 0 3px;
+    white-space: nowrap; 
+    overflow: hidden;
+    text-overflow: ellipsis;
+    background: white;
+  }
+  
+  .rvtablecell.fixed {
+    background: #f2f2f2;
+    font-weight: 600;
+  }
+  
+  .rvtablecell.info {
+    background: #d9edf7!important;
+  }
+  
+  .rvtablecell.hijo {
+    background: #eee!important;
+  }
+  
+  .rvtablecell.hijohidetext {
+    background: #eee!important;
+    color: #eee!important;
+  }
+  
+  
+  .rvtableheader {
+    border-bottom: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    line-height: 20px;
+    padding: 0 3px;
+    white-space: nowrap; 
+    overflow: hidden;
+    text-overflow: ellipsis;
+    background-image: linear-gradient(to bottom, #f2f2f2 0, #fafafa 100%);
+    font-weight: bold;
+  }

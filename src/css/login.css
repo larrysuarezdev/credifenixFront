@@ -1,0 +1,22 @@
+.SignIn {
+    width: 100%;
+    height: calc(100vh);
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between
+}
+
+.btn-primary-login {
+    color: #fff !important;
+    background-color: #279FFC !important;
+    border-color: #008dfa !important;
+}
+
+.btn-primary-login:hover {
+    color: #fff !important;
+    background-color: #278bd8 !important;
+    border-color: #278bd8 !important;
+}
+.flat{
+    border-radius: 0 !important;
+}
