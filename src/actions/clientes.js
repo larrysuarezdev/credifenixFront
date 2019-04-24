@@ -1,14 +1,14 @@
 import * as types from './types'
 import { createAxiosInstance } from '../utils/helpers'
 
-import { API_URL, messageHandler } from '../actions/index'
+import { API_URL, messageHandler } from './index'
 import objectifyArray from 'objectify-array'
 
 const axios = createAxiosInstance();
 
-export function getUsuarios() {
+export function getClientes() {
     return (dispatch) => {
-        axios.get(`${API_URL}/usuarios`, {})
+        axios.get(`${API_URL}/clientes`, {})
             .then((res) => {
                 const data = objectifyArray(res.data.data, {
                     by: ['id'],
@@ -16,7 +16,7 @@ export function getUsuarios() {
                 })
 
                 dispatch({
-                    type: types.GET_USERS,
+                    type: types.GET_CLIENTES,
                     payload: {
                         data
                     }
@@ -31,14 +31,14 @@ export function getUsuarios() {
 
 export function saveAction() {
     return (dispatch, getState) => {
-        const row = getState().usuarios.get('selectRow').toJS()
-        const newRow = getState().usuarios.get('edit')
-
-        if (newRow) {
-            axios.post(`${API_URL}/usuarios`, row)
+        const row = getState().clientes.get('selectRow').toJS()
+        const newRow = getState().clientes.get('edit')
+        console.log(newRow)
+        if (!newRow) {
+            axios.post(`${API_URL}/clientes`, row)
                 .then(() => {
-                    dispatch(getUsuarios());
-                    dispatch({ type: types.CLEAN_USUARIO })
+                    dispatch(getClientes());
+                    dispatch({ type: types.CLEAN_CLIENTE })
                     messageHandler(dispatch, {
                         success: 'Se ha agregado un nuevo registro'
                     })
@@ -47,10 +47,10 @@ export function saveAction() {
                     messageHandler(dispatch, err)
                 })
         } else {
-            axios.put(`${API_URL}/usuarios`, row)
+            axios.put(`${API_URL}/clientes`, row)
                 .then(() => {
-                    dispatch(getUsuarios());
-                    dispatch({ type: types.CLEAN_USUARIO })
+                    dispatch(getClientes());
+                    dispatch({ type: types.CLEAN_CLIENTE })
                     messageHandler(dispatch, {
                         success: 'Se ha actualizado el registro'
                     })
@@ -63,3 +63,14 @@ export function saveAction() {
     }
 }
 
+export function editCliente(id) {
+    return (dispatch) => {
+        dispatch({ type: types.EDIT_CLIENTE, payload: { id } })
+    }
+}
+
+export function cleanCliente() {
+    return (dispatch) => {
+        dispatch({ type: types.CLEAN_CLIENTE })
+    }
+}

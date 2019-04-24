@@ -5,32 +5,67 @@ import { connect } from 'react-redux'
 import GridClientes from '../../components/Administracion/Clientes/GridClientes'
 import AddClientes from '../../components/Administracion/Clientes/AddClientes'
 
+import { newRow } from '../../actions/common'
+import { editCliente, cleanCliente } from '../../actions/clientes'
+
+
 class Clientes extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
+
+    this.changeTab = this.changeTab.bind(this);
+    this.actionNewRow = this.actionNewRow.bind(this);
+    this.actionEditCliente = this.actionEditCliente.bind(this);
+
     this.state = {
       tabs: [
-        { id: 0, caption: 'Listado clientes', component: <GridClientes />, active: true },
+        { id: 0, caption: 'Listado clientes', component: <GridClientes actionNewRow={this.actionNewRow} actionEditCliente={this.actionEditCliente} />, active: true },
         { id: 1, caption: 'Agregar - Modificar', component: <AddClientes />, active: false },
       ],
-      selected: 0
+      tab: 0
     };
   }
 
   changeTab(tab) {
+    if (this.props.selectRow !== null) {
+      let tabs = this.state.tabs.map(x => {
+        x.active = false;
+        return x;
+      })
+
+      tabs[tabs.findIndex(x => x.id === tab.id)].active = true
+      if (tab.id === 0) {
+        this.props.cleanCliente();
+      }
+
+      this.setState({ tabs, tab: tab.id });
+    }
+  }
+
+  actionNewRow(tipo) {
     let tabs = this.state.tabs.map(x => {
       x.active = false;
       return x;
     })
 
-    tabs[tabs.findIndex(x => x.id === tab.id)].active = true
+    this.props.newRow(tipo)
+    tabs[tabs.findIndex(x => x.id === 1)].active = true
+    this.setState({ tabs, tab: 1 });
+  }
 
-    this.setState({ tabs, selected: tab.id });
+  actionEditCliente(id) {
+    this.props.editCliente(id);
+
+    let tabs = this.state.tabs.map(x => {
+      x.active = false;
+      return x;
+    })
+    tabs[tabs.findIndex(x => x.id === 1)].active = true
+    this.setState({ tabs, tab: 1 });
   }
 
   render() {
-    const { tabs, selected } = this.state;
-    // console.log(tabs, tabs[selected].component, selected)
+    const { tabs, tab } = this.state;
 
     return (
       <div className="col-xl-12 col-lg-12">
@@ -56,9 +91,9 @@ class Clientes extends Component {
               })
             }
           </ul>
-          <div className="tab-content" >
-            <div className="tab-pane fade show active" style={{ minHeight: 'calc(100vh - 255px)', paddingTop: '10px' }}>
-              {tabs[selected].component}
+          <div className="tab-content">
+            <div className="tab-pane fade show active" style={{ minHeight: 'calc(100vh - 255px)' }}>
+              {tabs[tab].component}
             </div>
           </div>
         </div>
@@ -69,11 +104,15 @@ class Clientes extends Component {
 
 function mapStateToProps(state) {
   return {
+    selectRow: state.clientes.get('selectRow'),
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
+    newRow: (tipo) => dispatch(newRow(tipo)),
+    editCliente: (id) => dispatch(editCliente(id)),
+    cleanCliente: () => dispatch(cleanCliente()),
   }
 }
 

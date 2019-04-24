@@ -1,0 +1,95 @@
+/* BRAND BUTTONS */
+.button-brand {
+    display: table;
+    top: 0;
+    left: 0;
+    background-color: #dddfeb;
+    height: 32px;
+    width: 100%;
+    border-bottom: 2px solid #1cc88a;
+    text-align: right;
+    padding-right: 10px;
+}
+
+.middle {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.inner {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* BOTONES */
+
+.box-button {
+    vertical-align: text-bottom;
+    background: none;
+    border: 1px solid transparent;
+    cursor: pointer;
+    font-size: 15px;
+    color: #1cc88a;
+    transition: color 1s ease;
+}
+
+.box-button.contrast {
+    color: #ddd !important;
+}
+
+
+.box-button:hover {
+    color:  rgb(7, 146, 61)
+}
+
+.box-button:hover i.fa {
+    text-shadow: 0 0 5px rgb(7, 146, 61)
+}
+
+.box-button.danger:hover {
+    color: rgb(198, 40, 40);
+}
+
+.box-button.danger:hover i.fa {
+    text-shadow: 0 0 5px rgba(198, 40, 40, 0.6);
+}
+
+.box-button.disabled {
+    color: #bbb !important;
+    cursor: not-allowed;
+}
+
+.box-button.disabled:hover {
+    color: #bbb !important;
+}
+
+.box-button.disabled:hover i.fa {
+    text-shadow: none;
+}
+
+.box-button.danger.disabled.contrast {
+    color: #888 !important;
+    cursor: not-allowed;
+}
+
+.box-button.disabled.contrast {
+    color: #888 !important;
+    cursor: not-allowed;
+}
+
+.box-button.danger.disabled.contrast:hover i.fa {
+    text-shadow: none;
+}
+
+.box-button.disabled.contrast:hover i.fa {
+    text-shadow: none;
+}
+
+/*  */
+
+.isDisabled {
+    color: currentColor;
+    cursor: not-allowed;
+    opacity: 0.5;
+    text-decoration: none;
+  }

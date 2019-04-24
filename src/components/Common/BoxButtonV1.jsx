@@ -1,12 +1,11 @@
 import React, { Component } from 'react'
 
-export default class BoxButton extends Component {
+export default class BoxButtonV1 extends Component {
     
 	render() {
-        const { classCSS } = this.props;
+        const { size, classCSS } = this.props
         const disabled = (this.props.disabled === true)
         const onClick = (disabled) ? null : this.props.onClick
-        const { size } = this.props
 
         let styleButton = {...this.props.style || {}}
         styleButton.marginRight = '5px'

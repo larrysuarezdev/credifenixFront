@@ -3,27 +3,43 @@ import { connect } from 'react-redux'
 
 // UI
 import TableVirtualized from '../../Common/TableVirtualized'
+import BoxButtonV2 from '../../Common/BoxButtonV2'
+import BrandButton from '../../Common/BrandButton'
 
-export const tableColumns = [
-    { ID: 0, CAPTION: '', VALUE: '', TYPE: '', FORMAT: '', WIDTH: 30, FIXED: true },
-    { ID: 1, CAPTION: 'Nombre', VALUE: 'Nombre', TYPE: 'VARCHAR2', FORMAT: '', WIDTH: 300, FIXED: true },
-    { ID: 2, CAPTION: 'Descripción', VALUE: 'Descripcion', TYPE: 'VARCHAR2', FORMAT: '', WIDTH: 350, FIXED: false },
-    { ID: 3, CAPTION: 'Estado', VALUE: 'Estado_Visible', TYPE: 'BOOLEAN', FORMAT: '', WIDTH: 150, FIXED: false },
-]
+import { getClientes } from '../../../actions/clientes'
+import { selectAction } from '../../../actions/common'
+import { tableColumnsClientes } from '../../../utils/headersColumns'
+
 
 class GridClientes extends Component {
+
+    componentWillMount() {
+        this.props.getClientes();
+    }
+
     render() {
-        const { ids, clientes, selected } = this.props;
+        const { ids, list, selected, actionNewRow, selectAction } = this.props;
+        const tipo = "CLIENTE";
+
+        const buttons = [
+            <BoxButtonV2 key="bb[0][0]" name="plus" onClick={() => actionNewRow(tipo)} title="Agregar referencia" classCSS="info" />,
+        ]
+
         return (
             <div>
-                {/* <TableVirtualized
-                    tableColumns={tableColumns}
-                    ids={ids}
-                    list={clientes}
-                    keyVal="id_cliente"
-                    actionSelect={this.props.selectEmpresa}
-                    selected={selected}
-                /> */}
+                <BrandButton buttons={buttons} />
+                <div className="" style={{ height : 'calc(100vh - 286px)'}}>
+                    <TableVirtualized
+                        tableColumns={tableColumnsClientes}
+                        ids={ids}
+                        list={list}
+                        keyVal="id"
+                        actionSelect={selectAction}
+                        selected={selected}
+                        tipo={tipo}
+                        actionClick={this.props.actionEditCliente}
+                    />
+                </div>
             </div>
         )
     }
@@ -31,11 +47,16 @@ class GridClientes extends Component {
 
 function mapStateToProps(state) {
     return {
+        list: state.clientes.get('list'),
+        ids: state.clientes.get('ids'),
+        selected: state.clientes.get('selected'),
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
+        getClientes: () => dispatch(getClientes()),
+        selectAction: (id, reloadGrid, tipo) => dispatch(selectAction(id, reloadGrid, tipo)),
     }
 }
 

@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 
 //UI
 import Card from '../../components/Common/Card'
-import BoxButton from '../../components/Common/BoxButton'
+import BoxButtonV1 from '../../components/Common/BoxButtonV1'
 
 class Maestras extends Component {
   constructor() {
@@ -15,7 +15,7 @@ class Maestras extends Component {
 
   render() {
     const buttons = [
-      <BoxButton key="bb[0][0]" name="plus" onClick={() => console.log('debe agregar')} title="Agregar referencia" classCSS="info" />,
+      <BoxButtonV1 key="bb[0][0]" name="plus" onClick={() => console.log('debe agregar')} title="Agregar referencia" classCSS="info" />,
     ]
 
     return (

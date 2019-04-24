@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux'
 import messages from './messageHandling'
 import auth from './auth'
+import clientes from './clientes'
 import common from './common'
 import roles from './roles'
 import rutas from './rutas'
@@ -10,6 +11,7 @@ import usuarios from './usuarios'
 const appReducer = combineReducers({
     messages,
     auth,
+    clientes,
     common,
     roles,
     rutas,

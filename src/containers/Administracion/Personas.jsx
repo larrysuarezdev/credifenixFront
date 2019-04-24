@@ -4,7 +4,7 @@ import { tableColumnsUsuarios as tableColumns } from '../../utils/headersColumns
 
 //UI
 import Card from '../../components/Common/Card'
-import BoxButton from '../../components/Common/BoxButton'
+import BoxButton from '../../components/Common/BoxButtonV1'
 import TableVirtualized from '../../components/Common/TableVirtualized'
 
 //DATA
@@ -23,7 +23,7 @@ class Personas extends Component {
 
         const buttons = [
             <BoxButton key="bp[0][0]" name="plus" onClick={() => newRow(tipo)} title="Agregar nuevo" classCSS="info" />,
-            <BoxButton key="bp[0][1]" name="save" onClick={() => saveAction()} title="Guardar" classCSS="success" />,
+            <BoxButton key="bp[0][1]" name="save" onClick={() => saveAction()} title="Guardar" classCSS="success" disabled={selectRow !== null ? false : true} />,
         ]
 
         return (
@@ -76,6 +76,10 @@ class Personas extends Component {
                                         {
                                             selectRow.get('login') ?
                                                 <div className="row">
+                                                    <div className="col-md-8">
+                                                        <label >Email</label>
+                                                        <input className="form-control form-control-sm" type="text" value={selectRow.get('email')} onChange={(e) => changeAttr(tipo, 'email', e.target.value)}></input>
+                                                    </div>
                                                     <div className="col-md-6">
                                                         <label >Nombre de usuario</label>
                                                         <input className="form-control form-control-sm" type="text" value={selectRow.get('username')} onChange={(e) => changeAttr(tipo, 'username', e.target.value)} ></input>

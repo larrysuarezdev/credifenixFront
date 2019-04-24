@@ -68,7 +68,7 @@ class TableVirtualized extends Component {
                         value = <div style={{ textAlign: 'center', fontSize: '1.1em' }}><FontAwesome name={`${value ? 'check-' : ''}square`} /></div>
                         break
                     case 'BUTTON':
-                        value = <div style={{ textAlign: 'center', fontSize: '1.2em' }}><FontAwesome name={c.VALUE} onClick={() => this.props.actionClick(a.get(String(this.props.keyVal)), c.FORMAT)} /></div>
+                        value = <div style={{ textAlign: 'center', fontSize: '1em' }}><FontAwesome name={c.VALUE} onClick={() => this.props.actionClick(a.get(String(this.props.keyVal)))} /></div>
                         break;
                     case 'CHECKBOX':
                         value = <input type="checkbox"
