@@ -3,6 +3,7 @@ import messages from './messageHandling'
 import auth from './auth'
 import clientes from './clientes'
 import common from './common'
+import parametros from './parametros'
 import roles from './roles'
 import rutas from './rutas'
 import usuarios from './usuarios'
@@ -13,6 +14,7 @@ const appReducer = combineReducers({
     auth,
     clientes,
     common,
+    parametros,
     roles,
     rutas,
     usuarios
