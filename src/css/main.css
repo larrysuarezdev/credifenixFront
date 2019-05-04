@@ -1,4 +1,5 @@
 /* BRAND BUTTONS */
+
 .button-brand {
     display: table;
     top: 0;
@@ -37,9 +38,8 @@
     color: #ddd !important;
 }
 
-
 .box-button:hover {
-    color:  rgb(7, 146, 61)
+    color: rgb(7, 146, 61)
 }
 
 .box-button:hover i.fa {
@@ -85,6 +85,63 @@
     text-shadow: none;
 }
 
+/* SELECTOR INPUT */
+
+.SelectorInput {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding-right: 2px;
+}
+
+.SelectorInput span.caption {
+    flex: 1;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.SelectorInput span.caption span {
+    width: 100%;
+    line-height: 20px;
+}
+
+.SelectorInput span.reset {
+    width: 14px;
+    color: #aaa;
+    cursor: pointer;
+    line-height: 24px;
+    margin-right: 10px;
+}
+
+.SelectorInput span.reset:hover {
+    color: #777
+}
+
+.SelectorInput span.button {
+    width: 20px;
+    position: relative;
+}
+
+.SelectorInput span.button button {
+    position: absolute;
+    width: 100%;
+    height: 20px;
+    line-height: 16px;
+    border: 1px solid #aaa;
+    border-radius: 16px;
+    padding: 0 4px;
+    margin-left: -4px;
+    outline: none;
+    font-weight: bold;
+}
+
+.SelectorInput span.button button:hover {
+    background: #ccc;
+}
+
 /*  */
 
 .isDisabled {
@@ -92,4 +149,30 @@
     cursor: not-allowed;
     opacity: 0.5;
     text-decoration: none;
-  }
+}
+
+/*  CONTROLES  */
+
+.form-control-sm1 {
+    height: calc(1.7em + 0rem + -5px);
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    border-radius: 0;
+}
+
+.has-search .form-control {
+    padding-left: 2.375rem;
+}
+
+.has-search .form-control-feedback {
+    position: absolute;
+    z-index: 2;
+    display: block;
+    width: 2.375rem;
+    height: 2.375rem;
+    line-height: 2.375rem;
+    text-align: center;
+    pointer-events: none;
+    color: #aaa;
+}

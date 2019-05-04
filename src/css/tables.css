@@ -1,0 +1,90 @@
+.rvtablecell-input {
+    border-bottom: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    line-height: 20px;
+    padding: 0px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    background: white;
+}
+
+.rvtablecell {
+    border-bottom: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    line-height: 20px;
+    padding: 0 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    background: white;
+}
+
+.rvtablecell.fixed {
+    background: #f2f2f2;
+    font-weight: 600;
+}
+
+.rvtablecell.info {
+    background: #d9edf7!important;
+}
+
+.rvtablecell.hijo {
+    background: #eee!important;
+}
+
+.rvtablecell.hijohidetext {
+    background: #eee!important;
+    color: #eee!important;
+}
+
+.rvtableheader {
+    border-bottom: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    line-height: 20px;
+    padding: 0 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    background-image: linear-gradient(to bottom, #f2f2f2 0, #fafafa 100%);
+    font-weight: bold;
+}
+
+.rvtablecell2 {
+    border-bottom: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    line-height: 20px;
+    /* padding: 0 3px; */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    background: white;
+}
+.rvtablecell2-input {
+    border-bottom: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    line-height: 20px;
+    padding: 0px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    background: white;
+}
+
+.rvtablecell2.fixed {
+    background: #f2f2f2;
+    font-weight: 600;
+}
+
+.rvtablecell2.info {
+    background: #d9edf7!important;
+}
+
+.rvtablecell2.hijo {
+    background: #eee!important;
+}
+
+.rvtablecell2.hijohidetext {
+    background: #eee!important;
+    color: #eee!important;
+}

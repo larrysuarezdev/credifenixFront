@@ -13,9 +13,14 @@ export function clearMessage() {
 
 export function messageHandler(dispatch, error) {
     let theMessage = { type: 'warning', message: '' }
-    
+    console.log(error.response)
+
     if (error.response) {
         switch (error.response.status) {
+            case 401:
+                dispatch({ type: types.MOSTRAR_MENSAJE, payload: { type: 'danger', message: 'No está autorizado para proceder con esta solicitud. Por favor, inicie sesión y vuelva a intentarlo' } })
+                signOutOn401(dispatch)
+                break;
             case 422:
                 if (error.response.data) {
                     for (let property in error.response.data) {
@@ -29,6 +34,7 @@ export function messageHandler(dispatch, error) {
                 break;
 
             default:
+                alert(error.response.data)
                 console.log('error : ' + error.response.data)
                 break;
         }

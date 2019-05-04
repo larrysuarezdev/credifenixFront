@@ -23,7 +23,6 @@ export function getClientes() {
                 })
             })
             .catch((err) => {
-                // fn1(dispatch);
                 messageHandler(dispatch, err)
             })
     }

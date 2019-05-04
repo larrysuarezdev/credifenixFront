@@ -23,4 +23,4 @@ export const tableColumnsClientes = [
     { ID: 12, CAPTION: 'Dirección fiador', VALUE: 'dir_fiador', TYPE: 'VARCHAR2', FORMAT: '', WIDTH: 150, FIXED: false },
     { ID: 13, CAPTION: 'Barrio fiador', VALUE: 'barrio_fiador', TYPE: 'VARCHAR2', FORMAT: '', WIDTH: 150, FIXED: false },
     { ID: 14, CAPTION: 'Telefono fiador', VALUE: 'tel_fiador', TYPE: 'VARCHAR2', FORMAT: '', WIDTH: 150, FIXED: false },
-   ]
+]

@@ -9,6 +9,14 @@ export function toggleModal() {
     }
 }
 
+export function toggleModalClientes() {
+    return (dispatch) => {
+        dispatch({
+            type: types.SHOW_MODAL_CLIENTES
+        })
+    }
+}
+
 export function selectAction(id, next, tipo) {
     return (dispatch) => {
         dispatch({
@@ -24,6 +32,15 @@ export function changeAttr(tipo, attr, value) {
         dispatch({
             type: types[`CHANGE_ATTR_${tipo}`],
             payload: { attr, value}
+        })
+    }
+}
+
+export function changeAttr2(tipo, id, attr, value) {
+    return (dispatch) => {
+        dispatch({
+            type: types[`CHANGE_ATTR_LISTA_${tipo}`],
+            payload: { attr, value, id }
         })
     }
 }

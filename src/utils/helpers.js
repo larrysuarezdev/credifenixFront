@@ -1,5 +1,7 @@
 import axios from 'axios'
 import { Cookies } from 'react-cookie';
+import objectifyArray from 'objectify-array'
+import Immutable from 'immutable'
 
 import { API_URL } from '../actions/index'
 
@@ -60,4 +62,21 @@ export function getInnerException(obj) {
         const toReturn = {...obj}
         return toReturn
     }
+}
+
+export function recalculate(data, id) {
+    let res = []
+    data = data.toList().toJS();
+
+    data.map((x) => {
+        x.valor_total = x.mod_cuota * x.mod_dias;
+        res.push(x)
+    })
+
+    res = objectifyArray(res, {
+        by: [id],
+        recursive: true
+    })
+
+    return Immutable.fromJS(res);
 }

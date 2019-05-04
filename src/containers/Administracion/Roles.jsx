@@ -31,9 +31,9 @@ class Roles extends Component {
     handleDropOnItem = (e, itemover, destination) => {
         e.preventDefault()
         removeClass(e.target, 'draggingoveritem')
-        const obj = JSON.parse(e.dataTransfer.getData("text"))
-        const origin = obj.origin
-        const item = obj.item
+        // const obj = JSON.parse(e.dataTransfer.getData("text"))
+        // const origin = obj.origin
+        // const item = obj.item
         // this.props.relocateItemToNewPosition(origin, destination, item, itemover)
         e.stopPropagation()
     }

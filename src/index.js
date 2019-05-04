@@ -17,6 +17,7 @@ import './css/fonts.css'
 import './css/sb-admin-2.css'
 import './css/main.css'
 import './css/tabs.css'
+import './css/tables.css'
 import './css/dNd.css'
 import 'react-toastify/dist/ReactToastify.min.css'
 
