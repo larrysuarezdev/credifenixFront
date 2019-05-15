@@ -177,7 +177,7 @@ class AddClientes extends Component {
                 </div>
 
                 <div className="float-right">
-                    <a className="btn btn-success btn-icon-split" onClick={() => saveAction()}  >
+                    <a className="btn btn-success btn-icon-split" href onClick={() => saveAction()}  >
                         <span className="icon text-white-50">
                             <i className="fas fa-save"></i>
                         </span>

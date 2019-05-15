@@ -24,3 +24,12 @@ export const tableColumnsClientes = [
     { ID: 13, CAPTION: 'Barrio fiador', VALUE: 'barrio_fiador', TYPE: 'VARCHAR2', FORMAT: '', WIDTH: 150, FIXED: false },
     { ID: 14, CAPTION: 'Telefono fiador', VALUE: 'tel_fiador', TYPE: 'VARCHAR2', FORMAT: '', WIDTH: 150, FIXED: false },
 ]
+
+export const tableColumnsDetallesAbonos = [
+    { ID: 0, CAPTION: '', VALUE: '', TYPE: '', FORMAT: '', WIDTH: 20, FIXED: true },
+    { ID: 1, CAPTION: 'Abono', VALUE: 'abono', TYPE: 'NUMBER', FORMAT: '', WIDTH: 150, FIXED: true },
+    { ID: 2, CAPTION: 'Fecha', VALUE: 'fecha_abono', TYPE: 'DATE', FORMAT: 'YYYY-MM-DD', WIDTH: 150, FIXED: false },
+    // { ID: 3, CAPTION: 'Telefono', VALUE: 'telefono1', TYPE: 'VARCHAR2', FORMAT: '', WIDTH: 150, FIXED: false },
+    // { ID: 3, CAPTION: 'Auth?', VALUE: 'login', TYPE: 'BOOLEAN', FORMAT: '', WIDTH: 80, FIXED: false },
+    // { ID: 4, CAPTION: 'Creado', VALUE: 'created_at', TYPE: 'DATE', FORMAT: 'YYYY-MM-DD', WIDTH: 110, FIXED: false },
+]

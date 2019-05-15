@@ -16,7 +16,6 @@ const INITIAL_STATE = Immutable.fromJS({
 export default function (state = INITIAL_STATE, action) {
     switch(action.type) {
         case types.MOSTRAR_MENSAJE:
-            console.log('reducer: ', action.payload)
             state = state.set('message', action.payload)
             return state
         case types.LIMPIAR_MENSAJES:

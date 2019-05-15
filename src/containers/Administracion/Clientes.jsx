@@ -77,9 +77,9 @@ class Clientes extends Component {
             {
               tabs.map(x => {
                 return (
-                  <li key={`li01[${x.id}]`} className={x.active ? "nav-item active" : "nav-item"}>
+                  <li key={`li01[${x.id}]`} className={x.active ? "nav-item active" : "nav-item"} >
                     <a
-                      data-toggle="tab" href="#"
+                      data-toggle="tab" href
                       aria-expanded={x.active ? "true" : "false"}
                       onClick={(e) => this.changeTab(x)}
                       className="nav-link"

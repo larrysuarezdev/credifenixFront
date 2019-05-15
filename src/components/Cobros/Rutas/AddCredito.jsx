@@ -47,7 +47,7 @@ class AddCredito extends Component {
                 </div>
                 <div className="col-md-4">
                     <label >Valor total</label>
-                    <input className="form-control form-control-sm" type="number" value={selectRow.get('cuota') * selectRow.get('dias')} readOnly disabled ></input>
+                    <input className="form-control form-control-sm" type="number" value={(selectRow.get('cuota') * selectRow.get('dias')) * 1000 } readOnly disabled ></input>
                 </div>
                 <ModalClientes />
             </div>

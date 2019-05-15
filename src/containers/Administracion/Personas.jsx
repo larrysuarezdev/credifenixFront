@@ -68,7 +68,7 @@ class Personas extends Component {
                                         <div className="row">
                                             <div className="col-auto my-1">
                                                 <div className="custom-control custom-switch">
-                                                    <input type="checkbox" class="custom-control-input" id="login" checked={selectRow.get('login')} onChange={(checked) => changeAttr(tipo, 'login', checked.target.checked)} />
+                                                    <input type="checkbox" className="custom-control-input" id="login" checked={selectRow.get('login')} onChange={(checked) => changeAttr(tipo, 'login', checked.target.checked)} />
                                                     <label className="custom-control-label" htmlFor="login">Es usuario de la aplicación?</label>
                                                 </div>
                                             </div>

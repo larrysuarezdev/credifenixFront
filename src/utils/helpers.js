@@ -59,18 +59,30 @@ export function getInnerException(obj) {
     if (obj instanceof Object && obj.InnerException) {
         return getInnerException(obj.InnerException)
     } else {
-        const toReturn = {...obj}
+        const toReturn = { ...obj }
         return toReturn
     }
 }
 
-export function recalculate(data, id) {
+export function recalculate(data, id, cargue = false) {
     let res = []
+    let cartera = 0;
     data = data.toList().toJS();
-
     data.map((x) => {
         x.valor_total = x.mod_cuota * x.mod_dias;
+        let abonos = 0;
+        const entries = Object.entries(x.creditos_detalles);
+        entries.forEach(element => {
+            abonos = abonos + element[1].abono
+        });
+        x.saldo = x.valor_total - abonos;
+        x.cuotas_pagas = (x.valor_total - x.saldo) / x.mod_cuota
+        if (cargue) {
+            x.cuota = ''
+        }
+        cartera = cartera + x.saldo;
         res.push(x)
+        return x
     })
 
     res = objectifyArray(res, {
@@ -78,5 +90,5 @@ export function recalculate(data, id) {
         recursive: true
     })
 
-    return Immutable.fromJS(res);
+    return { list : Immutable.fromJS(res), cartera : cartera  };
 }

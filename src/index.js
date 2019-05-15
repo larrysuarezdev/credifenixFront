@@ -3,7 +3,8 @@ import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 import { createStore, applyMiddleware } from 'redux'  
 import { Router } from 'react-router'
-import createHistory from 'history/createBrowserHistory'
+// import createHistory from 'history/createBrowserHistory'
+import { createBrowserHistory } from 'history'
 import reduxThunk from 'redux-thunk'
 import { Cookies } from 'react-cookie';
 import { INICIAR_SESION } from './actions/types'
@@ -20,13 +21,13 @@ import './css/tabs.css'
 import './css/tables.css'
 import './css/dNd.css'
 import 'react-toastify/dist/ReactToastify.min.css'
-
+import 'sweetalert2/src/sweetalert2.scss'
 
 
 const cookie = new Cookies();
 const createStoreWithMiddleware = applyMiddleware(reduxThunk)(createStore)
 const store = createStoreWithMiddleware(reducers, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__())
-const history = createHistory()
+const history = createBrowserHistory()
 
 const token = cookie.get('token')
 const user = cookie.get('user')

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
+import moment from 'moment'
 
 //UI
 import BrandButton from '../../components/Common/BrandButton'
@@ -8,22 +9,26 @@ import Modal from '../../components/Common/Modal'
 import TableVirtualized from '../../components/Common/TableVirtualized2'
 import SelectComponent from '../../components/Common/SelectComponent';
 import AddCredito from '../../components/Cobros/Rutas/AddCredito'
+import DetallesPagos from '../../components/Cobros/Rutas/DetallesPagos'
 
-import { getRutas } from '../../actions/rutas'
+
+import { getCreditos, saveCredito, getListRutas, saveAbonos } from '../../actions/rutas'
 import { selectAction, changeAttr2, toggleModal, newRow } from '../../actions/common'
 
 class Rutas extends Component {
     constructor(props) {
         super(props);
         this.changeAction = this.changeAction.bind(this);
+        this.actionClick = this.actionClick.bind(this);
         this.createAction = this.createAction.bind(this);
+        this.onChangeSelect = this.onChangeSelect.bind(this);
 
         this.state = {
             tableColumns: [
                 { ID: 0, CAPTION: '', VALUE: 'eye', TYPE: 'BUTTON', FORMAT: '', WIDTH: 30, FIXED: true },
                 { ID: 1, CAPTION: '#Cliente', VALUE: 'orden', TYPE: 'NUMBER', FORMAT: '', WIDTH: 80, FIXED: true, EDIT: false },
                 { ID: 2, CAPTION: 'Cliente', VALUE: 'cliente.titular', TYPE: 'VARCHAR2', FORMAT: '', WIDTH: 200, FIXED: true, EDIT: false },
-                { ID: 3, CAPTION: 'Cuota', VALUE: '', TYPE: 'NUMBER', FORMAT: '', WIDTH: 70, FIXED: true, EDIT: true },
+                { ID: 3, CAPTION: 'Cuota', VALUE: 'cuota', TYPE: 'NUMBER', FORMAT: '', WIDTH: 70, FIXED: true, EDIT: true },
                 { ID: 4, CAPTION: 'Mora', VALUE: 'mora', TYPE: 'NUMBER', FORMAT: '', WIDTH: 50, FIXED: false, EDIT: false },
                 { ID: 5, CAPTION: 'PAG', VALUE: 'cuotas_pagas', TYPE: 'NUMBER', FORMAT: '', WIDTH: 50, FIXED: false, EDIT: false },
                 { ID: 6, CAPTION: 'Prestamo', VALUE: 'valor_prestamo', TYPE: 'NUMBER', FORMAT: '', WIDTH: 100, FIXED: true },
@@ -40,20 +45,16 @@ class Rutas extends Component {
                 { ID: 17, CAPTION: 'Fiador', VALUE: 'cliente.fiador', TYPE: 'VARCHAR2', FORMAT: '', WIDTH: 200, FIXED: false },
                 { ID: 18, CAPTION: 'Telefono', VALUE: 'cliente.tel_fiador', TYPE: 'VARCHAR2', FORMAT: '', WIDTH: 100, FIXED: false },
             ],
-            options: [
-                { value: 1, label: 'Ruta 1' },
-                { value: 2, label: 'Ruta 2' },
-                { value: 3, label: 'Ruta 3' },
-                { value: 4, label: 'Ruta 4' }
-            ]
+            tipoModal: 0
         }
     }
 
     componentWillMount() {
-        this.props.getRutas();
+        this.props.getListRutas();
     }
 
     createAction() {
+        this.setState({ tipoModal: 0 })
         this.props.newRow("RUTA");
         this.props.toggleModal()
     }
@@ -62,16 +63,27 @@ class Rutas extends Component {
         this.props.changeAttr2(tipo, id, attr, value)
     }
 
+    actionClick() {
+        this.setState({ tipoModal: 1 })
+        this.props.toggleModal();
+    }
+
+    onChangeSelect(id) {
+        this.props.getCreditos(id);
+    }
+
     render() {
-        const { ids, list, selected, selectAction } = this.props;
+        const { ids, list, selected, selectAction, rutas, cartera } = this.props;
         const tipo = "RUTA";
+        var today = moment((new Date())).format('YYYY-MM-DD');
+
         const buttons = [
             <BoxButton key="br[0][0]" name="plus" onClick={() => this.createAction()} title="Agregar crédito" classCSS="info" />,
-            <BoxButton key="br[0][1]" name="save" onClick={() => this.createAction()} title="Guardar cambios" classCSS="info" />,
+            <BoxButton key="br[0][1]" name="save" onClick={() => this.props.saveAbonos()} title="Guardar abonos" classCSS="info" />,
         ]
 
         const buttons1 = [
-            <BoxButton key="br[0][0]" name="save" onClick={() => this.props.toggleModal()} title="Agregar crédito" classCSS="info" />,
+            <BoxButton key="b1[0][0]" name="save" onClick={() => this.props.saveCredito()} title="Guardar crédito" classCSS="info" />,
         ]
 
         return (
@@ -80,15 +92,15 @@ class Rutas extends Component {
                 <div className="row" style={{ marginBottom: 5, background: '#f7f7f7', marginLeft: 0, marginRight: 0, paddingBottom: 5 }}>
                     <div className="col-md-4">
                         <label >Ruta</label>
-                        <SelectComponent options={this.state.options} />
+                        <SelectComponent options={rutas.toJS()} onChange={this.onChangeSelect} />
                     </div>
                     <div className="col-md-4">
                         <label >Fecha</label>
-                        <input className="form-control form-control-sm" type="date" ></input>
+                        <input className="form-control form-control-sm" type="date" max={today} ></input>
                     </div>
                     <div className="col-md-4">
                         <label >Cartera</label>
-                        <input className="form-control form-control-sm" type="text" value="379.000" ></input>
+                        <input className="form-control form-control-sm" type="text" value={cartera} readOnly disabled ></input>
                     </div>
                 </div>
                 <div className="col-md-12 col-xs-12" style={{ padding: 0 }} >
@@ -102,12 +114,21 @@ class Rutas extends Component {
                             selected={selected}
                             tipo={tipo}
                             onChange={this.changeAction}
+                            actionClick={this.actionClick}
                         />
                     </div>
                 </div>
-                <Modal title="Gestionar crédito" buttons={buttons1} >
-                    <AddCredito />
-                </Modal>
+                {
+                    this.state.tipoModal === 0 ?
+                        <Modal title="Gestionar crédito" buttons={buttons1} >
+                            <AddCredito />
+                        </Modal>
+                        :
+                        <Modal title="Detalle de abonos al credito"  >
+                            <DetallesPagos />
+                        </Modal>
+
+                }
             </div>
         )
     }
@@ -118,16 +139,21 @@ function mapStateToProps(state) {
         list: state.rutas.get('list'),
         ids: state.rutas.get('ids'),
         selected: state.rutas.get('selected'),
+        rutas: state.rutas.get('rutas'),
+        cartera: state.rutas.get('cartera'),
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        getRutas: () => dispatch(getRutas()),
+        getListRutas: () => dispatch(getListRutas()),
+        getCreditos: (id) => dispatch(getCreditos(id)),
         selectAction: (id, reloadGrid, tipo) => dispatch(selectAction(id, reloadGrid, tipo)),
         changeAttr2: (tipo, id, attr, value) => dispatch(changeAttr2(tipo, id, attr, value)),
         toggleModal: () => dispatch(toggleModal()),
         newRow: (tipo) => dispatch(newRow(tipo)),
+        saveCredito: () => dispatch(saveCredito()),
+        saveAbonos: () => dispatch(saveAbonos()),
     }
 }
 

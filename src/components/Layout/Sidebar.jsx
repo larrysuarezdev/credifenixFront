@@ -33,7 +33,7 @@ export default class Sidebar extends Component {
                     sidebarItems.map((item, ind) => {
                         return (
                             <li className="nav-item" key={ind} onClick={(e) => onClick(e, item.caption)} >
-                                <a className={!item.isOpen ? "nav-link collapsed" : "nav-link"} href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                                <a className={!item.isOpen ? "nav-link collapsed" : "nav-link"} data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo" >
                                     <i className={`fas fa-fw fa-${item.icon}`} ></i>
                                     <span>{item.caption}</span>
                                 </a>

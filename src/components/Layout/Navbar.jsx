@@ -29,7 +29,7 @@ export default class Navbar extends Component {
 
                 {/* <nav aria-label="breadcrumb"> */}
                     <ol className="breadcrumb">
-                        <li className="breadcrumb-item"><a href="#">Inicio</a></li>
+                        <li className="breadcrumb-item"><a>Inicio</a></li>
                         {
                             this.props.renderBreadCrumb()
                         }

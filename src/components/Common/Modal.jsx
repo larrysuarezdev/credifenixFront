@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
-import { Modal as ModalB, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import { Modal as ModalB, ModalHeader, ModalBody } from 'reactstrap';
 import BrandButton from './BrandButton'
 
 import { toggleModal } from '../../actions/common'
@@ -16,9 +16,6 @@ class Modal extends Component {
                         this.props.children
                     }
                 </ModalBody>
-                {/* <ModalFooter>
-                    <Button className="" color="secondary" onClick={this.props.toggleModal}>Cerrar</Button>
-                </ModalFooter> */}
             </ModalB>
         )
     }

@@ -4,7 +4,7 @@ import Select from 'react-select';
 export default class SelectComponent extends Component {
 
     render() {
-        const { options } = this.props;
+        const { options, onChange } = this.props;
         const customStyles = {
             option: (provided, state) => ({
                 ...provided,
@@ -15,7 +15,6 @@ export default class SelectComponent extends Component {
                 boxSizing: 'border-box',
             }),
             control: () => ({
-                // width: '100%',
                 height: 'calc(1.9em + 0.1rem)',
                 border: '1px solid #d1d3e2',
                 // borderRadius: '0.2rem',
@@ -44,7 +43,6 @@ export default class SelectComponent extends Component {
                 boxRizing: 'border-box',
             }),
             valueContainer: () => ({
-                // width: '80%',
                 height: 'calc(1.9em + 0.1rem)',
                 webkitAlignItems: 'center',
                 webkitBoxAlign: 'center',
@@ -64,7 +62,6 @@ export default class SelectComponent extends Component {
                 boxSizing: 'border-box',
             }),
             indicatorsContainer: () => ({
-                // width: '20%',
                 color: 'hsl(0,0%,80%)',
                 display: 'flex',
                 padding: '0px 8px',
@@ -104,12 +101,10 @@ export default class SelectComponent extends Component {
                 const opacity = state.isDisabled ? 0.5 : 1;
                 const transition = 'opacity 300ms';
                 const marginLeft = 5;
-                // const height = 'calc(1.9em + 0.1rem)';
-
                 return { ...provided, opacity, transition, marginLeft };
             }
         }
-
+        
         return (
             <Select
                 className="basic-single"
@@ -121,6 +116,7 @@ export default class SelectComponent extends Component {
                 isRtl={false}
                 isSearchable={true}
                 options={options}
+                onChange={onChange}
             />
         )
     }
