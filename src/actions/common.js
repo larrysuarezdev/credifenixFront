@@ -28,6 +28,8 @@ export function selectAction(id, next, tipo) {
 }
 
 export function changeAttr(tipo, attr, value) {
+    console.log('entra al select CHANGE', `CHANGE_ATTR_${tipo}`)
+
     return (dispatch) => {
         dispatch({
             type: types[`CHANGE_ATTR_${tipo}`],
@@ -48,5 +50,11 @@ export function changeAttr2(tipo, id, attr, value) {
 export function newRow(tipo) {
     return (dispatch) => {
         dispatch({ type: types[`NEW_${tipo}`] })
+    }
+}
+
+export function editRow(tipo, id) {
+    return (dispatch) => {
+        dispatch({ type: types[`EDIT_${tipo}`], payload: { id } })
     }
 }

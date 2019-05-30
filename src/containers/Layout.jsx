@@ -38,14 +38,14 @@ class Layout extends Component {
           icon: 'credit-card', caption: 'Cobros', isActive: false, isOpen: false,
           subitems: [
             { caption: 'Rutas', isActive: false, title: 'Rutas', url: '/cobros/rutas', icon: 'route' },
-            { caption: 'Creditos', isActive: false, title: 'Creditos', url: '/cobros/creditos', icon: 'credit-card' },
-            { caption: 'Renovaciones', isActive: false, title: 'Renovaciones', url: '/cobros/renovaciones', icon: 'sync-alt' }
+            { caption: 'Flujo de caja', isActive: false, title: 'Flujo de caja', url: '/cobros/flujoCaja', icon: 'hand-holding-usd' },
+            // { caption: 'Renovaciones', isActive: false, title: 'Renovaciones', url: '/cobros/renovaciones', icon: 'sync-alt' }
           ]
         },
         {
           icon: 'chart-line', caption: 'Reportes', isActive: false, isOpen: false,
           subitems: [
-            { caption: 'Pendientes', isActive: false, title: 'Clientes', url: '/administracion/clientes2' }
+            { caption: 'Pendientes', isActive: false, title: 'Clientes', url: '/reportes/reporte1' }
           ]
         }
       ]

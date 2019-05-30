@@ -9,6 +9,7 @@ import Modal from '../../components/Common/Modal'
 import TableVirtualized from '../../components/Common/TableVirtualized2'
 import SelectComponent from '../../components/Common/SelectComponent';
 import AddCredito from '../../components/Cobros/Rutas/AddCredito'
+import RenovarCredito from '../../components/Cobros/Rutas/RenovarCredito'
 import DetallesPagos from '../../components/Cobros/Rutas/DetallesPagos'
 
 
@@ -45,8 +46,14 @@ class Rutas extends Component {
                 { ID: 17, CAPTION: 'Fiador', VALUE: 'cliente.fiador', TYPE: 'VARCHAR2', FORMAT: '', WIDTH: 200, FIXED: false },
                 { ID: 18, CAPTION: 'Telefono', VALUE: 'cliente.tel_fiador', TYPE: 'VARCHAR2', FORMAT: '', WIDTH: 100, FIXED: false },
             ],
-            tipoModal: 0
+            tipoModal: 0,
+            tabs: [
+                { id: 0, caption: 'Abonos', component: <DetallesPagos />, active: true },
+                { id: 1, caption: 'Renovaciones', component: <div>Hola</div>, active: false },
+            ],
+            tab: 0
         }
+
     }
 
     componentWillMount() {
@@ -68,9 +75,79 @@ class Rutas extends Component {
         this.props.toggleModal();
     }
 
+    actionClickRenovados() {
+        this.setState({ tipoModal: 2 })
+        this.props.toggleModal();
+    }
+
+
     onChangeSelect(id) {
         this.props.getCreditos(id);
     }
+
+    changeTab(tab) {
+        let tabs = this.state.tabs.map(x => {
+            x.active = false;
+            return x;
+        })
+        tabs[tabs.findIndex(x => x.id === tab.id)].active = true;
+
+        this.setState({ tabs, tab: tab.id });
+    }
+
+    renderSwitch(param) {
+        const buttons = [
+            <BoxButton key="b1[0][0]" name="save" onClick={() => this.props.saveCredito()} title="Guardar crédito" classCSS="info" />,
+        ]
+
+        const { tabs, tab } = this.state;
+
+        switch (param) {
+            case 0:
+                return (
+                    <Modal title="Gestionar crédito" buttons={buttons} brand={true} >
+                        <AddCredito />
+                    </Modal>
+                )
+            case 1:
+                return (
+                    <Modal title="Detalles de abono al credito" brand={false}  >
+                        <ul className="nav nav-tabs nav-justified" id="myTab" role="tablist">
+                            {
+                                tabs.map(x => {
+                                    return (
+                                        <li key={`li01[${x.id}]`} className={x.active ? "nav-item active" : "nav-item"} >
+                                            <a
+                                                data-toggle="tab"
+                                                aria-expanded={x.active ? "true" : "false"}
+                                                onClick={(e) => this.changeTab(x)}
+                                                className="nav-link"
+                                            >
+                                                {x.caption}
+                                            </a>
+                                        </li>
+                                    )
+                                })
+                            }
+                        </ul>
+                        <div className="tab-content">
+                            <div className="tab-pane fade show active">
+                                {tabs[tab].component}
+                            </div>
+                        </div>
+                    </Modal>
+                )
+            case 2:
+                return (
+                    <Modal title="Renovar crédito" buttons={buttons} brand={true} >
+                        <RenovarCredito />
+                    </Modal>
+                )
+            default:
+                return null;
+        }
+    }
+
 
     render() {
         const { ids, list, selected, selectAction, rutas, cartera } = this.props;
@@ -79,12 +156,11 @@ class Rutas extends Component {
 
         const buttons = [
             <BoxButton key="br[0][0]" name="plus" onClick={() => this.createAction()} title="Agregar crédito" classCSS="info" />,
-            <BoxButton key="br[0][1]" name="save" onClick={() => this.props.saveAbonos()} title="Guardar abonos" classCSS="info" />,
+            <BoxButton key="br[0][1]" name="retweet" onClick={() => this.actionClickRenovados()} title="Renovar" classCSS="info" />,
+            <BoxButton key="br[0][2]" name="save" onClick={() => this.props.saveAbonos()} title="Guardar abonos" classCSS="info" />,
         ]
 
-        const buttons1 = [
-            <BoxButton key="b1[0][0]" name="save" onClick={() => this.props.saveCredito()} title="Guardar crédito" classCSS="info" />,
-        ]
+
 
         return (
             <div className="card border-left-success">
@@ -118,17 +194,12 @@ class Rutas extends Component {
                         />
                     </div>
                 </div>
-                {
+                {this.renderSwitch(this.state.tipoModal)}
+                {/* {
                     this.state.tipoModal === 0 ?
-                        <Modal title="Gestionar crédito" buttons={buttons1} >
-                            <AddCredito />
-                        </Modal>
-                        :
-                        <Modal title="Detalle de abonos al credito"  >
-                            <DetallesPagos />
-                        </Modal>
+                        
 
-                }
+                } */}
             </div>
         )
     }

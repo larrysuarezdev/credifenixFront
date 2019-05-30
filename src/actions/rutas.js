@@ -152,7 +152,7 @@ export function saveAbonos() {
                 }
             })
             messageHandler(dispatch, {
-                success: 'Se han guadado los abonos re la ruta'
+                success: 'Se han guadado los abonos de la ruta'
             })
         })
         .catch((err) => {

@@ -4,18 +4,64 @@ import { connect } from 'react-redux'
 // UI
 import Card from '../../Common/Card'
 import BoxButtonV1 from '../../Common/BoxButtonV1'
+import BoxButtonV2 from '../../Common/BoxButtonV2'
+import TableVirtualized from '../../Common/TableVirtualized'
+import Modal from '../../Common/Modal'
 
-import { saveAction } from '../../../actions/clientes'
-import { changeAttr } from '../../../actions/common'
+import { changeAttr, toggleModal, selectAction, newRow, editRow } from '../../../actions/common'
+import { saveAction, saveActionReferencias } from '../../../actions/clientes'
+import { tableColumnsReferenciasCliente } from '../../../utils/headersColumns'
 
 class AddClientes extends Component {
+
+    constructor(props) {
+        super(props);
+        this.actionClick = this.actionClick.bind(this);
+
+        this.state = {
+            tipoRef: ''
+        }
+    }
+
+    toggle(tipo) {
+        this.setState({ tipoRef: tipo })
+        this.props.newRow("REFERENCIA");
+        this.props.toggleModal();
+    }
+
+    save() {
+        this.props.saveActionReferencias(this.state.tipoRef)
+    }
+
+    actionClick(id) {
+        this.props.editRow("REFERENCIA", id);
+        this.props.toggleModal();
+    }
+
     render() {
-        const buttons = [
-            <BoxButtonV1 key="bb[0][0]" name="plus" onClick={() => console.log('debe agregar')} title="Agregar referencia" classCSS="info" />,
+        let listTitular, idsTitular, listFiador, idsFiador;
+        const buttonsTitular = [
+            <BoxButtonV1 key="bb[0][0]" name="plus" onClick={() => this.toggle('TITULAR')} title="Agregar referencia" classCSS="info" />,
         ]
 
-        const { changeAttr, saveAction, selectRow, edit } = this.props;
+        const buttonsFiador = [
+            <BoxButtonV1 key="bb[1][0]" name="plus" onClick={() => this.toggle('FIADOR')} title="Agregar referencia" classCSS="info" />,
+        ]
+
+        const buttonsModal = [
+            <BoxButtonV2 key="bb[2][0]" name="save" onClick={() => this.save()} title="Agregar referencia" classCSS="info" />,
+        ]
+
+        const { changeAttr, saveAction, selectRow, selectRowReferencia, edit, selectedTitular, selectedFiador, selectAction } = this.props;
         const tipo = "CLIENTE";
+        const list = selectRow.get('clientes_referencias');
+        console.log(selectRowReferencia)
+        if (list !== undefined) {
+            listTitular = list.filter(x => x.get('tipo_referencia') === 'TITULAR');
+            idsTitular = listTitular.sortBy(x => x.get('id')).keySeq().toList();
+            listFiador = list.filter(x => x.get('tipo_referencia') === 'FIADOR');
+            idsFiador = listFiador.sortBy(x => x.get('id')).keySeq().toList();
+        }
 
         return (
             <div className="col-md-12 col-xl-12" style={{ marginTop: 10 }}>
@@ -63,7 +109,6 @@ class AddClientes extends Component {
                             <label >Telefono </label>
                             <input className="form-control form-control-sm" type="number" value={selectRow === null ? '' : selectRow.get('tel_cobro')} onChange={(e) => changeAttr(tipo, 'tel_cobro', e.target.value)} ></input>
                         </div>
-
                         <div className="col-md-4">
                             <label >Dirección de casa </label>
                             <input className="form-control form-control-sm" type="text" value={selectRow === null ? '' : selectRow.get('dir_casa')} onChange={(e) => changeAttr(tipo, 'dir_casa', e.target.value)} ></input>
@@ -94,90 +139,50 @@ class AddClientes extends Component {
 
                 <div className="row">
                     <div className="col-md-6 col-xs-12">
-                        <Card text="Referencias del titular" buttons={buttons} >
-                            <div className="row col-md-12">
-                                <table className="table table-sm">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">Nombre</th>
-                                            <th scope="col">Direccion</th>
-                                            <th scope="col">Barrio</th>
-                                            <th scope="col">Telefono</th>
-                                            <th scope="col">Parentesco</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <th scope="row">1</th>
-                                            <td>Mark</td>
-                                            <td>Otto</td>
-                                            <td>@mdo</td>
-                                            <td>@mdo1</td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">2</th>
-                                            <td>Jacob</td>
-                                            <td>Thornton</td>
-                                            <td>@fat</td>
-                                            <td>@fat1</td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">3</th>
-                                            <td>Larry</td>
-                                            <td>Bird</td>
-                                            <td>@twitter</td>
-                                            <td>@twitter1</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                        <Card text="Referencias del titular" buttons={buttonsTitular} >
+                            <div style={{ height: 180, maxHeight: 180 }} >
+                                {
+                                    list !== undefined ?
+                                        <TableVirtualized
+                                            tableColumns={tableColumnsReferenciasCliente}
+                                            ids={idsTitular}
+                                            list={listTitular}
+                                            keyVal="id"
+                                            actionSelect={selectAction}
+                                            actionClick={this.actionClick}
+                                            selected={selectedTitular}
+                                            tipo="CLIENTE_TITULAR"
+                                        />
+                                        : null
+                                }
                             </div>
                         </Card>
                     </div>
 
                     <div className="col-md-6 col-xs-12">
-                        <Card text="Referencias del fiador" buttons={buttons}>
-                            <div className="row col-md-12">
-                                <table className="table table-sm">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">Nombre</th>
-                                            <th scope="col">Direccion</th>
-                                            <th scope="col">Barrio</th>
-                                            <th scope="col">Telefono</th>
-                                            <th scope="col">Parentesco</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <th scope="row">1</th>
-                                            <td>Mark</td>
-                                            <td>Otto</td>
-                                            <td>@mdo</td>
-                                            <td>@mdo1</td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">2</th>
-                                            <td>Jacob</td>
-                                            <td>Thornton</td>
-                                            <td>@fat</td>
-                                            <td>@fat1</td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">3</th>
-                                            <td>Larry</td>
-                                            <td>Bird</td>
-                                            <td>@twitter</td>
-                                            <td>@twitter1</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                        <Card text="Referencias del fiador" buttons={buttonsFiador}>
+                            <div style={{ height: 180, maxHeight: 180 }} >
+                                {
+                                    list !== undefined ?
+                                        <TableVirtualized
+                                            tableColumns={tableColumnsReferenciasCliente}
+                                            ids={idsFiador}
+                                            list={listFiador}
+                                            keyVal="id"
+                                            actionSelect={selectAction}
+                                            actionClick={this.actionClick}
+                                            selected={selectedFiador}
+                                            tipo="CLIENTE_FIADOR"
+                                        />
+                                        : null
+                                }
                             </div>
                         </Card>
                     </div>
                 </div>
 
                 <div className="float-right">
-                    <a className="btn btn-success btn-icon-split" href onClick={() => saveAction()}  >
+                    <a className="btn btn-success btn-icon-split" href="#" onClick={() => saveAction()}  >
                         <span className="icon text-white-50">
                             <i className="fas fa-save"></i>
                         </span>
@@ -187,6 +192,27 @@ class AddClientes extends Component {
                     </a>
                     <div className="my-3"></div>
                 </div>
+
+                <Modal title={"Agregar referencia " + this.state.tipoRef} buttons={buttonsModal} brand={true} >
+                    <div className="row">
+                        <div className="col-md-6">
+                            <label>Nombre </label>
+                            <input className="form-control form-control-sm" value={selectRowReferencia === undefined || selectRowReferencia === null ? '' : selectRowReferencia.get('nombre')} onChange={(e) => changeAttr("REFERENCIA", 'nombre', e.target.value)} ></input>
+                        </div>
+                        <div className="col-md-6">
+                            <label>Dirección </label>
+                            <input className="form-control form-control-sm" value={selectRowReferencia === undefined || selectRowReferencia === null ? '' : selectRowReferencia.get('direccion')} onChange={(e) => changeAttr("REFERENCIA", 'direccion', e.target.value)} ></input>
+                        </div>
+                        <div className="col-md-6">
+                            <label>Barrio </label>
+                            <input className="form-control form-control-sm" value={selectRowReferencia === undefined || selectRowReferencia === null ? '' : selectRowReferencia.get('barrio')} onChange={(e) => changeAttr("REFERENCIA", 'barrio', e.target.value)} ></input>
+                        </div>
+                        <div className="col-md-6">
+                            <label>Parentesco </label>
+                            <input className="form-control form-control-sm" value={selectRowReferencia === undefined || selectRowReferencia === null ? '' : selectRowReferencia.get('parentesco')} onChange={(e) => changeAttr("REFERENCIA", 'parentesco', e.target.value)} ></input>
+                        </div>
+                    </div>
+                </Modal>
             </div>
         )
     }
@@ -195,7 +221,10 @@ class AddClientes extends Component {
 function mapStateToProps(state) {
     return {
         selectRow: state.clientes.get('selectRow'),
+        selectRowReferencia: state.clientes.get('selectRowReferencia'),
         edit: state.clientes.get('edit'),
+        selectedFiador: state.clientes.get('selectedFiador'),
+        selectedTitular: state.clientes.get('selectedTitular'),
     }
 }
 
@@ -203,6 +232,11 @@ function mapDispatchToProps(dispatch) {
     return {
         changeAttr: (tipo, attr, value) => dispatch(changeAttr(tipo, attr, value)),
         saveAction: () => dispatch(saveAction()),
+        saveActionReferencias: (tipo) => dispatch(saveActionReferencias(tipo)),
+        selectAction: (id, reloadGrid, tipo) => dispatch(selectAction(id, reloadGrid, tipo)),
+        toggleModal: () => dispatch(toggleModal()),
+        newRow: (tipo) => dispatch(newRow(tipo)),
+        editRow: (tipo, id) => dispatch(editRow(tipo, id)),
     }
 }
 

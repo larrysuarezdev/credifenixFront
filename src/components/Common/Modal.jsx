@@ -10,7 +10,9 @@ class Modal extends Component {
         return (
             <ModalB isOpen={this.props.modal} toggle={this.props.toggleModal} className={this.props.className} centered={true}  >
                 <ModalHeader toggle={this.props.toggleModal}>{this.props.title}</ModalHeader>
-                <BrandButton buttons={this.props.buttons} />
+                {
+                    this.props.brand ? <BrandButton buttons={this.props.buttons} /> : null
+                }
                 <ModalBody>
                     {
                         this.props.children

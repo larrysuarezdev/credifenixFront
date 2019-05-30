@@ -62,6 +62,12 @@ export function saveAction() {
     }
 }
 
+export function saveActionReferencias(tipo) {
+    return(dispatch) => {
+        dispatch({ type: types.ADD_REFERENCIA, payload: tipo })
+    }
+}
+
 export function editCliente(id) {
     return (dispatch) => {
         dispatch({ type: types.EDIT_CLIENTE, payload: { id } })

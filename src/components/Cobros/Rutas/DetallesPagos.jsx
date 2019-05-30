@@ -16,12 +16,12 @@ class DetallesPagos extends Component {
     }
 
     render() {
-        const { list, selected } = this.props;
+        const { list, selected, selectAction } = this.props;
         const ids = list.sortBy(x => x.get('id')).keySeq().toList();
         const tipo = "DETALLE_RUTA";
         
         return (
-            <div style={{ height : 'calc(100vh - 370px)'}}>
+            <div style={{ height : 'calc(100vh - 370px)', marginTop: 2 }}>
                 <TableVirtualized
                     tableColumns={tableColumnsDetallesAbonos}
                     ids={ids}
