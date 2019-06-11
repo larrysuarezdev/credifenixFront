@@ -13,6 +13,8 @@ export default class SelectComponent extends Component {
             container: () => ({
                 position: 'relative',
                 boxSizing: 'border-box',
+                zIndex : 10000
+
             }),
             control: () => ({
                 height: 'calc(1.9em + 0.1rem)',
@@ -60,6 +62,7 @@ export default class SelectComponent extends Component {
                 position: 'relative',
                 overflow: 'hidden',
                 boxSizing: 'border-box',
+                zIndex : 1
             }),
             indicatorsContainer: () => ({
                 color: 'hsl(0,0%,80%)',

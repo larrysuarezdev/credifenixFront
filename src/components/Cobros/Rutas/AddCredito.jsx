@@ -28,7 +28,16 @@ class AddCredito extends Component {
                         onClick={() =>  this.props.toggleModalClientes() } />
                     {/* <input className="form-control form-control-sm" type="text" value={ selectRow.get('cliente') } ></input> */}
                 </div>
-                <div className="col-md-5"></div>
+                <div className="col-md-5">
+                    <a className="btn btn-sm btn-success btn-icon-split float-right padding-bottom" href="#" onClick={() => this.props.action()} style={{marginTop : 27}} >
+                        <span className="icon text-white-50">
+                            <i className="fas fa-male"></i>
+                        </span>
+                        <span className="text">
+                            Cliente nuevo
+                        </span>
+                    </a>
+                </div>
                 <div className="col-md-6">
                     <label >Fecha del crédito</label>
                     <input className="form-control form-control-sm" type="date" value={selectRow.get('fecha')} onChange={(e) => changeAttr(tipo, 'fecha', e.target.value)} />
@@ -48,6 +57,10 @@ class AddCredito extends Component {
                 <div className="col-md-4">
                     <label >Valor total</label>
                     <input className="form-control form-control-sm" type="number" value={(selectRow.get('cuota') * selectRow.get('dias')) * 1000 } readOnly disabled ></input>
+                </div>
+                <div className="col-md-12">
+                    <label >Observaciones</label>
+                    <textarea className="form-control form-control-sm" id="observaciones" rows="3" value={selectRow.get('observaciones')} onChange={(e) => changeAttr(tipo, 'observaciones', e.target.value)}></textarea>                    
                 </div>
                 <ModalClientes />
             </div>

@@ -84,7 +84,6 @@ export default function (state = INITIAL_STATE, action) {
             state = state.set('selectRowReferencia', state.getIn(['selectRow', 'clientes_referencias', String(action.payload.id)]))
             return state
         case types.ADD_REFERENCIA:
-            console.log(state.getIn(['selectRow']).toJS())
             const referencias = state.getIn(['selectRow', 'clientes_referencias']).toList().toJS()
             const row = state.get('selectRowReferencia').toJS();
             row.tipo_referencia = action.payload;

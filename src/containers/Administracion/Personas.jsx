@@ -4,7 +4,8 @@ import { tableColumnsUsuarios as tableColumns } from '../../utils/headersColumns
 
 //UI
 import Card from '../../components/Common/Card'
-import BoxButton from '../../components/Common/BoxButtonV1'
+import BrandButton from '../../components/Common/BrandButton'
+import BoxButton from '../../components/Common/BoxButtonV2'
 import TableVirtualized from '../../components/Common/TableVirtualized'
 
 //DATA
@@ -27,76 +28,80 @@ class Personas extends Component {
         ]
 
         return (
-            <div className="row">
-                <div className="col-md-12 col-xs-12">
-                    <Card text="Administración de usuarios y personas" buttons={buttons} >
-                        <div className="row" style={{ height: "calc(100vh - 255px)", maxHeight: "calc(100vh - 255px)" }}>
-                            <div className="col-md-7">
-                                <TableVirtualized
-                                    tableColumns={tableColumns}
-                                    ids={ids}
-                                    list={list}
-                                    keyVal="id"
-                                    actionSelect={this.props.selectAction}
-                                    selected={selected}
-                                    tipo={tipo}
-                                />
-                            </div>
-                            {
-                                selectRow !== null ?
-                                    <div className="col-md-5">
-                                        <div className="row">
-                                            <div className="col-md-6">
-                                                <label >Nombres</label>
-                                                <input className="form-control form-control-sm" type="text" value={selectRow.get('nombres')} onChange={(e) => changeAttr(tipo, 'nombres', e.target.value)} ></input>
-                                            </div>
-                                            <div className="col-md-6">
-                                                <label >Apelldios</label>
-                                                <input className="form-control form-control-sm" type="text" value={selectRow.get('apellidos')} onChange={(e) => changeAttr(tipo, 'apellidos', e.target.value)}></input>
-                                            </div>
-                                        </div>
-                                        <div className="row">
-                                            <div className="col-md-6">
-                                                <label >Telefono 1</label>
-                                                <input className="form-control form-control-sm" type="text" value={selectRow.get('telefono1')} onChange={(e) => changeAttr(tipo, 'telefono1', e.target.value)}></input>
-                                            </div>
-                                            <div className="col-md-6">
-                                                <label >Telefono 2</label>
-                                                <input className="form-control form-control-sm" type="text" value={selectRow.get('telefono2')} onChange={(e) => changeAttr(tipo, 'telefono2', e.target.value)}></input>
-                                            </div>
-                                        </div>
-                                        <div className="row">
-                                            <div className="col-auto my-1">
-                                                <div className="custom-control custom-switch">
-                                                    <input type="checkbox" className="custom-control-input" id="login" checked={selectRow.get('login')} onChange={(checked) => changeAttr(tipo, 'login', checked.target.checked)} />
-                                                    <label className="custom-control-label" htmlFor="login">Es usuario de la aplicación?</label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        {
-                                            selectRow.get('login') ?
-                                                <div className="row">
-                                                    <div className="col-md-8">
-                                                        <label >Email</label>
-                                                        <input className="form-control form-control-sm" type="text" value={selectRow.get('email')} onChange={(e) => changeAttr(tipo, 'email', e.target.value)}></input>
-                                                    </div>
-                                                    <div className="col-md-6">
-                                                        <label >Nombre de usuario</label>
-                                                        <input className="form-control form-control-sm" type="text" value={selectRow.get('username')} onChange={(e) => changeAttr(tipo, 'username', e.target.value)} ></input>
-                                                    </div>
-                                                    <div className="col-md-6">
-                                                        <label >Contraseña</label>
-                                                        <input className="form-control form-control-sm" type="password" value={selectRow.get('password')} onChange={(e) => changeAttr(tipo, 'password', e.target.value)} ></input>
-                                                    </div>
-                                                </div>
-                                                : null
-                                        }
-                                    </div>
-                                    : null
-                            }
-
+            <div className="col-md-12 col-xs-12">
+                {/* <Card text="Administración de usuarios y personas" buttons={buttons} > */}
+                <div className="card shadow border-left-success mb-4">
+                    <div className="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                        <h6 className="m-0 font-weight-bold text-success">Administración de usuarios y personas</h6>
+                    </div>
+                    <BrandButton buttons={buttons} />
+                    <div className="row" style={{ height: "calc(100vh - 248px)", maxHeight: "calc(100vh - 248px)" }}>
+                        <div className="col-md-7">
+                            <TableVirtualized
+                                tableColumns={tableColumns}
+                                ids={ids}
+                                list={list}
+                                keyVal="id"
+                                actionSelect={this.props.selectAction}
+                                selected={selected}
+                                tipo={tipo}
+                            />
                         </div>
-                    </Card>
+                        {
+                            selectRow !== null ?
+                                <div className="col-md-5" style={{ paddingRight : 30 }}>
+                                    <div className="row">
+                                        <div className="col-md-6">
+                                            <label >Nombres</label>
+                                            <input className="form-control form-control-sm" type="text" value={selectRow.get('nombres')} onChange={(e) => changeAttr(tipo, 'nombres', e.target.value)} ></input>
+                                        </div>
+                                        <div className="col-md-6">
+                                            <label >Apelldios</label>
+                                            <input className="form-control form-control-sm" type="text" value={selectRow.get('apellidos')} onChange={(e) => changeAttr(tipo, 'apellidos', e.target.value)}></input>
+                                        </div>
+                                    </div>
+                                    <div className="row">
+                                        <div className="col-md-6">
+                                            <label >Telefono 1</label>
+                                            <input className="form-control form-control-sm" type="text" value={selectRow.get('telefono1')} onChange={(e) => changeAttr(tipo, 'telefono1', e.target.value)}></input>
+                                        </div>
+                                        <div className="col-md-6">
+                                            <label >Telefono 2</label>
+                                            <input className="form-control form-control-sm" type="text" value={selectRow.get('telefono2')} onChange={(e) => changeAttr(tipo, 'telefono2', e.target.value)}></input>
+                                        </div>
+                                    </div>
+                                    <div className="row">
+                                        <div className="col-auto my-1">
+                                            <div className="custom-control custom-switch">
+                                                <input type="checkbox" className="custom-control-input" id="login" checked={selectRow.get('login')} onChange={(checked) => changeAttr(tipo, 'login', checked.target.checked)} />
+                                                <label className="custom-control-label" htmlFor="login">Es usuario de la aplicación?</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {
+                                        selectRow.get('login') ?
+                                            <div className="row">
+                                                <div className="col-md-8">
+                                                    <label >Email</label>
+                                                    <input className="form-control form-control-sm" type="text" value={selectRow.get('email')} onChange={(e) => changeAttr(tipo, 'email', e.target.value)}></input>
+                                                </div>
+                                                <div className="col-md-6">
+                                                    <label >Nombre de usuario</label>
+                                                    <input className="form-control form-control-sm" type="text" value={selectRow.get('username')} onChange={(e) => changeAttr(tipo, 'username', e.target.value)} ></input>
+                                                </div>
+                                                <div className="col-md-6">
+                                                    <label >Contraseña</label>
+                                                    <input className="form-control form-control-sm" type="password" value={selectRow.get('password')} onChange={(e) => changeAttr(tipo, 'password', e.target.value)} ></input>
+                                                </div>
+                                            </div>
+                                            : null
+                                    }
+                                </div>
+                                : null
+                        }
+
+                    </div>
+                    {/* </Card> */}
                 </div>
             </div>
         )

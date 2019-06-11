@@ -67,6 +67,7 @@ class TableVirtualized extends Component {
                         alignment = 'right'
                         break
                     case 'BOOLEAN':
+                        console.log(value)
                         value = <div style={{ textAlign: 'center', fontSize: '1.1em' }}><FontAwesome name={`${value ? 'check-' : ''}square`} /></div>
                         break
                     case 'BUTTON':
@@ -128,13 +129,11 @@ class TableVirtualized extends Component {
 
 function mapStateToProps(state) {
     return {
-
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-
     }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(TableVirtualized)

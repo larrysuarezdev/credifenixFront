@@ -4,25 +4,25 @@ import { connect } from 'react-redux'
 //UI
 import TableVirtualized from '../../Common/TableVirtualized'
 
-import { getDetallesRuta } from '../../../actions/rutas'
+import { getDetallesRenovaciones } from '../../../actions/rutas'
 import { selectAction } from '../../../actions/common'
-import { tableColumnsDetallesAbonos } from '../../../utils/headersColumns'
+import { tableColumnsDetallesRenovaciones } from '../../../utils/headersColumns'
 
-class DetallesPagos extends Component {
+class DetalleRenovaciones extends Component {
 
     componentDidMount() {
-        this.props.getDetallesRuta();
+        this.props.getDetallesRenovaciones();
     }
 
     render() {
         const { list, selected, selectAction } = this.props;
         const ids = list.sortBy(x => x.get('id')).keySeq().toList();
-        const tipo = "DETALLE_RUTA";
+        const tipo = "DETALLE_RENOVACION";
         
         return (
             <div style={{ height : 'calc(100vh - 370px)', marginTop: 2 }}>
                 <TableVirtualized
-                    tableColumns={tableColumnsDetallesAbonos}
+                    tableColumns={tableColumnsDetallesRenovaciones}
                     ids={ids}
                     list={list}
                     keyVal="id"
@@ -37,16 +37,16 @@ class DetallesPagos extends Component {
 
 function mapStateToProps(state) {
     return {
-        list: state.rutas.get('detalles'),
-        selected: state.rutas.get('detalle_selected'),
+        list: state.rutas.get('renovaciones'),
+        selected: state.rutas.get('renovacion_selected'),
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        getDetallesRuta: () => dispatch(getDetallesRuta()),
+        getDetallesRenovaciones: () => dispatch(getDetallesRenovaciones()),
         selectAction: (id, reloadGrid, tipo) => dispatch(selectAction(id, reloadGrid, tipo)),
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(DetallesPagos)
+export default connect(mapStateToProps, mapDispatchToProps)(DetalleRenovaciones)

@@ -176,3 +176,38 @@
     pointer-events: none;
     color: #aaa;
 }
+
+.sidenav {
+    height: 100%;
+    width: 50vw;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    right: 0;
+    background-color: #ffffff;
+    overflow-x: hidden;
+    padding-top: 20px;
+}
+
+/* DATAGRID */
+
+.react-grid-HeaderCell {
+    padding: 0px 5px !important;
+}
+
+.placeholder {
+    background: #1cc88a;
+    display: block;
+}
+
+.placeholder::before {
+    content: "Mover aqui...";
+    /* color: rgb(225, 210, 90); */
+}
+
+.react-grid-Cell--frozen{
+    z-index: 0;
+}
+.css-mdm715{
+    z-index: 1 !important;
+}

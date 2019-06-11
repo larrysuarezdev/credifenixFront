@@ -32,6 +32,13 @@ export const tableColumnsDetallesAbonos = [
     { ID: 3, CAPTION: 'Usuario', VALUE: 'user.nombres', TYPE: 'VARCHAR2', FORMAT: '', WIDTH: 226, FIXED: false },
 ]
 
+export const tableColumnsDetallesRenovaciones = [
+    { ID: 0, CAPTION: '', VALUE: '', TYPE: '', FORMAT: '', WIDTH: 20, FIXED: true },
+    { ID: 1, CAPTION: 'Observación', VALUE: 'observaciones', TYPE: 'VARCHAR2', FORMAT: '', WIDTH: 200, FIXED: false },
+    { ID: 2, CAPTION: 'Fecha', VALUE: 'fecha', TYPE: 'DATE', FORMAT: 'YYYY-MM-DD', WIDTH: 120, FIXED: false },
+    { ID: 3, CAPTION: 'Estado', VALUE: 'estado', TYPE: 'BOOLEAN', FORMAT: '', WIDTH: 100, FIXED: false },
+]
+
 export const tableColumnsReferenciasCliente = [
     { ID: 0, CAPTION: '', VALUE: 'eye', TYPE: 'BUTTON', FORMAT: '', WIDTH: 20, FIXED: true },
     { ID: 1, CAPTION: 'Nombre', VALUE: 'nombre', TYPE: 'VARCHAR2', FORMAT: '', WIDTH: 150, FIXED: true },
@@ -39,4 +46,12 @@ export const tableColumnsReferenciasCliente = [
     { ID: 3, CAPTION: 'Barrio', VALUE: 'barrio', TYPE: 'VARCHAR2', FORMAT: '', WIDTH: 150, FIXED: false },
     { ID: 4, CAPTION: 'Telefono', VALUE: 'telefono', TYPE: 'VARCHAR2', FORMAT: '', WIDTH: 100, FIXED: false },
     { ID: 5, CAPTION: 'Parentesco', VALUE: 'parentesco', TYPE: 'VARCHAR2', FORMAT: '', WIDTH: 100, FIXED: false },
+]
+
+export const tableColumnsFlujoCaja = [
+    { ID: 0, CAPTION: '', VALUE: '', TYPE: 'BUTTON', FORMAT: '', WIDTH: 20, FIXED: true },
+    { ID: 1, CAPTION: 'Descripción', VALUE: 'descripcion', TYPE: 'VARCHAR2', FORMAT: '', WIDTH: 250, FIXED: true },
+    { ID: 2, CAPTION: 'Tipo', VALUE: 'tipo', TYPE: 'VARCHAR3', FORMAT: '', WIDTH: 100, FIXED: false },
+    { ID: 3, CAPTION: 'Fecha', VALUE: 'fecha', TYPE: 'DATE', FORMAT: 'YYYY-MM-DD HH:MM', WIDTH: 160, FIXED: false },
+    { ID: 4, CAPTION: 'Valor', VALUE: 'valor', TYPE: 'NUMBER', FORMAT: '', WIDTH: 150, FIXED: false },
 ]

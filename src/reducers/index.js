@@ -7,6 +7,7 @@ import common from './common'
 import parametros from './parametros'
 import roles from './roles'
 import rutas from './rutas'
+import flujoCaja from './flujoCaja'
 import usuarios from './usuarios'
 
 
@@ -19,6 +20,7 @@ const appReducer = combineReducers({
     parametros,
     roles,
     rutas,
+    flujoCaja,
     usuarios
 })
 

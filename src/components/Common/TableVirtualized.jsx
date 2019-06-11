@@ -30,7 +30,7 @@ class TableVirtualized extends Component {
     }
 
     cellRenderer = ({ columnIndex, key, rowIndex, style }) => {
-        
+
         let styles = style
         if (rowIndex === 0) {
             styles.alignment = 'center'
@@ -41,7 +41,7 @@ class TableVirtualized extends Component {
                 contenidoHeader = col.RENDER_HEADER();
             }
 
-            style = {...style, ...styles};
+            style = { ...style, ...styles };
 
             return <div key={key} className="rvtableheader" style={style}>{contenidoHeader}</div>
         } else {
@@ -77,6 +77,9 @@ class TableVirtualized extends Component {
                             style={{ height: 15 }}
                         />
                         break;
+                    case 'VARCHAR3':
+                        value = <div style={{ textAlign: 'center', fontSize: '1em' }}> {value === 1 ? <span className="badge badge-success">Entrada</span> : <span className="badge badge-warning">Salida</span>} </div>
+                        break;
                     default:
                 }
             }
@@ -87,10 +90,10 @@ class TableVirtualized extends Component {
             // if (a.get('children') !== null) {
             //     // style.color = '#ddd !important'
             // }
-            style = {...style, ...styles};
+            style = { ...style, ...styles };
 
             return (
-                <div key={key} className={`rvtablecell ${c.FIXED ? 'fixed' : ''} ${selected ? 'info' : ''} `} style={style} onClick={e => this.props.actionSelect(a.get(this.props.keyVal), this.reloadGrid, this.props.tipo)}>{value}</div>
+                <div key={key} className={`rvtablecell ${c.FIXED ? 'fixed' : ''} ${selected ? 'info' : ''} `} style={style} onClick={e => this.props.actionSelect(a.get(this.props.keyVal), this.reloadGrid, this.props.tipo)} onDoubleClick={() => this.props.actionDoubleClick !== undefined ? this.props.actionDoubleClick() : null}>{value}</div>
             )
         }
     }

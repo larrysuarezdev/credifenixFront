@@ -89,21 +89,38 @@ class Dashboard extends Component {
     return (
       <div className="row">
         <div className="col-xl-3 col-md-6 mb-4">
-          <div className="card border-left-primary shadow h-100 py-2">
-            <div className="card-body">
-              <div className="row no-gutters align-items-center">
-                <div className="col mr-2">
-                  <div className="text-xs font-weight-bold text-primary text-uppercase mb-1">Clientes en el mes</div>
-                  <div className="h5 mb-0 font-weight-bold text-gray-800">{clientesNew}</div>
+          <div className="col-md-12 ">
+            <div className="card border-left-primary shadow h-100 ">
+              <div className="card-body">
+                <div className="row no-gutters align-items-center">
+                  <div className="col mr-2">
+                    <div className="text-xs font-weight-bold text-primary text-uppercase mb-1">Clientes nuevos en el mes</div>
+                    <div className="h5 mb-0 font-weight-bold text-gray-800">{clientesNew}</div>
+                  </div>
+                  <div className="col-auto">
+                    <i className="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                  </div>
                 </div>
-                <div className="col-auto">
-                  <i className="fas fa-clipboard-list fa-2x text-gray-300"></i>
+              </div>
+            </div>
+          </div>
+          <div className="col-md-12 py-2">
+            <div className="card border-left-primary shadow h-100 ">
+              <div className="card-body">
+                <div className="row no-gutters align-items-center">
+                  <div className="col mr-2">
+                    <div className="text-xs font-weight-bold text-primary text-uppercase mb-1">Clientes renovados en el mes</div>
+                    <div className="h5 mb-0 font-weight-bold text-gray-800">{clientesNew}</div>
+                  </div>
+                  <div className="col-auto">
+                    <i className="fas fa-retweet fa-2x text-gray-300"></i>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <div className="col-xl-12 col-md-12">
+        <div className="col-xl-9 col-md-9">
           <div className="card shadow mb-4">
             <div className="card-header py-3 d-flex flex-row align-items-center justify-content-between">
               <h6 className="m-0 font-weight-bold text-success">Clientes en la ultima semana</h6>

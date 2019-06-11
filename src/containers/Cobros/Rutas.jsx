@@ -1,20 +1,28 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import moment from 'moment'
+import Swal from 'sweetalert2'
 
 //UI
 import BrandButton from '../../components/Common/BrandButton'
 import BoxButton from '../../components/Common/BoxButtonV2'
 import Modal from '../../components/Common/Modal'
-import TableVirtualized from '../../components/Common/TableVirtualized2'
+import DataGrid from '../../components/Common/DataGrid'
+import DnDListadoClientes from '../../components/Cobros/Rutas/DnDListadoClientes'
 import SelectComponent from '../../components/Common/SelectComponent';
 import AddCredito from '../../components/Cobros/Rutas/AddCredito'
 import RenovarCredito from '../../components/Cobros/Rutas/RenovarCredito'
+import ObservacionesCredito from '../../components/Cobros/Rutas/ObservacionesCredito'
 import DetallesPagos from '../../components/Cobros/Rutas/DetallesPagos'
+import DetalleRenovaciones from '../../components/Cobros/Rutas/DetalleRenovaciones'
+import AddClientes from '../../components/Administracion/Clientes/AddClientes'
 
 
-import { getCreditos, saveCredito, getListRutas, saveAbonos } from '../../actions/rutas'
+import { getCreditos, saveCredito, getListRutas, saveAbonos, saveRenovacion, cleanDataRutas, reorderData } from '../../actions/rutas'
+import { cleanCliente } from '../../actions/clientes'
 import { selectAction, changeAttr2, toggleModal, newRow } from '../../actions/common'
+
+const tipo = "RUTA";
 
 class Rutas extends Component {
     constructor(props) {
@@ -23,41 +31,25 @@ class Rutas extends Component {
         this.actionClick = this.actionClick.bind(this);
         this.createAction = this.createAction.bind(this);
         this.onChangeSelect = this.onChangeSelect.bind(this);
+        this.actionToogleSidebarRigth = this.actionToogleSidebarRigth.bind(this);
 
         this.state = {
-            tableColumns: [
-                { ID: 0, CAPTION: '', VALUE: 'eye', TYPE: 'BUTTON', FORMAT: '', WIDTH: 30, FIXED: true },
-                { ID: 1, CAPTION: '#Cliente', VALUE: 'orden', TYPE: 'NUMBER', FORMAT: '', WIDTH: 80, FIXED: true, EDIT: false },
-                { ID: 2, CAPTION: 'Cliente', VALUE: 'cliente.titular', TYPE: 'VARCHAR2', FORMAT: '', WIDTH: 200, FIXED: true, EDIT: false },
-                { ID: 3, CAPTION: 'Cuota', VALUE: 'cuota', TYPE: 'NUMBER', FORMAT: '', WIDTH: 70, FIXED: true, EDIT: true },
-                { ID: 4, CAPTION: 'Mora', VALUE: 'mora', TYPE: 'NUMBER', FORMAT: '', WIDTH: 50, FIXED: false, EDIT: false },
-                { ID: 5, CAPTION: 'PAG', VALUE: 'cuotas_pagas', TYPE: 'NUMBER', FORMAT: '', WIDTH: 50, FIXED: false, EDIT: false },
-                { ID: 6, CAPTION: 'Prestamo', VALUE: 'valor_prestamo', TYPE: 'NUMBER', FORMAT: '', WIDTH: 100, FIXED: true },
-                { ID: 7, CAPTION: 'MOD cuota', VALUE: 'mod_cuota', TYPE: 'NUMBER', FORMAT: '', WIDTH: 100, FIXED: false, EDIT: false },
-                { ID: 8, CAPTION: 'MOD días', VALUE: 'mod_dias', TYPE: 'NUMBER', FORMAT: '', WIDTH: 100, FIXED: false, EDIT: false },
-                { ID: 9, CAPTION: 'Valor total', VALUE: 'valor_total', TYPE: 'NUMBER', FORMAT: '', WIDTH: 100, FIXED: false },
-                { ID: 10, CAPTION: 'Saldo', VALUE: 'saldo', TYPE: 'NUMBER', FORMAT: '', WIDTH: 100, FIXED: false },
-                { ID: 11, CAPTION: 'Ultimo pago', VALUE: 'valor_ultimo_pago', TYPE: 'NUMBER', FORMAT: '', WIDTH: 100, FIXED: false },
-                { ID: 12, CAPTION: 'Fecha ult pago', VALUE: 'fecha_ultimo_pago', TYPE: 'DATE', FORMAT: 'YYYY-MM-DD', WIDTH: 120, FIXED: false },
-                { ID: 13, CAPTION: 'Inicio', VALUE: 'inicio_credito', TYPE: 'DATE', FORMAT: 'YYYY-MM-DD', WIDTH: 120, FIXED: false },
-                { ID: 14, CAPTION: 'Negocio', VALUE: 'cliente.neg_titular', TYPE: 'VARCHAR2', FORMAT: '', WIDTH: 200, FIXED: false },
-                { ID: 15, CAPTION: 'Direccion', VALUE: 'cliente.dir_cobro', TYPE: 'VARCHAR2', FORMAT: '', WIDTH: 200, FIXED: false },
-                { ID: 16, CAPTION: 'Telefono', VALUE: 'cliente.tel_cobro', TYPE: 'VARCHAR2', FORMAT: '', WIDTH: 100, FIXED: false },
-                { ID: 17, CAPTION: 'Fiador', VALUE: 'cliente.fiador', TYPE: 'VARCHAR2', FORMAT: '', WIDTH: 200, FIXED: false },
-                { ID: 18, CAPTION: 'Telefono', VALUE: 'cliente.tel_fiador', TYPE: 'VARCHAR2', FORMAT: '', WIDTH: 100, FIXED: false },
-            ],
             tipoModal: 0,
             tabs: [
-                { id: 0, caption: 'Abonos', component: <DetallesPagos />, active: true },
-                { id: 1, caption: 'Renovaciones', component: <div>Hola</div>, active: false },
+                { id: 0, caption: 'Observaciones', component: <ObservacionesCredito />, active: true },
+                { id: 1, caption: 'Abonos', component: <DetallesPagos />, active: false },
+                { id: 2, caption: 'Renovaciones', component: <DetalleRenovaciones />, active: false },
             ],
-            tab: 0
+            tab: 0,
+            toogleSidebarRigth: false
         }
 
     }
 
     componentWillMount() {
+        this.props.cleanDataRutas();
         this.props.getListRutas();
+        this.props.cleanCliente();
     }
 
     createAction() {
@@ -70,7 +62,8 @@ class Rutas extends Component {
         this.props.changeAttr2(tipo, id, attr, value)
     }
 
-    actionClick() {
+    actionClick(id) {
+        this.props.selectAction(id, null, tipo);
         this.setState({ tipoModal: 1 })
         this.props.toggleModal();
     }
@@ -80,6 +73,13 @@ class Rutas extends Component {
         this.props.toggleModal();
     }
 
+    actionClickReorder() {
+        this.setState({ tipoModal: 3 })
+        this.props.toggleModal();
+    }
+    saveRenovacion() {
+        this.props.saveRenovacion()
+    }
 
     onChangeSelect(id) {
         this.props.getCreditos(id);
@@ -95,9 +95,56 @@ class Rutas extends Component {
         this.setState({ tabs, tab: tab.id });
     }
 
+    actionToogleSidebarRigth(tipo = null) {
+        this.setState({ tipoModal: tipo });
+        this.setState({ toogleSidebarRigth: !this.state.toogleSidebarRigth })
+        this.props.toggleModal();
+    }
+
+    reorderData(data) {
+        this.props.reorderData();
+        this.props.toggleModal();
+    }
+
+    saveAbonos() {
+        let entrada = 0, salida = 0;
+
+        this.props.list.map((x) => {
+            entrada = entrada + Number(x.get('cuota'));
+        })
+
+        entrada = entrada * 1000;
+        salida = salida * 1000;
+        Swal.fire({
+            title: 'FLUJO DE CAJA',
+            html: `<div> 
+                    <p> Entran: ${entrada} </p>
+                    <p> Salen: ${salida} </p>
+                    <p> Utilidad: ${entrada + salida} </p>
+                   </div>`,
+            // type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Confirmar cambios'
+        }).then((result) => {
+            if (result.value) {
+                this.props.saveAbonos(entrada, salida)
+            }
+        })
+    }
+
     renderSwitch(param) {
         const buttons = [
             <BoxButton key="b1[0][0]" name="save" onClick={() => this.props.saveCredito()} title="Guardar crédito" classCSS="info" />,
+        ]
+
+        const buttons1 = [
+            <BoxButton key="b2[0][0]" name="save" onClick={() => this.saveRenovacion()} title="Guardar crédito" classCSS="info" />,
+        ]
+
+        const buttons2 = [
+            <BoxButton key="b3[0][0]" name="save" onClick={() => this.reorderData()} title="Guardar crédito" classCSS="info" />,
         ]
 
         const { tabs, tab } = this.state;
@@ -106,7 +153,7 @@ class Rutas extends Component {
             case 0:
                 return (
                     <Modal title="Gestionar crédito" buttons={buttons} brand={true} >
-                        <AddCredito />
+                        <AddCredito action={this.actionToogleSidebarRigth} />
                     </Modal>
                 )
             case 1:
@@ -139,8 +186,14 @@ class Rutas extends Component {
                 )
             case 2:
                 return (
-                    <Modal title="Renovar crédito" buttons={buttons} brand={true} >
+                    <Modal title="Renovar crédito" buttons={buttons1} brand={true} >
                         <RenovarCredito />
+                    </Modal>
+                )
+            case 3:
+                return (
+                    <Modal title="Reordenar clientes" buttons={buttons2} brand={true} >
+                        <DnDListadoClientes />
                     </Modal>
                 )
             default:
@@ -150,14 +203,14 @@ class Rutas extends Component {
 
 
     render() {
-        const { ids, list, selected, selectAction, rutas, cartera } = this.props;
-        const tipo = "RUTA";
+        const { ids, list, selected, selectAction, rutas, cartera, idRuta } = this.props;
         var today = moment((new Date())).format('YYYY-MM-DD');
 
         const buttons = [
-            <BoxButton key="br[0][0]" name="plus" onClick={() => this.createAction()} title="Agregar crédito" classCSS="info" />,
-            <BoxButton key="br[0][1]" name="retweet" onClick={() => this.actionClickRenovados()} title="Renovar" classCSS="info" />,
-            <BoxButton key="br[0][2]" name="save" onClick={() => this.props.saveAbonos()} title="Guardar abonos" classCSS="info" />,
+            <BoxButton key="br[0][0]" name="plus" onClick={() => this.createAction()} title="Agregar crédito" classCSS="info" disabled={idRuta != null ? false : true} />,
+            <BoxButton key="br[0][1]" name="retweet" onClick={() => this.actionClickRenovados()} title="Renovar" classCSS="info" disabled={selected != null ? false : true} />,
+            <BoxButton key="br[0][2]" name="exchange-alt" onClick={() => this.actionClickReorder()} title="Enrutar" classCSS="info" disabled={idRuta != null ? false : true} />,
+            <BoxButton key="br[0][3]" name="save" onClick={() => this.saveAbonos()} title="Guardar abonos" classCSS="info" disabled={idRuta != null ? false : true} />,
         ]
 
 
@@ -172,7 +225,7 @@ class Rutas extends Component {
                     </div>
                     <div className="col-md-4">
                         <label >Fecha</label>
-                        <input className="form-control form-control-sm" type="date" max={today} ></input>
+                        <input className="form-control form-control-sm" type="date" value={today} readOnly ></input>
                     </div>
                     <div className="col-md-4">
                         <label >Cartera</label>
@@ -181,7 +234,7 @@ class Rutas extends Component {
                 </div>
                 <div className="col-md-12 col-xs-12" style={{ padding: 0 }} >
                     <div style={{ height: "calc(100vh - 255px)", maxHeight: "calc(100vh - 255px)" }}>
-                        <TableVirtualized
+                        {/* <TableVirtualized
                             tableColumns={this.state.tableColumns}
                             ids={ids}
                             list={list}
@@ -191,15 +244,32 @@ class Rutas extends Component {
                             tipo={tipo}
                             onChange={this.changeAction}
                             actionClick={this.actionClick}
-                        />
+                        /> */}
+                        <DataGrid rows={list} ids={ids} changeAction={this.changeAction} actionClick={this.actionClick} />
                     </div>
                 </div>
+                {
+                    this.state.toogleSidebarRigth ?
+                        <div className="sidenav">
+                            <div className="row">
+                                <div className="col-md-9" style={{ paddingLeft: 25 }}>
+                                    <h5>
+                                        Agregar nuevo cliente:
+                                    </h5>
+                                </div>
+                                <div className="col-md-3">
+                                    <div className="col">
+                                        <div className="float-right">
+                                            <BoxButton key="bp[0][0]" name="times" onClick={() => this.actionToogleSidebarRigth(0)} title="Cerrar" classCSS="info" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <AddClientes />
+                        </div>
+                        : null
+                }
                 {this.renderSwitch(this.state.tipoModal)}
-                {/* {
-                    this.state.tipoModal === 0 ?
-                        
-
-                } */}
             </div>
         )
     }
@@ -212,6 +282,7 @@ function mapStateToProps(state) {
         selected: state.rutas.get('selected'),
         rutas: state.rutas.get('rutas'),
         cartera: state.rutas.get('cartera'),
+        idRuta: state.rutas.get('idRuta'),
     }
 }
 
@@ -224,7 +295,11 @@ function mapDispatchToProps(dispatch) {
         toggleModal: () => dispatch(toggleModal()),
         newRow: (tipo) => dispatch(newRow(tipo)),
         saveCredito: () => dispatch(saveCredito()),
-        saveAbonos: () => dispatch(saveAbonos()),
+        saveAbonos: (entrada, salida) => dispatch(saveAbonos(entrada, salida)),
+        saveRenovacion: () => dispatch(saveRenovacion()),
+        cleanCliente: () => dispatch(cleanCliente()),
+        cleanDataRutas: () => dispatch(cleanDataRutas()),
+        reorderData: () => dispatch(reorderData()),
     }
 }
 

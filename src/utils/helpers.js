@@ -68,13 +68,18 @@ export function recalculate(data, id, cargue = false) {
     let res = []
     let cartera = 0;
     data = data.toList().toJS();
+    console.log(data)
+
     data.map((x) => {
         x.valor_total = x.mod_cuota * x.mod_dias;
         let abonos = 0;
-        const entries = Object.entries(x.creditos_detalles);
-        entries.forEach(element => {
-            abonos = abonos + element[1].abono
-        });
+        // console.log(x.creditos_detalles)
+        if (x.creditos_detalles !== undefined) {
+            const entries = Object.entries(x.creditos_detalles);
+            entries.forEach(element => {
+                abonos = abonos + element[1].abono
+            });
+        }
         x.saldo = x.valor_total - abonos;
         x.cuotas_pagas = (x.valor_total - x.saldo) / x.mod_cuota
         if (cargue) {
@@ -90,5 +95,5 @@ export function recalculate(data, id, cargue = false) {
         recursive: true
     })
 
-    return { list : Immutable.fromJS(res), cartera : cartera  };
+    return { list: Immutable.fromJS(res), cartera: cartera };
 }

@@ -26,14 +26,12 @@ export default class Navbar extends Component {
                     <i className="fa fa-bars"></i>
                 </button>
 
-                {/* <nav aria-label="breadcrumb"> */}
-                <ol className="breadcrumb">
+                {/* <ol className="breadcrumb">
                     <li className="breadcrumb-item"><a>Inicio</a></li>
                     {
                         this.props.renderBreadCrumb()
                     }
-                </ol>
-                {/* </nav> */}
+                </ol> */}
 
                 {/* <!-- Topbar Navbar --> */}
                 <ul className="navbar-nav ml-auto">

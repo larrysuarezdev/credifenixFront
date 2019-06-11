@@ -17,7 +17,11 @@ class RenovarCredito extends Component {
                 <div className="row">
                     <div className="col-md-12">
                         <label htmlFor="observaciones">Observaciones</label>
-                        <textarea class="form-control" id="observaciones" rows="3"></textarea>
+                        <textarea className="form-control" id="observaciones" rows="3"></textarea>
+                    </div>
+                    <div className="col-md-4">
+                        <label htmlFor="observaciones">Monto dado</label>
+                        <input className="form-control form-control-sm" type="number"  />
                     </div>
                 </div>
             </div>

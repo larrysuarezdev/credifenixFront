@@ -86,7 +86,27 @@ class Layout extends Component {
 
   handleChangeSelectedItem = (e, item) => {
     let sidebarItems = [...this.state.sidebarItems]
+    this.sidebarItemsNoActive(sidebarItems);
+    
+    let index = sidebarItems.findIndex((itm) => itm.caption === item)
+    console.log(sidebarItems, item, index)
+
+    if (sidebarItems[index].subitems.length === 0) {
+      this.sidebarItemsNoActive(sidebarItems)
+      sidebarItems[index].isActive = true
+    } else {
+      if (this.hasSidebarSubItemActive(sidebarItems[index])) {
+        sidebarItems[index].isActive = true
+      }
+      sidebarItems[index].isOpen = !sidebarItems[index].isOpen
+    }
+    this.setState({ sidebarItems })
+  }
+
+  handleChangeSelectedSubItem = (e, item) => {
+    let sidebarItems = [...this.state.sidebarItems]
     let index = sidebarItems.findIndex((itm) => itm.subitems.filter((itm1) => itm1.caption === item).length > 0)
+    console.log(sidebarItems, item, index)
 
     if (index === -1) {
       index = sidebarItems.findIndex((itm) => itm.caption === item)
@@ -118,6 +138,7 @@ class Layout extends Component {
 
   renderBreadCrumb = () => {
     const currentSelectedOption = this.state.sidebarItems.filter(item => item.isActive === true)
+    // console.log(currentSelectedOption)
     if (currentSelectedOption.length === 0 || currentSelectedOption[0].caption === 'Dashboard') {
       return null
     }
@@ -182,6 +203,7 @@ class Layout extends Component {
           toggle={this.toggle}
           sidebarItems={sidebarItems}
           onClick={this.handleChangeSelectedItem}
+          onClick1={this.handleChangeSelectedSubItem}
         />
         <div id="content-wrapper" className="d-flex flex-column">
           <div id="content">
