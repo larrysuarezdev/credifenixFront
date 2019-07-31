@@ -68,10 +68,13 @@ class Login extends Component {
 
         return (
             <div className="SignIn">
-                <div style={{ flex: '1', height: '100%', backgroundImage: `url(${Fondo})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
-                    <div className="font-weight-bold text-primary text-center" style={{ height: '100%', lineHeight: 8, fontSize: 80, fontFamily: 'Impact, Charcoal, sans-serif' }}>
-                        CREDIFENIX
+                <div style={{ flex: '1', backgroundImage: `url(${Fondo})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
+                    <div className="cn">
+                        <div className="inner font-weight-bold text-primary" style={{ fontSize: '15vh', fontFamily: 'Impact, Charcoal, sans-serif' }}>
+                            CREDIFENIX
+    </div>
                     </div>
+
                 </div>
 
                 <div style={{ minWidth: '360px', height: '100%', width: '20%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>

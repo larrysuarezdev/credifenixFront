@@ -22,7 +22,7 @@ import './css/tables.css'
 import './css/dNd.css'
 import 'react-toastify/dist/ReactToastify.min.css'
 import 'sweetalert2/src/sweetalert2.scss'
-
+import './css/react-data-grid.css'
 
 const cookie = new Cookies();
 const createStoreWithMiddleware = applyMiddleware(reduxThunk)(createStore)

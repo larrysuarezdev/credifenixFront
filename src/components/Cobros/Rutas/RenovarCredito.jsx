@@ -1,27 +1,37 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
 
-//UI
-// import TableVirtualized from '../../Common/TableVirtualized'
-// import ModalClientes from '../../Cobros/Rutas/ModalClientes'
-
-// import { getDetallesRuta } from '../../../actions/rutas'
-// import { selectAction } from '../../../actions/common'
-// import { tableColumnsDetallesAbonos } from '../../../utils/headersColumns'
+import { cleanRenovacion } from '../../../actions/rutas'
+import { changeAttr } from '../../../actions/common'
 
 class RenovarCredito extends Component {
 
+    componentWillMount() {
+        this.props.cleanRenovacion();
+    }
+
     render() {
+
+        const { changeAttr, selectRow } = this.props;
+        
+        const tipo = "RENOVACION"
         return (
-            <div style={{ height: 'calc(100vh - 370px)', marginTop: 2 }}>
+            <div style={{ height: 'calc(100vh - 450px)', marginTop: 2 }}>
                 <div className="row">
                     <div className="col-md-12">
                         <label htmlFor="observaciones">Observaciones</label>
-                        <textarea className="form-control" id="observaciones" rows="3"></textarea>
+                        <textarea className="form-control" id="observaciones" rows="3"  value={selectRow !== null ? selectRow.get('observaciones') : ''} onChange={(e) => changeAttr(tipo, 'observaciones', e.target.value)}></textarea>
                     </div>
-                    <div className="col-md-4">
-                        <label htmlFor="observaciones">Monto dado</label>
-                        <input className="form-control form-control-sm" type="number"  />
+                    <div className="col-md-6">
+                        <label htmlFor="monto">Monto dado</label>
+                        <input className="form-control form-control-sm" type="number" id="monto"  value={selectRow !== null ? selectRow.get('monto') : ''} onChange={(e) => changeAttr(tipo, 'monto', e.target.value)} />
+                    </div>
+                    <div className="col-md-6">
+                        <label htmlFor="modalidad">Monto dado</label>
+                        <select className="form-control form-control-sm" id="tipo" value={selectRow !== null ? selectRow.get('tipo') : ''} onChange={(e) => changeAttr(tipo, 'tipo', e.target.value)} >
+                            <option value="1">Diario</option>
+                            <option value="2">Semanal</option>
+                        </select>
                     </div>
                 </div>
             </div>
@@ -31,17 +41,14 @@ class RenovarCredito extends Component {
 
 function mapStateToProps(state) {
     return {
-        // list: state.rutas.get('detalles'),
-        // selected: state.rutas.get('detalle_selected'),
+        selectRow: state.rutas.get('renovacion'),
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        // getDetallesRuta: () => dispatch(getDetallesRuta()),
-        // selectAction: (id, reloadGrid, tipo) => dispatch(selectAction(id, reloadGrid, tipo)),
-        // changeAttr: (tipo, attr, value) => dispatch(changeAttr(tipo, attr, value)),
-        // toggleModal: () => dispatch(toggleModal()),
+        changeAttr: (tipo, attr, value) => dispatch(changeAttr(tipo, attr, value)),
+        cleanRenovacion: () => dispatch(cleanRenovacion()),
     }
 }
 

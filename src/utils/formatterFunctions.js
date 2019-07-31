@@ -1,6 +1,5 @@
-// export const DetallesFormatter = ({ row }) => {
-//     return row.cliente.titular;
-// };
+import numeral from 'numeral'
+import moment from 'moment'
 
 export const ClienteFormatter = ({ row }) => {
     return row.cliente.titular;
@@ -24,4 +23,12 @@ export const FiadorFormatter = ({ row }) => {
 
 export const TelefonoFiadorFormatter = ({ row }) => {
     return row.cliente.tel_fiador;
+};
+
+export const ValorUltimoPagoFormatter = ({ row }) => {
+    return numeral(row.valor_ultimo_pago).format();
+};
+
+export const FechaUltimoPagoFormatter = ({ row }) => {
+    return row.fecha_ultimo_pago == "" ? "" : moment(row.fecha_ultimo_pago).format("YYYY-MM-DD");
 };

@@ -20,3 +20,21 @@
 .flat{
     border-radius: 0 !important;
 }
+
+div.cn {
+    /* display: table-cell;
+    width: 100vw;
+    height: 100vh;
+    vertical-align: middle;
+    text-align: center; */
+    display: table-cell;
+    width: 100vw;
+    height: 100vh;
+    vertical-align: bottom;
+    text-align: -webkit-right;
+    padding-right: 34px;
+}
+
+div.inner {
+    display: inline-block;
+}

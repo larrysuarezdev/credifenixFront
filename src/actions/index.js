@@ -36,9 +36,12 @@ export function messageHandler(dispatch, error) {
                 }
                 break;
             case 423:
-                    Swal.fire({text : error.response.data.Error, type: 'error', title : 'Ooops... ¡Algo anda mal!' })
+                Swal.fire({ text: error.response.data.Error, type: 'error', title: 'Ooops... ¡Algo anda mal!' })
                 break;
-
+            case 424:
+                theMessage.message = error.response.data.Error;
+                dispatch({ type: types.MOSTRAR_MENSAJE, payload: theMessage })
+                break;
             default:
                 Swal.fire(error.response.data)
 

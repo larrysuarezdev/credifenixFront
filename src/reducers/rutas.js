@@ -11,6 +11,12 @@ const newRow = {
     observaciones: null
 }
 
+const newRenovacion = {
+    observaciones: '',
+    monto: '',
+    modalidad: 1
+}
+
 const INITIAL_STATE = Immutable.fromJS({
     list: [],
     detalles: [],
@@ -24,7 +30,8 @@ const INITIAL_STATE = Immutable.fromJS({
     renovacion_selected: null,
     selected: null,
     selectRow: null,
-    reorder: []
+    reorder: [],
+    renovacion: null
 })
 
 export default function (state = INITIAL_STATE, action) {
@@ -54,13 +61,20 @@ export default function (state = INITIAL_STATE, action) {
             state = state.set('renovacion_selected', action.payload)
             return state
         case types.CHANGE_ATTR_LISTA_RUTA:
-            state = state.setIn(['list', String(action.payload.id), String(action.payload.attr)], action.payload.value)
-            creditos = recalculate(state.get('list'), 'id')
-            state = state.set('list', creditos.list)
-            state = state.set('cartera', creditos.cartera)
+            if (state.getIn(['list', String(action.payload.id), 'renovacion']) !== undefined) {
+                
+            } else {
+                state = state.setIn(['list', String(action.payload.id), String(action.payload.attr)], action.payload.value)
+                creditos = recalculate(state.get('list'), 'id')
+                state = state.set('list', creditos.list)
+                state = state.set('cartera', creditos.cartera)
+            }
             return state
         case types.CHANGE_ATTR_RUTA:
             state = state.setIn(['selectRow', String(action.payload.attr)], action.payload.value)
+            return state
+        case types.CHANGE_ATTR_RENOVACION:
+            state = state.setIn(['renovacion', String(action.payload.attr)], action.payload.value)
             return state
         case types.NEW_RUTA:
             state = state.set('selectRow', Immutable.fromJS(newRow))
@@ -77,6 +91,9 @@ export default function (state = INITIAL_STATE, action) {
         case types.CLEAN_DATA_RUTA:
             state = INITIAL_STATE
             return state
+        case types.CLEAN_DATA_RENOVACION:
+            state = state.set('renovacion', Immutable.fromJS(newRenovacion))
+            return state
         case types.REORDER_LIST_RUTA:
             state = state.set('reorder', action.payload)
             return state;
@@ -89,6 +106,11 @@ export default function (state = INITIAL_STATE, action) {
             state = state.set('list', INITIAL_STATE.get('list'))
             state = state.set('list', creditos.list)
             state = state.set('ids', state.get('list').sortBy(x => x.get('orden')).keySeq().toList())
+            return state;
+
+        case types.SET_RENOVACION:
+            state = state.setIn(['list', String(action.payload.id), 'renovacion'], state.get('renovacion').toJS());
+            console.log(state.get('list').toJS())
             return state;
         default:
             return state

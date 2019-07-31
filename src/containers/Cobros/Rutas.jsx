@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
 import { connect } from 'react-redux'
 import moment from 'moment'
+import numeral from 'numeral'
 import Swal from 'sweetalert2'
 
 //UI
@@ -21,7 +23,7 @@ import AddClientes from '../../components/Administracion/Clientes/AddClientes'
 import { getCreditos, saveCredito, getListRutas, saveAbonos, saveRenovacion, cleanDataRutas, reorderData } from '../../actions/rutas'
 import { cleanCliente } from '../../actions/clientes'
 import { selectAction, changeAttr2, toggleModal, newRow } from '../../actions/common'
-
+import { exportDataGrid } from '../../utils/helpers'
 const tipo = "RUTA";
 
 class Rutas extends Component {
@@ -29,9 +31,11 @@ class Rutas extends Component {
         super(props);
         this.changeAction = this.changeAction.bind(this);
         this.actionClick = this.actionClick.bind(this);
+        this.actionClickRenovados = this.actionClickRenovados.bind(this);
         this.createAction = this.createAction.bind(this);
         this.onChangeSelect = this.onChangeSelect.bind(this);
         this.actionToogleSidebarRigth = this.actionToogleSidebarRigth.bind(this);
+
 
         this.state = {
             tipoModal: 0,
@@ -41,7 +45,9 @@ class Rutas extends Component {
                 { id: 2, caption: 'Renovaciones', component: <DetalleRenovaciones />, active: false },
             ],
             tab: 0,
-            toogleSidebarRigth: false
+            toogleSidebarRigth: false,
+            idRenovar: null,
+            gridHeight: 350
         }
 
     }
@@ -49,9 +55,16 @@ class Rutas extends Component {
     componentWillMount() {
         this.props.cleanDataRutas();
         this.props.getListRutas();
-        this.props.cleanCliente();
+        this.props.cleanCliente();        
     }
 
+    componentDidMount() {
+        var node = ReactDOM.findDOMNode(this.refs["dataExport"]);
+        console.log(node)
+        var gridHeight = node.clientHeight;
+        this.setState({ gridHeight : gridHeight });
+    }
+    
     createAction() {
         this.setState({ tipoModal: 0 })
         this.props.newRow("RUTA");
@@ -68,7 +81,8 @@ class Rutas extends Component {
         this.props.toggleModal();
     }
 
-    actionClickRenovados() {
+    actionClickRenovados(rowId) {
+        this.setState({ idRenovar: rowId })
         this.setState({ tipoModal: 2 })
         this.props.toggleModal();
     }
@@ -77,8 +91,9 @@ class Rutas extends Component {
         this.setState({ tipoModal: 3 })
         this.props.toggleModal();
     }
+
     saveRenovacion() {
-        this.props.saveRenovacion()
+        this.props.saveRenovacion(this.state.idRenovar)
     }
 
     onChangeSelect(id) {
@@ -111,6 +126,9 @@ class Rutas extends Component {
 
         this.props.list.map((x) => {
             entrada = entrada + Number(x.get('cuota'));
+            if (x.get('renovacion')) {
+                salida = salida + Number(x.getIn(['renovacion', 'monto']))
+            }
         })
 
         entrada = entrada * 1000;
@@ -118,9 +136,9 @@ class Rutas extends Component {
         Swal.fire({
             title: 'FLUJO DE CAJA',
             html: `<div> 
-                    <p> Entran: ${entrada} </p>
-                    <p> Salen: ${salida} </p>
-                    <p> Utilidad: ${entrada + salida} </p>
+                    <p> Entran: ${numeral(entrada).format('')} </p>
+                    <p> Salen: ${numeral(salida).format('')} </p>
+                    <p> Utilidad: ${numeral(entrada + salida).format('')} </p>
                    </div>`,
             // type: 'warning',
             showCancelButton: true,
@@ -203,14 +221,14 @@ class Rutas extends Component {
 
 
     render() {
-        const { ids, list, selected, selectAction, rutas, cartera, idRuta } = this.props;
+        const { ids, list, rutas, cartera, idRuta } = this.props;
         var today = moment((new Date())).format('YYYY-MM-DD');
 
         const buttons = [
             <BoxButton key="br[0][0]" name="plus" onClick={() => this.createAction()} title="Agregar crédito" classCSS="info" disabled={idRuta != null ? false : true} />,
-            <BoxButton key="br[0][1]" name="retweet" onClick={() => this.actionClickRenovados()} title="Renovar" classCSS="info" disabled={selected != null ? false : true} />,
-            <BoxButton key="br[0][2]" name="exchange-alt" onClick={() => this.actionClickReorder()} title="Enrutar" classCSS="info" disabled={idRuta != null ? false : true} />,
-            <BoxButton key="br[0][3]" name="save" onClick={() => this.saveAbonos()} title="Guardar abonos" classCSS="info" disabled={idRuta != null ? false : true} />,
+            <BoxButton key="br[0][1]" name="exchange-alt" onClick={() => this.actionClickReorder()} title="Enrutar" classCSS="info" disabled={idRuta != null ? false : true} />,
+            <BoxButton key="br[0][2]" name="save" onClick={() => this.saveAbonos()} title="Guardar abonos" classCSS="info" disabled={idRuta != null ? false : true} />,
+            <BoxButton key="br[0][3]" name="file-pdf" onClick={() => exportDataGrid(list)} title="Exportar ruta" classCSS="info" disabled={idRuta != null ? false : true} />,
         ]
 
 
@@ -233,19 +251,15 @@ class Rutas extends Component {
                     </div>
                 </div>
                 <div className="col-md-12 col-xs-12" style={{ padding: 0 }} >
-                    <div style={{ height: "calc(100vh - 255px)", maxHeight: "calc(100vh - 255px)" }}>
-                        {/* <TableVirtualized
-                            tableColumns={this.state.tableColumns}
+                    <div style={{ height: "calc(100vh - 255px)", maxHeight: "calc(100vh - 255px)" }} ref="dataExport">
+                        <DataGrid
+                            height={this.state.gridHeight}
+                            rows={list}
                             ids={ids}
-                            list={list}
-                            keyVal="id"
-                            actionSelect={selectAction}
-                            selected={selected}
-                            tipo={tipo}
-                            onChange={this.changeAction}
+                            changeAction={this.changeAction}
                             actionClick={this.actionClick}
-                        /> */}
-                        <DataGrid rows={list} ids={ids} changeAction={this.changeAction} actionClick={this.actionClick} />
+                            actionClickRenovados={this.actionClickRenovados}
+                        />
                     </div>
                 </div>
                 {
@@ -279,7 +293,6 @@ function mapStateToProps(state) {
     return {
         list: state.rutas.get('list'),
         ids: state.rutas.get('ids'),
-        selected: state.rutas.get('selected'),
         rutas: state.rutas.get('rutas'),
         cartera: state.rutas.get('cartera'),
         idRuta: state.rutas.get('idRuta'),
@@ -296,7 +309,7 @@ function mapDispatchToProps(dispatch) {
         newRow: (tipo) => dispatch(newRow(tipo)),
         saveCredito: () => dispatch(saveCredito()),
         saveAbonos: (entrada, salida) => dispatch(saveAbonos(entrada, salida)),
-        saveRenovacion: () => dispatch(saveRenovacion()),
+        saveRenovacion: (id) => dispatch(saveRenovacion(id)),
         cleanCliente: () => dispatch(cleanCliente()),
         cleanDataRutas: () => dispatch(cleanDataRutas()),
         reorderData: () => dispatch(reorderData()),

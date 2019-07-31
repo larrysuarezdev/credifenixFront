@@ -89,8 +89,6 @@ class Layout extends Component {
     this.sidebarItemsNoActive(sidebarItems);
     
     let index = sidebarItems.findIndex((itm) => itm.caption === item)
-    console.log(sidebarItems, item, index)
-
     if (sidebarItems[index].subitems.length === 0) {
       this.sidebarItemsNoActive(sidebarItems)
       sidebarItems[index].isActive = true
@@ -106,8 +104,7 @@ class Layout extends Component {
   handleChangeSelectedSubItem = (e, item) => {
     let sidebarItems = [...this.state.sidebarItems]
     let index = sidebarItems.findIndex((itm) => itm.subitems.filter((itm1) => itm1.caption === item).length > 0)
-    console.log(sidebarItems, item, index)
-
+    
     if (index === -1) {
       index = sidebarItems.findIndex((itm) => itm.caption === item)
     }

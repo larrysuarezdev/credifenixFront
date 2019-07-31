@@ -189,12 +189,6 @@
     padding-top: 20px;
 }
 
-/* DATAGRID */
-
-.react-grid-HeaderCell {
-    padding: 0px 5px !important;
-}
-
 .placeholder {
     background: #1cc88a;
     display: block;
@@ -208,6 +202,18 @@
 .react-grid-Cell--frozen{
     z-index: 0;
 }
+
 .css-mdm715{
     z-index: 1 !important;
+}
+
+.disabledDiv {
+    pointer-events: none;
+    opacity: 0.4;
+}
+
+.disabledCell {
+    pointer-events: none;
+    background-color: #dad8d8;
+    opacity: 0.4;
 }

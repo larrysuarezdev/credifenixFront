@@ -1,34 +1,52 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import ReactDataGrid from 'react-data-grid';
-import FontAwesome from 'react-fontawesome'
+import { Menu } from "react-data-grid-addons";
 
-import { ClienteFormatter, NegocioFormatter, DireccionFormatter, TelefonoClienteFormatter, FiadorFormatter, TelefonoFiadorFormatter } from "../../utils/formatterFunctions";
-// import { isNumber } from 'util';
-// import numeral from 'numeral'
-// import moment from 'moment'
-let action = function(){};
+import { ClienteFormatter, NegocioFormatter, DireccionFormatter, TelefonoClienteFormatter, FiadorFormatter, TelefonoFiadorFormatter, ValorUltimoPagoFormatter, FechaUltimoPagoFormatter } from "../../utils/formatterFunctions";
+
+const { ContextMenu, MenuItem, ContextMenuTrigger } = Menu;
+
+const CuotaFormatter = ({ row }) => {
+    if (row.renovacion) {
+        return (<div className="disabledCell">RN</div>)
+    }
+    else
+        return row.cuota;
+};
+
+function ExampleContextMenu({
+    idx,
+    id,
+    rowIdx,
+    onRenovarCredito,
+    onDetallesCredito
+}) {
+    return (
+        <ContextMenu id={id}>
+            <MenuItem data={{ rowIdx, idx }} onClick={onRenovarCredito}>
+                Ronovar credito
+            </MenuItem>
+            <MenuItem data={{ rowIdx, idx }} onClick={onDetallesCredito}>
+                Detalles
+            </MenuItem>
+        </ContextMenu>
+    );
+}
 
 const columns = [
-    {
-        key: 'detalles', name: '', editable: false, width: 30, frozen: true,
-        events: {
-            onClick: function (ev, args) {
-                action(String(args.rowId));
-            }
-        }
-    },
     { key: 'orden', name: 'Orden', editable: false, width: 60, frozen: true },
     { key: 'cliente', name: 'Cliente', editable: false, width: 200, frozen: true, formatter: ClienteFormatter },
-    { key: 'cuota', name: 'Cuota', editable: true, width: 60, frozen: true, filterable: false },
+    { key: 'cuota', name: 'Cuota', editable: true, width: 60, frozen: true, formatter: CuotaFormatter },
     { key: 'mora', name: 'Mora', editable: false, width: 50, frozen: true },
     { key: 'cuotas_pagas', name: 'PAG', editable: false, width: 50, frozen: false },
     { key: 'valor_prestamo', name: 'Prestamo', editable: false, width: 100, frozen: false },
     { key: 'mod_cuota', name: 'Cuota', editable: false, width: 80, frozen: false },
-    { key: 'mod_dias', name: 'Días', editable: false, width: 100, frozen: false },
+    { key: 'mod_dias', name: 'Días', editable: false, width: 50, frozen: false },
     { key: 'saldo', name: 'Saldo', editable: false, width: 100, frozen: false },
-    { key: 'valor_ultimo_pago', name: 'Último pago', editable: false, width: 100, frozen: false },
-    { key: 'fecha_ultimo_pago', name: 'Fecha ult pago', editable: false, width: 120, frozen: false },
+    { key: 'valor_total', name: 'Total', editable: false, width: 100, frozen: false },
+    { key: 'valor_ultimo_pago', name: 'Valor ult pag', editable: false, width: 110, frozen: false, formatter: ValorUltimoPagoFormatter },
+    { key: 'fecha_ultimo_pago', name: 'Fecha ult pag', editable: false, width: 110, frozen: false, formatter: FechaUltimoPagoFormatter  },
     { key: 'inicio_credito', name: 'Inicio', editable: false, width: 120, frozen: false },
     { key: 'neg_titular', name: 'Negocio', editable: false, width: 200, frozen: false, formatter: NegocioFormatter },
     { key: 'dir_titular', name: 'Dirección', editable: false, width: 200, frozen: false, formatter: DireccionFormatter },
@@ -37,22 +55,6 @@ const columns = [
     { key: 'tel_fiador', name: 'Telefono', editable: false, width: 200, frozen: false, formatter: TelefonoFiadorFormatter },
 ];
 
-const detailActions = [
-    {
-        icon: <div style={{ textAlign: 'center', fontSize: '1em', paddingLeft : 5 }}><FontAwesome name="eye" /></div>,
-        callback : () =>{
-            
-        }
-    },
-];
-
-function getCellActions(column, row) {
-    const cellActions = {
-        detalles: detailActions
-    };
-
-    return cellActions[column.key];
-}
 
 class DataGrid extends Component {
 
@@ -65,25 +67,39 @@ class DataGrid extends Component {
     onGridRowsUpdated = ({ fromRow, toRow, updated }) => {
         const id = this.props.ids.get(toRow);
         const column = Object.keys(updated)[0];
-        console.log(id, column, updated[column])
         this.props.changeAction('RUTA', id, column, updated[column])
     };
 
-    render() {
-        // const { ids, tableColumns } = this.props;
-        const data = this.props.rows.toList().toJS().sort(function (a, b) { return a.orden - b.orden })
-        action = this.props.actionClick;
+    onRenovarCredito(rowIdx) {
+        const id = this.props.ids.get(rowIdx);
+        this.props.actionClickRenovados(id)
+    }
 
+    onDetallesCredito(rowIdx) {
+        const id = this.props.ids.get(rowIdx);
+        this.props.actionClick(id)
+    }
+
+    render() {
+        const { height } = this.props;
+        const data = this.props.rows.toList().toJS().sort(function (a, b) { return a.orden - b.orden });
+        
         return (
             <ReactDataGrid
                 columns={columns}
                 rowGetter={(i) => data[i]}
                 rowsCount={this.props.rows.toList().toJS().length}
-                // cellRenderer={(i) => console.log(i)}
                 onGridRowsUpdated={this.onGridRowsUpdated}
                 enableCellSelect={true}
                 rowHeight={25}
-                getCellActions={getCellActions}
+                minHeight={height}
+                contextMenu={
+                    <ExampleContextMenu
+                        onRenovarCredito={(e, { rowIdx }) => this.onRenovarCredito(rowIdx)}
+                        onDetallesCredito={(e, { rowIdx }) => this.onDetallesCredito(rowIdx)}
+                    />
+                }
+                RowsContainer={ContextMenuTrigger}
             />
         )
     }
