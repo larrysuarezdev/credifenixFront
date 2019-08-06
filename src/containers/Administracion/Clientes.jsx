@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
+import Swal from 'sweetalert2'
 
 //UI
 import GridClientes from '../../components/Administracion/Clientes/GridClientes'
 import AddClientes from '../../components/Administracion/Clientes/AddClientes'
 
 import { newRow } from '../../actions/common'
-import { editCliente, cleanCliente } from '../../actions/clientes'
+import { editCliente, cleanCliente, changeState } from '../../actions/clientes'
 
 
 class Clientes extends Component {
@@ -16,10 +17,11 @@ class Clientes extends Component {
     this.changeTab = this.changeTab.bind(this);
     this.actionNewRow = this.actionNewRow.bind(this);
     this.actionEditCliente = this.actionEditCliente.bind(this);
+    this.actionEstadoCliente = this.actionEstadoCliente.bind(this);
 
     this.state = {
       tabs: [
-        { id: 0, caption: 'Listado clientes', component: <GridClientes actionNewRow={this.actionNewRow} actionEditCliente={this.actionEditCliente} />, active: true },
+        { id: 0, caption: 'Listado clientes', component: <GridClientes actionNewRow={this.actionNewRow} actionEditCliente={this.actionEditCliente} actionEstadoCliente={this.actionEstadoCliente} />, active: true },
         { id: 1, caption: 'Agregar - Modificar', component: <AddClientes />, active: false },
       ],
       tab: 0
@@ -62,6 +64,21 @@ class Clientes extends Component {
     })
     tabs[tabs.findIndex(x => x.id === 1)].active = true
     this.setState({ tabs, tab: 1 });
+  }
+
+  actionEstadoCliente(id) {
+    Swal.fire({
+      title: 'ESTA SEGURO QUE QUIERE CAMBIAR EL ESTADO AL CLIENTE?',
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Confirmar cambios'
+    }).then((result) => {
+      if (result.value) {
+        this.props.changeState(id);
+      }
+    })
   }
 
   render() {
@@ -112,6 +129,7 @@ function mapDispatchToProps(dispatch) {
   return {
     newRow: (tipo) => dispatch(newRow(tipo)),
     editCliente: (id) => dispatch(editCliente(id)),
+    changeState: (id) => dispatch(changeState(id)),
     cleanCliente: () => dispatch(cleanCliente()),
   }
 }

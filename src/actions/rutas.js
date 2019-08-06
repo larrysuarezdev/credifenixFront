@@ -57,9 +57,28 @@ export function getListRutas() {
     }
 }
 
+export function getListPeriodos() {
+    return (dispatch) => {
+
+        axios.get(`${API_URL}/parametros/periodos`)
+            .then((res) => {
+                dispatch({
+                    type: types.GET_LISTA_PERIODOS,
+                    payload: {
+                        data: res.data.data
+                    }
+                })
+
+            })
+            .catch((err) => {
+                messageHandler(dispatch, err)
+            });
+    }
+}
+
 export function getClientes() {
     return (dispatch) => {
-        axios.get(`${API_URL}/clientes`, {})
+        axios.get(`${API_URL}/creditos/clientes`)
             .then((res) => {
                 const data = objectifyArray(res.data.data, {
                     by: ['id'],
@@ -135,7 +154,7 @@ export function saveAbonos(entrada, salida) {
             dataToSend.push({ id: x.id, cuota: x.cuota ? Number(x.cuota) * 1000 : null, orden: x.orden })
             if(x.renovacion)
             {
-                renovaciones.push({ id: x.id, excedente : x.renovacion.monto * 1000, observaciones : x.renovacion.observaciones })
+                renovaciones.push({ id: x.id, excedente : x.renovacion.monto * 1000, observaciones : x.renovacion.observaciones, modalidad : x.renovacion.modalidad })
             }
         });
 

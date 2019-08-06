@@ -8,7 +8,7 @@ import { toggleModal } from '../../actions/common'
 class Modal extends Component {
     render() {
         return (
-            <ModalB isOpen={this.props.modal} toggle={this.props.toggleModal} className={this.props.className} centered={true}  >
+            <ModalB isOpen={this.props.modal} toggle={this.props.toggleModal} className={this.props.className} centered={true} >
                 <ModalHeader toggle={this.props.toggleModal}>{this.props.title}</ModalHeader>
                 {
                     this.props.brand ? <BrandButton buttons={this.props.buttons} /> : null

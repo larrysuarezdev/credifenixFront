@@ -3,13 +3,14 @@ import { connect } from 'react-redux'
 
 //UI
 import Card from '../../components/Common/Card'
+import Modal from '../../components/Common/Modal'
 import BoxButtonV1 from '../../components/Common/BoxButtonV1'
+import BoxButtonV2 from '../../components/Common/BoxButtonV2'
 import ListaParametros from '../../components/Administracion/Parametros/ListaParametros'
 import ListaDetalles from '../../components/Administracion/Parametros/ListaDetalles'
 
-import { getParametros } from '../../actions/parametros'
-import { selectAction, changeAttr2 } from '../../actions/common'
-
+import { getParametros, saveAction, updatedAction } from '../../actions/parametros'
+import { selectAction, changeAttr2, changeAttr, toggleModal, newRow } from '../../actions/common'
 
 class Maestras extends Component {
   constructor(props) {
@@ -35,13 +36,29 @@ class Maestras extends Component {
     this.props.changeAttr2(tipo, id, attr, value)
   }
 
+  newParametro() {
+    this.props.toggleModal();
+    this.props.newRow('PARAMETRO');
+  }
+
+  saveAction(){
+    this.props.saveAction();
+    this.props.toggleModal();
+  }
+
   render() {
     const buttons = [
-      <BoxButtonV1 key="bb[0][0]" name="plus" onClick={() => console.log('debe agregar')} title="Agregar" classCSS="success" disabled={this.props.editable ? false : true} />,
+      <BoxButtonV1 key="bb[0][0]" name="plus" onClick={() => this.newParametro()} title="Agregar" classCSS="success" disabled={this.props.editable ? false : true} />,
+      <BoxButtonV1 key="bb[0][1]" name="save" onClick={() => this.props.updatedAction()} title="Guardar cambios" classCSS="success" disabled={this.props.editable ? false : true} />,
     ]
 
-    const { list, ids, selectRow, editable, selected } = this.props;
+    const buttons1 = [
+      <BoxButtonV2 key="bb[1][0]" name="save" onClick={() => this.saveAction()} title="Guardar" />,
+    ]
 
+    const { list, ids, selectRow, editable, selected, newRowParametro, changeAttr } = this.props;
+
+    // console.log(selectRow)
     return (
       <div className="row">
         <div className="col-md-6 col-xs-12">
@@ -60,6 +77,18 @@ class Maestras extends Component {
             }
           </Card>
         </div>
+        <Modal title="Agregar Paramámetros" brand={true} buttons={buttons1}  >
+          <div className="row">
+            <div className="col">
+              <label htmlFor="id_interno">Identificador interno</label>
+              <input className="form-control form-control-sm" type="number" id="id_interno" readOnly value={newRowParametro !== null ? newRowParametro.get('id_interno') : ''} disabled />
+            </div>
+            <div className="col">
+              <label htmlFor="valor">Valor</label>
+              <input className="form-control form-control-sm" type="text" id="valor" value={newRowParametro !== null ? newRowParametro.get('valor') : ''} onChange={(e) => changeAttr("PARAMETRO", 'valor', e.target.value)} />
+            </div>
+          </div>
+        </Modal>
       </div>
     )
   }
@@ -69,6 +98,7 @@ function mapStateToProps(state) {
   return {
     list: state.parametros.get('list'),
     selectRow: state.parametros.get('selectRow'),
+    newRowParametro: state.parametros.get('newRowParametro'),
     ids: state.parametros.get('ids'),
     editable: state.parametros.getIn(['list', String(state.parametros.get('selected')), 'editable']),
   }
@@ -77,8 +107,13 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     getParametros: () => dispatch(getParametros()),
+    toggleModal: () => dispatch(toggleModal()),
+    newRow: (tipo) => dispatch(newRow(tipo)),
+    saveAction: () => dispatch(saveAction()),
+    updatedAction: () => dispatch(updatedAction()),    
     selectAction: (id, reloadGrid, tipo) => dispatch(selectAction(id, reloadGrid, tipo)),
     changeAttr2: (tipo, id, attr, value) => dispatch(changeAttr2(tipo, id, attr, value)),
+    changeAttr: (tipo, attr, value) => dispatch(changeAttr(tipo, attr, value)),
   }
 }
 

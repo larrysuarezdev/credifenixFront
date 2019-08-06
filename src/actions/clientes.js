@@ -62,8 +62,34 @@ export function saveAction() {
     }
 }
 
+export function changeState(id) {
+    return (dispatch) => {
+        axios.post(`${API_URL}/clientes/${id}`)
+            .then((res) => {
+                const data = objectifyArray(res.data.data, {
+                    by: ['id'],
+                    recursive: true
+                })
+
+                dispatch({
+                    type: types.GET_CLIENTES,
+                    payload: {
+                        data
+                    }
+                })
+
+                messageHandler(dispatch, {
+                    success: 'Se ha cambiado el estado al cliente'
+                })
+            })
+            .catch(err => {
+                messageHandler(dispatch, err)
+            })
+    }
+}
+
 export function saveActionReferencias(tipo) {
-    return(dispatch) => {
+    return (dispatch) => {
         dispatch({ type: types.ADD_REFERENCIA, payload: tipo })
     }
 }

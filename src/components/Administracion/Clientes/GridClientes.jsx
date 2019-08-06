@@ -6,11 +6,12 @@ import TableVirtualized from '../../Common/TableVirtualized'
 import BoxButtonV2 from '../../Common/BoxButtonV2'
 import BrandButton from '../../Common/BrandButton'
 import Modal from '../../Common/Modal'
+import ModalFilterMaestras from '../../Common/ModalFilterMaestras'
 
 import { getClientes } from '../../../actions/clientes'
 import { selectAction, toggleModal } from '../../../actions/common'
 import { tableColumnsClientes } from '../../../utils/headersColumns'
-
+import { showHideModalFilter } from "../../../actions/filtrarData";
 
 class GridClientes extends Component {
 
@@ -21,9 +22,10 @@ class GridClientes extends Component {
     render() {
         const { ids, list, selected, actionNewRow, selectAction, historial } = this.props;
         const tipo = "CLIENTE";
-        console.log(historial !== undefined ? historial.toJS() : null);
+
         const buttons = [
             <BoxButtonV2 key="bb[0][0]" name="plus" onClick={() => actionNewRow(tipo)} title="Agregar referencia" classCSS="info" />,
+            <BoxButtonV2 key="bb[0][1]" name="filter" onClick={() => this.props.showHideModalFilter(true, tableColumnsClientes, 'clientes')} title="Filtrar información" classCSS="info" />,
         ]
 
         return (
@@ -39,6 +41,7 @@ class GridClientes extends Component {
                         selected={selected}
                         tipo={tipo}
                         actionClick={this.props.actionEditCliente}
+                        actionClick1={this.props.actionEstadoCliente}
                         actionDoubleClick={this.props.toggleModal}
                     />
                 </div>
@@ -77,6 +80,7 @@ class GridClientes extends Component {
                         </tbody>
                     </table>
                 </Modal>
+                <ModalFilterMaestras />
             </div>
         )
     }
@@ -96,6 +100,7 @@ function mapDispatchToProps(dispatch) {
         getClientes: () => dispatch(getClientes()),
         toggleModal: () => dispatch(toggleModal()),
         selectAction: (id, reloadGrid, tipo) => dispatch(selectAction(id, reloadGrid, tipo)),
+        showHideModalFilter: (state, columnas, mode) => dispatch(showHideModalFilter(state, columnas, mode)),
     }
 }
 

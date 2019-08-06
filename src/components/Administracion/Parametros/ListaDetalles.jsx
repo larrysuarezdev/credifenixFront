@@ -42,9 +42,6 @@ export default class ListaDetalles extends Component {
                         </ul>
                 }
             </div>
-
-
-
         )
     }
 }

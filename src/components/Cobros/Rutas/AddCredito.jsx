@@ -13,10 +13,10 @@ import { changeAttr, toggleModalClientes } from '../../../actions/common'
 
 class AddCredito extends Component {
 
-    
+
 
     render() {
-        const { selectRow, changeAttr } = this.props;
+        const { selectRow, changeAttr, periodos } = this.props;
         const tipo = "RUTA"
 
         return (
@@ -25,11 +25,11 @@ class AddCredito extends Component {
                     <label >Cliente</label>
                     <SelectorInput
                         value={selectRow.getIn(['cliente', 'titular'])}
-                        onClick={() =>  this.props.toggleModalClientes() } />
+                        onClick={() => this.props.toggleModalClientes()} />
                     {/* <input className="form-control form-control-sm" type="text" value={ selectRow.get('cliente') } ></input> */}
                 </div>
                 <div className="col-md-5">
-                    <a className="btn btn-sm btn-success btn-icon-split float-right padding-bottom" href="#" onClick={() => this.props.action()} style={{marginTop : 27}} >
+                    <a className="btn btn-sm btn-success btn-icon-split float-right padding-bottom" href="#" onClick={() => this.props.action()} style={{ marginTop: 27 }} >
                         <span className="icon text-white-50">
                             <i className="fas fa-male"></i>
                         </span>
@@ -38,13 +38,25 @@ class AddCredito extends Component {
                         </span>
                     </a>
                 </div>
-                <div className="col-md-6">
+                <div className="col-md-4">
                     <label >Fecha del crédito</label>
                     <input className="form-control form-control-sm" type="date" value={selectRow.get('fecha')} onChange={(e) => changeAttr(tipo, 'fecha', e.target.value)} />
                 </div>
-                <div className="col-md-6">
+                <div className="col-md-4">
                     <label >Valor a prestar</label>
                     <input className="form-control form-control-sm" type="number" value={selectRow.get('prestamo')} onChange={(e) => changeAttr(tipo, 'prestamo', e.target.value)} />
+                </div>
+                <div className="col-md-4">
+                    <label >Modalidad</label>
+                    <select className="form-control form-control-sm" value={selectRow.get('modalidad')} onChange={(e) => changeAttr(tipo, 'modalidad', e.target.value)} >
+                        {
+                            periodos.map((x) => {
+                                return (
+                                    <option value={x.get("value")}>{ x.get("label") }</option>
+                                )
+                            })
+                        }
+                    </select>
                 </div>
                 <div className="col-md-4">
                     <label >Cuota</label>
@@ -56,11 +68,11 @@ class AddCredito extends Component {
                 </div>
                 <div className="col-md-4">
                     <label >Valor total</label>
-                    <input className="form-control form-control-sm" type="number" value={(selectRow.get('cuota') * selectRow.get('dias')) * 1000 } readOnly disabled ></input>
+                    <input className="form-control form-control-sm" type="number" value={(selectRow.get('cuota') * selectRow.get('dias')) * 1000} readOnly disabled ></input>
                 </div>
                 <div className="col-md-12">
                     <label >Observaciones</label>
-                    <textarea className="form-control form-control-sm" id="observaciones" rows="3" value={selectRow.get('observaciones')} onChange={(e) => changeAttr(tipo, 'observaciones', e.target.value)}></textarea>                    
+                    <textarea className="form-control form-control-sm" id="observaciones" rows="3" value={selectRow.get('observaciones')} onChange={(e) => changeAttr(tipo, 'observaciones', e.target.value)}></textarea>
                 </div>
                 <ModalClientes />
             </div>
@@ -71,7 +83,7 @@ class AddCredito extends Component {
 function mapStateToProps(state) {
     return {
         selectRow: state.rutas.get('selectRow'),
-        // list: state.rutas.get('list'),
+        periodos: state.rutas.get('periodos'),
         // ids: state.rutas.get('ids'),
     }
 }

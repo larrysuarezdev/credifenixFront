@@ -110,7 +110,7 @@ export function recalculate(data, id, cargue = false) {
     return { list: Immutable.fromJS(res), cartera: cartera };
 }
 
-export function exportDataGrid(list) {
+export function exportDataGrid(list, ruta) {
     pdfMake.vfs = pdfFonts.pdfMake.vfs;
     const data = list.toList().toJS().sort(function (a, b) { return a.orden - b.orden });
     console.log(data)
@@ -121,6 +121,15 @@ export function exportDataGrid(list) {
         fontSize: 5,
         pageMargins: [4, 4, 4, 4],
         content: [
+            {
+                table: {
+                    widths: ['*', '*', '*', '*', '*', '*', '*', '*'],
+                    body: [
+                        ['COBRADOR', { text: "RUBEN ESPINOZA", italics: true, color: 'gray', alignment : "center" }, 'TELEFONO', { text: '315-456-16-80', italics: true, color: 'gray', alignment : "center" }, 'FECHA', { text: moment().add(1, 'days').format('LL'), italics: true, color: 'gray', alignment : "center" }, 'RUTA', { text: ruta, italics: true, color: 'gray', alignment : "center" }],
+                    ]
+                },
+                margin: [0, 10, 10, 10]
+            },
             {
                 table: {
                     headerRows: 1,
@@ -146,45 +155,106 @@ export function exportDataGrid(list) {
                             { text: 'Telefono', style: 'header' }
                         ],
                     ]
-                },               
+                },
             },
         ],
         styles: {
             header: {
-              fontSize: 10,
-              bold: true,
-              italics: true
+                fontSize: 10,
+                bold: true,
+                italics: true
             },
             tableBody: {
-              alignment: 'right',
-              fontSize: 10,
+                alignment: 'right',
+                fontSize: 10,
             }
-          }
+        }
     };
-
+    console.log(docDefinition.content)
     data.forEach((x) => {
-        docDefinition.content[0].table.body.push(
+        docDefinition.content[1].table.body.push(
             [
-                { text : x.orden, style: 'tableBody'},
-                { text : x.cliente.titular, style: 'tableBody'},
-                { text : x.cuota, style: 'tableBody'},
-                { text : x.mora, style: 'tableBody'},
-                { text : x.cuotas_pagas, style: 'tableBody'},
-                { text : x.valor_prestamo, style: 'tableBody'},
-                { text : x.mod_cuota, style: 'tableBody'},
-                { text : x.mod_dias, style: 'tableBody'},
-                { text : x.saldo, style: 'tableBody'},
-                { text : x.fecha_ultimo_pago == "" ? "" : moment(x.fecha_ultimo_pago).format("YYYY-MM-DD"), style: 'tableBody'},
-                { text : x.valor_ultimo_pago, style: 'tableBody'},
-                { text : moment(x.inicio_credito).format("YYYY-MM-DD"), style: 'tableBody'},
-                { text : x.cliente.neg_titular, style: 'tableBody'},
-                { text : x.cliente.dir_cobro, style: 'tableBody'},                
-                { text : x.cliente.tel_cobro, style: 'tableBody'},                
-                { text : x.cliente.fiador, style: 'tableBody'},                
-                { text : x.cliente.tel_fiador, style: 'tableBody'}
+                { text: x.orden, style: 'tableBody' },
+                { text: x.cliente.titular, style: 'tableBody' },
+                { text: x.cuota, style: 'tableBody' },
+                { text: x.mora, style: 'tableBody' },
+                { text: x.cuotas_pagas, style: 'tableBody' },
+                { text: x.valor_prestamo, style: 'tableBody' },
+                { text: x.mod_cuota, style: 'tableBody' },
+                { text: x.mod_dias, style: 'tableBody' },
+                { text: x.saldo, style: 'tableBody' },
+                { text: x.fecha_ultimo_pago == "" ? "" : moment(x.fecha_ultimo_pago).format("YYYY-MM-DD"), style: 'tableBody' },
+                { text: x.valor_ultimo_pago, style: 'tableBody' },
+                { text: moment(x.inicio_credito).format("YYYY-MM-DD"), style: 'tableBody' },
+                { text: x.cliente.neg_titular, style: 'tableBody' },
+                { text: x.cliente.dir_cobro, style: 'tableBody' },
+                { text: x.cliente.tel_cobro, style: 'tableBody' },
+                { text: x.cliente.fiador, style: 'tableBody' },
+                { text: x.cliente.tel_fiador, style: 'tableBody' }
             ]
         )
     })
 
     pdfMake.createPdf(docDefinition).download();
+}
+
+export const operators = [
+    { id: 1, value: '===', caption: 'Igual a', comparisons: ['VARCHAR2', 'NUMBER', 'DATE'] },
+    { id: 2, value: '!==', caption: 'Diferente de', comparisons: ['VARCHAR2', 'NUMBER', 'DATE'] },
+    { id: 3, value: '>', caption: 'Mayor a', comparisons: ['NUMBER', 'DATE'] },
+    { id: 4, value: '>=', caption: 'Mayor o igual a', comparisons: ['NUMBER', 'DATE'] },
+    { id: 5, value: '<', caption: 'Menor a', comparisons: ['NUMBER', 'DATE'] },
+    { id: 6, value: '<=', caption: 'Menor o igual a', comparisons: ['NUMBER', 'DATE'] },
+    { id: 7, value: 'like', caption: 'Contiene', comparisons: ['VARCHAR2', 'DATE'] },
+    { id: 8, value: 'in', caption: 'En', comparisons: ['VARCHAR2', 'NUMBER'] },
+    { id: 9, value: 'between', caption: 'Entre', comparisons: ['DATE', 'NUMBER'] },
+]
+
+
+export function createModalFilterFunction(c) {
+    const d = {
+        '===': (a, b1) => a === b1,
+        '!==': (a, b1) => a !== b1,
+        '>': (a, b1) => a > b1,
+        '>=': (a, b1) => a >= b1,
+        '<': (a, b1) => a < b1,
+        '<=': (a, b1) => a <= b1,
+        like: (a, b1) => -1 !== (a + '').toUpperCase().indexOf((b1 + '').toUpperCase()),
+        in: (a, b1) => { console.log(b1); return (b1.split(',').map(x => x.trim())).indexOf(a) !== -1 },
+        in_numeric: (a, b1) => (b1.split(',').map(x => Number(x.trim()))).indexOf(a) !== -1,
+        between: (a, b1, b2) => a >= b1 && a <= b2
+    };
+
+    switch (c.get('comparison')) {
+        case 'number':
+            return f => {
+                const g = f[c.get('column')]
+                let h, i
+                if (c.get('operator') !== 'in') {
+                    h = isNaN(c.get('value')) ? 0 : c.get('value')
+                    i = isNaN(c.get('value1')) ? 0 : c.get('value1')
+                    return d[c.get('operator')](g, +h, +i)
+                } else {
+                    h = (c.get('value') || '').replace(/\s/g, '')
+                    i = (c.get('value1') || '').replace(/\s/g, '')
+                    return d['in_numeric'](g, h, i)
+                }
+            }
+        case 'string':
+            return f => {
+                const immF = Immutable.fromJS(f)
+                // console.log(immF.toJS(), c.get('column').split('.'))
+                const g = immF.getIn(c.get('column').split('.'))
+                let h = c.get('value')
+                let i = c.get('value1')
+                return d[c.get('operator')]((g + '').toUpperCase(), (h + '').toUpperCase(), (i + '').toUpperCase())
+            }
+        default:
+            return f => {
+                const g = f[c.get('column')]
+                const h = c.get('value')
+                const i = c.get('value1')
+                return d[c.get('operator')]((g + '').toUpperCase(), (h + '').toUpperCase(), (i + '').toUpperCase())
+            }
+    }
 }

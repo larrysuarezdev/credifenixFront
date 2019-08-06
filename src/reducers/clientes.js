@@ -1,5 +1,6 @@
 import * as types from '../actions/types'
 import Immutable from 'immutable'
+import objectifyArray from 'objectify-array'
 
 const newRow = {
     titular: '',
@@ -31,6 +32,7 @@ const newRowReferencia = {
 
 const INITIAL_STATE = Immutable.fromJS({
     list: [],
+    AllList: [],
     ids: [],
     selected: null,
     selectedFiador: null,
@@ -46,6 +48,7 @@ export default function (state = INITIAL_STATE, action) {
     switch (action.type) {
         case types.GET_CLIENTES:
             state = state.set('list', Immutable.fromJS(action.payload.data))
+            state = state.set('AllList', Immutable.fromJS(action.payload.data))
             state = state.set('ids', state.get('list').sortBy(x => x.get('id')).keySeq().toList())
             return state
         case types.SELECCIONAR_CLIENTE:
@@ -90,6 +93,16 @@ export default function (state = INITIAL_STATE, action) {
             referencias.push(row)
             state = state.setIn(['selectRow', 'clientes_referencias'], Immutable.fromJS(referencias))
             state = state.set('selectRowReferencia', Immutable.fromJS(newRowReferencia))
+            return state
+
+        case types.UPDATED_MAESTRA_CLIENTES:
+            const data = objectifyArray(action.payload, {
+                by: ['id'],
+                recursive: true
+            })
+            state = state.set('list', Immutable.fromJS(data))
+            state = state.set('selected', null)
+            state = state.set('ids', state.get('list').sortBy(x => x.get('id')).keySeq().toList())
             return state
         default:
             return state

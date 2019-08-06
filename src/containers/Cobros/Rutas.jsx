@@ -20,7 +20,7 @@ import DetalleRenovaciones from '../../components/Cobros/Rutas/DetalleRenovacion
 import AddClientes from '../../components/Administracion/Clientes/AddClientes'
 
 
-import { getCreditos, saveCredito, getListRutas, saveAbonos, saveRenovacion, cleanDataRutas, reorderData } from '../../actions/rutas'
+import { getCreditos, saveCredito, getListRutas, getListPeriodos, saveAbonos, saveRenovacion, cleanDataRutas, reorderData } from '../../actions/rutas'
 import { cleanCliente } from '../../actions/clientes'
 import { selectAction, changeAttr2, toggleModal, newRow } from '../../actions/common'
 import { exportDataGrid } from '../../utils/helpers'
@@ -55,12 +55,12 @@ class Rutas extends Component {
     componentWillMount() {
         this.props.cleanDataRutas();
         this.props.getListRutas();
-        this.props.cleanCliente();        
+        this.props.getListPeriodos();             
+        this.props.cleanCliente();
     }
 
     componentDidMount() {
         var node = ReactDOM.findDOMNode(this.refs["dataExport"]);
-        console.log(node)
         var gridHeight = node.clientHeight;
         this.setState({ gridHeight : gridHeight });
     }
@@ -170,7 +170,7 @@ class Rutas extends Component {
         switch (param) {
             case 0:
                 return (
-                    <Modal title="Gestionar crédito" buttons={buttons} brand={true} >
+                    <Modal title="Gestionar crédito" buttons={buttons} brand={true} width={600} className="modal-lg">
                         <AddCredito action={this.actionToogleSidebarRigth} />
                     </Modal>
                 )
@@ -228,7 +228,7 @@ class Rutas extends Component {
             <BoxButton key="br[0][0]" name="plus" onClick={() => this.createAction()} title="Agregar crédito" classCSS="info" disabled={idRuta != null ? false : true} />,
             <BoxButton key="br[0][1]" name="exchange-alt" onClick={() => this.actionClickReorder()} title="Enrutar" classCSS="info" disabled={idRuta != null ? false : true} />,
             <BoxButton key="br[0][2]" name="save" onClick={() => this.saveAbonos()} title="Guardar abonos" classCSS="info" disabled={idRuta != null ? false : true} />,
-            <BoxButton key="br[0][3]" name="file-pdf" onClick={() => exportDataGrid(list)} title="Exportar ruta" classCSS="info" disabled={idRuta != null ? false : true} />,
+            <BoxButton key="br[0][3]" name="file-pdf" onClick={() => exportDataGrid(list, idRuta)} title="Exportar ruta" classCSS="info" disabled={idRuta != null ? false : true} />,
         ]
 
 
@@ -302,6 +302,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return {
         getListRutas: () => dispatch(getListRutas()),
+        getListPeriodos: () => dispatch(getListPeriodos()),        
         getCreditos: (id) => dispatch(getCreditos(id)),
         selectAction: (id, reloadGrid, tipo) => dispatch(selectAction(id, reloadGrid, tipo)),
         changeAttr2: (tipo, id, attr, value) => dispatch(changeAttr2(tipo, id, attr, value)),

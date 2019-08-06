@@ -2,14 +2,8 @@ import * as types from '../actions/types'
 import Immutable from 'immutable'
 
 const newRow = {
-    nombres: '',
-    apellidos: '',
-    telefono1: '',
-    telefono2: '',
-    login: false,
-    email: '',
-    username: '',
-    password: ''
+    id_interno: 0,
+    valor: ''
 }
 
 const INITIAL_STATE = Immutable.fromJS({
@@ -17,7 +11,7 @@ const INITIAL_STATE = Immutable.fromJS({
     ids: [],
     selected: null,
     selectRow: null,
-    edit: false
+    newRowParametro: null
 })
 
 
@@ -33,15 +27,21 @@ export default function (state = INITIAL_STATE, action) {
             state = state.set('ids', state.get('selectRow').sortBy(x => x.get('id')).keySeq().toList())
             return state
         case types.NEW_PARAMETRO:
-            state = state.set('edit', true)
-            state = state.set('selectRow', Immutable.fromJS(newRow))
+            newRow.id_interno = state.get('selectRow').count() + 1;
+            state = state.set('newRowParametro', Immutable.fromJS(newRow))
             return state
         case types.CHANGE_ATTR_LISTA_PARAMETRO:
-                state = state.setIn(['selectRow', String(action.payload.id), String(action.payload.attr)], action.payload.value)
+            state = state.setIn(['selectRow', String(action.payload.id), String(action.payload.attr)], action.payload.value)
+            state = state.setIn(['selectRow', String(action.payload.id), 'updated'], true)
+            console.log(state.get('selectRow').toJS())
+            return state
+        case types.CHANGE_ATTR_PARAMETRO:
+            state = state.setIn(['newRowParametro', String(action.payload.attr)], action.payload.value)
             return state
         case types.CLEAN_PARAMETRO:
             state = state.set('selectRow', INITIAL_STATE.get('selectRow'))
             state = state.set('selected', INITIAL_STATE.get('selected'))
+            state = state.set('newRowParametro', INITIAL_STATE.get('newRowParametro'))
             return state
         default:
             return state

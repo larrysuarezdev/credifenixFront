@@ -8,7 +8,8 @@ const newRow = {
     prestamo: null,
     cuota: null,
     dias: null,
-    observaciones: null
+    observaciones: null,
+    modalidad: 1,
 }
 
 const newRenovacion = {
@@ -25,6 +26,7 @@ const INITIAL_STATE = Immutable.fromJS({
     clientes: [],
     cartera: 0,
     rutas: [],
+    periodos: [],
     idRuta: null,
     detalle_selected: null,
     renovacion_selected: null,
@@ -48,6 +50,9 @@ export default function (state = INITIAL_STATE, action) {
         case types.GET_LISTA_RUTAS:
             state = state.set('rutas', Immutable.fromJS(action.payload.data))
             return state
+        case types.GET_LISTA_PERIODOS:
+            state = state.set('periodos', Immutable.fromJS(action.payload.data))
+            return state
         case types.GET_CLIENTES_RUTA:
             state = state.set('clientes', Immutable.fromJS(action.payload.data))
             return state
@@ -62,7 +67,7 @@ export default function (state = INITIAL_STATE, action) {
             return state
         case types.CHANGE_ATTR_LISTA_RUTA:
             if (state.getIn(['list', String(action.payload.id), 'renovacion']) !== undefined) {
-                
+
             } else {
                 state = state.setIn(['list', String(action.payload.id), String(action.payload.attr)], action.payload.value)
                 creditos = recalculate(state.get('list'), 'id')

@@ -35,17 +35,9 @@ class DataGrid extends Component {
                 columns={columns}
                 rowGetter={(i) => data[i]}
                 rowsCount={data.length}
-                // cellRenderer={(i) => console.log(i)}
                 onGridRowsUpdated={this.onGridRowsUpdated}
                 enableCellSelect={true}
                 rowHeight={25}
-                // contextMenu={
-                //     <ExampleContextMenu
-                //         onRenovarCredito={(e, { rowIdx }) => this.onRenovarCredito(rowIdx)}
-                //         onDetallesCredito={(e, { rowIdx }) => this.onDetallesCredito(rowIdx)}
-                //     />
-                // }
-                // RowsContainer={ContextMenuTrigger}
             />
         )
     }

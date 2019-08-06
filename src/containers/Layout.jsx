@@ -39,7 +39,7 @@ class Layout extends Component {
           subitems: [
             { caption: 'Rutas', isActive: false, title: 'Rutas', url: '/cobros/rutas', icon: 'route' },
             { caption: 'Flujo de caja', isActive: false, title: 'Flujo de caja', url: '/cobros/flujoCaja', icon: 'hand-holding-usd' },
-            // { caption: 'Renovaciones', isActive: false, title: 'Renovaciones', url: '/cobros/renovaciones', icon: 'sync-alt' }
+            { caption: 'Flujo de utilidades', isActive: false, title: 'Flujo de utilidades', url: '/cobros/flujoUtilidades', icon: 'funnel-dollar' },
           ]
         },
         {

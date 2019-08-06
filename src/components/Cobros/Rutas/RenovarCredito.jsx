@@ -12,7 +12,7 @@ class RenovarCredito extends Component {
 
     render() {
 
-        const { changeAttr, selectRow } = this.props;
+        const { changeAttr, selectRow, periodos } = this.props;
         
         const tipo = "RENOVACION"
         return (
@@ -28,10 +28,15 @@ class RenovarCredito extends Component {
                     </div>
                     <div className="col-md-6">
                         <label htmlFor="modalidad">Monto dado</label>
-                        <select className="form-control form-control-sm" id="tipo" value={selectRow !== null ? selectRow.get('tipo') : ''} onChange={(e) => changeAttr(tipo, 'tipo', e.target.value)} >
-                            <option value="1">Diario</option>
-                            <option value="2">Semanal</option>
-                        </select>
+                        <select className="form-control form-control-sm" id="modalidad"  value={selectRow !== null ? selectRow.get('modalidad') : ''} onChange={(e) => changeAttr(tipo, 'modalidad', e.target.value)} >
+                        {
+                            periodos.map((x) => {
+                                return (
+                                    <option value={x.get("value")}>{ x.get("label") }</option>
+                                )
+                            })
+                        }
+                    </select>
                     </div>
                 </div>
             </div>
@@ -42,6 +47,7 @@ class RenovarCredito extends Component {
 function mapStateToProps(state) {
     return {
         selectRow: state.rutas.get('renovacion'),
+        periodos: state.rutas.get('periodos'),
     }
 }
 

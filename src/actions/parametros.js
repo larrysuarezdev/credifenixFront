@@ -23,43 +23,49 @@ export function getParametros() {
                 })
             })
             .catch((err) => {
-                // fn1(dispatch);
                 messageHandler(dispatch, err)
             })
     }
 }
 
-// export function saveAction() {
-//     return (dispatch, getState) => {
-//         const row = getState().parametros.get('selectRow').toJS()
-//         const newRow = getState().parametros.get('edit')
+export function saveAction() {
+    return (dispatch, getState) => {
+        const row = getState().parametros.get('newRowParametro').toJS()
+        row.parametro_id = getState().parametros.get('selected');
 
-//         if (newRow) {
-//             axios.post(`${API_URL}/parametros`, row)
-//                 .then(() => {
-//                     dispatch(getUsuarios());
-//                     dispatch({ type: types.CLEAN_USUARIO })
-//                     messageHandler(dispatch, {
-//                         success: 'Se ha agregado un nuevo registro'
-//                     })
-//                 })
-//                 .catch(err => {
-//                     messageHandler(dispatch, err)
-//                 })
-//         } else {
-//             axios.put(`${API_URL}/parametros`, row)
-//                 .then(() => {
-//                     dispatch(getUsuarios());
-//                     dispatch({ type: types.CLEAN_USUARIO })
-//                     messageHandler(dispatch, {
-//                         success: 'Se ha actualizado el registro'
-//                     })
-//                 })
-//                 .catch(err => {
-//                     messageHandler(dispatch, err)
-//                 })
-//         }
+        axios.post(`${API_URL}/parametros`, row)
+            .then(() => {
+                dispatch(getParametros());
+                dispatch({ type: types.CLEAN_PARAMETRO })
+                messageHandler(dispatch, {
+                    success: 'Se ha agregado un nuevo registro'
+                })
+            })
+            .catch(err => {
+                messageHandler(dispatch, err)
+            })
 
-//     }
-// }
+
+    }
+}
+
+export function updatedAction() {
+    return (dispatch, getState) => {
+        const rows = getState().parametros.get('selectRow').toJS()
+
+        axios.put(`${API_URL}/parametros`, { 'cambios': rows })
+            .then(() => {
+                dispatch(getParametros());
+                dispatch({ type: types.CLEAN_PARAMETRO })
+                messageHandler(dispatch, {
+                    success: 'Se ha actualizado los registros'
+                })
+            })
+            .catch(err => {
+                messageHandler(dispatch, err)
+            })
+
+
+    }
+}
 
