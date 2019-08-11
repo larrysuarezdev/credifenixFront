@@ -66,7 +66,7 @@ export function applyModalFilterCriterias() {
 
         if (!searchBack) {
             const mode = getState().common.get('mode')
-            console.log(mode)
+            
             let data = getState()[mode].get('AllList').valueSeq().toJS()
 
             if (getState().common.get('modalFilters').size > 0) {

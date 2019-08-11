@@ -18,12 +18,16 @@ import ObservacionesCredito from '../../components/Cobros/Rutas/ObservacionesCre
 import DetallesPagos from '../../components/Cobros/Rutas/DetallesPagos'
 import DetalleRenovaciones from '../../components/Cobros/Rutas/DetalleRenovaciones'
 import AddClientes from '../../components/Administracion/Clientes/AddClientes'
+import ModalFilterMaestras from '../../components/Common/ModalFilterMaestras'
 
 
 import { getCreditos, saveCredito, getListRutas, getListPeriodos, saveAbonos, saveRenovacion, cleanDataRutas, reorderData } from '../../actions/rutas'
 import { cleanCliente } from '../../actions/clientes'
 import { selectAction, changeAttr2, toggleModal, newRow } from '../../actions/common'
 import { exportDataGrid } from '../../utils/helpers'
+import { showHideModalFilter } from "../../actions/filtrarData";
+import { tableColumnsRutas } from '../../utils/headersColumns'
+
 const tipo = "RUTA";
 
 class Rutas extends Component {
@@ -127,12 +131,15 @@ class Rutas extends Component {
         this.props.list.map((x) => {
             entrada = entrada + Number(x.get('cuota'));
             if (x.get('renovacion')) {
-                salida = salida + Number(x.getIn(['renovacion', 'monto']))
+                salida = salida + Number(x.getIn(['renovacion', 'monto'])) //SUMARLE el total de los creditos NUEVOS
             }
         })
 
         entrada = entrada * 1000;
         salida = salida * 1000;
+
+//UTILIDAD: 
+
         Swal.fire({
             title: 'FLUJO DE CAJA',
             html: `<div> 
@@ -221,33 +228,36 @@ class Rutas extends Component {
 
 
     render() {
-        const { ids, list, rutas, cartera, idRuta } = this.props;
+        const { ids, list, rutas, cartera, cobrador, idRuta } = this.props;
         var today = moment((new Date())).format('YYYY-MM-DD');
 
         const buttons = [
             <BoxButton key="br[0][0]" name="plus" onClick={() => this.createAction()} title="Agregar crédito" classCSS="info" disabled={idRuta != null ? false : true} />,
             <BoxButton key="br[0][1]" name="exchange-alt" onClick={() => this.actionClickReorder()} title="Enrutar" classCSS="info" disabled={idRuta != null ? false : true} />,
             <BoxButton key="br[0][2]" name="save" onClick={() => this.saveAbonos()} title="Guardar abonos" classCSS="info" disabled={idRuta != null ? false : true} />,
-            <BoxButton key="br[0][3]" name="file-pdf" onClick={() => exportDataGrid(list, idRuta)} title="Exportar ruta" classCSS="info" disabled={idRuta != null ? false : true} />,
+            <BoxButton key="br[0][3]" name="filter" onClick={() => this.props.showHideModalFilter(true, tableColumnsRutas, 'rutas')} title="Exportar ruta" classCSS="info" disabled={idRuta != null ? false : true} />,
+            <BoxButton key="br[0][4]" name="file-pdf" onClick={() => exportDataGrid(list, idRuta, cobrador)} title="Exportar ruta" classCSS="info" disabled={idRuta != null ? false : true} />,
         ]
-
-
 
         return (
             <div className="card border-left-success">
                 <BrandButton buttons={buttons} />
                 <div className="row" style={{ marginBottom: 5, background: '#f7f7f7', marginLeft: 0, marginRight: 0, paddingBottom: 5 }}>
-                    <div className="col-md-4">
+                    <div className="col-md-3">
                         <label >Ruta</label>
                         <SelectComponent options={rutas.toJS()} onChange={this.onChangeSelect} />
                     </div>
-                    <div className="col-md-4">
+                    <div className="col-md-3">
                         <label >Fecha</label>
                         <input className="form-control form-control-sm" type="date" value={today} readOnly ></input>
                     </div>
-                    <div className="col-md-4">
+                    <div className="col-md-3">
                         <label >Cartera</label>
                         <input className="form-control form-control-sm" type="text" value={cartera} readOnly disabled ></input>
+                    </div>
+                    <div className="col-md-3">
+                        <label >Cobrador</label>
+                        <input className="form-control form-control-sm" type="text" value={cobrador !== 'Sin asignar' ? cobrador.nombres + ' ' + cobrador.apellidos : cobrador } readOnly disabled ></input>
                     </div>
                 </div>
                 <div className="col-md-12 col-xs-12" style={{ padding: 0 }} >
@@ -284,6 +294,7 @@ class Rutas extends Component {
                         : null
                 }
                 {this.renderSwitch(this.state.tipoModal)}
+                <ModalFilterMaestras />
             </div>
         )
     }
@@ -296,6 +307,7 @@ function mapStateToProps(state) {
         rutas: state.rutas.get('rutas'),
         cartera: state.rutas.get('cartera'),
         idRuta: state.rutas.get('idRuta'),
+        cobrador: state.rutas.get('cobrador')        
     }
 }
 
@@ -314,6 +326,7 @@ function mapDispatchToProps(dispatch) {
         cleanCliente: () => dispatch(cleanCliente()),
         cleanDataRutas: () => dispatch(cleanDataRutas()),
         reorderData: () => dispatch(reorderData()),
+        showHideModalFilter: (state, columnas, mode) => dispatch(showHideModalFilter(state, columnas, mode)),
     }
 }
 

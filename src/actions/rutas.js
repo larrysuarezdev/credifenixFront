@@ -28,7 +28,8 @@ export function getCreditos(id) {
                     type: types.GET_RUTAS,
                     payload: {
                         data,
-                        id
+                        id,
+                        cobrador: res[0].data.cobrador
                     }
                 })
             })
@@ -122,7 +123,8 @@ export function saveCredito() {
                         type: types.GET_RUTAS,
                         payload: {
                             data,
-                            id: row.cliente.id
+                            id: row.cliente.id,
+                            cobrador: res.data.cobrador
                         }
                     })
 
@@ -152,15 +154,14 @@ export function saveAbonos(entrada, salida) {
         const renovaciones = []
         rows.map((x, i) => {
             dataToSend.push({ id: x.id, cuota: x.cuota ? Number(x.cuota) * 1000 : null, orden: x.orden })
-            if(x.renovacion)
-            {
-                renovaciones.push({ id: x.id, excedente : x.renovacion.monto * 1000, observaciones : x.renovacion.observaciones, modalidad : x.renovacion.modalidad })
+            if (x.renovacion) {
+                renovaciones.push({ id: x.id, excedente: x.renovacion.monto * 1000, observaciones: x.renovacion.observaciones, modalidad: x.renovacion.modalidad })
             }
         });
 
         console.log(renovaciones);
 
-        axios.post(`${API_URL}/creditos/abonos`, { 'cuotas': dataToSend, 'idRuta': id, 'renovaciones' : renovaciones,  'flujoCaja': { 'entrada': entrada, 'salida': salida } })
+        axios.post(`${API_URL}/creditos/abonos`, { 'cuotas': dataToSend, 'idRuta': id, 'renovaciones': renovaciones, 'flujoCaja': { 'entrada': entrada, 'salida': salida } })
             .then((res) => {
                 const data = objectifyArray(res.data.data, {
                     by: ['id'],
@@ -171,7 +172,8 @@ export function saveAbonos(entrada, salida) {
                     type: types.GET_RUTAS,
                     payload: {
                         data,
-                        id
+                        id,
+                        cobrador: res.data.cobrador
                     }
                 })
 

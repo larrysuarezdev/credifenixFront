@@ -110,10 +110,9 @@ export function recalculate(data, id, cargue = false) {
     return { list: Immutable.fromJS(res), cartera: cartera };
 }
 
-export function exportDataGrid(list, ruta) {
+export function exportDataGrid(list, ruta, cobrador) {
     pdfMake.vfs = pdfFonts.pdfMake.vfs;
     const data = list.toList().toJS().sort(function (a, b) { return a.orden - b.orden });
-    console.log(data)
 
     var docDefinition = {
         pageSize: 'A3',
@@ -125,7 +124,7 @@ export function exportDataGrid(list, ruta) {
                 table: {
                     widths: ['*', '*', '*', '*', '*', '*', '*', '*'],
                     body: [
-                        ['COBRADOR', { text: "RUBEN ESPINOZA", italics: true, color: 'gray', alignment : "center" }, 'TELEFONO', { text: '315-456-16-80', italics: true, color: 'gray', alignment : "center" }, 'FECHA', { text: moment().add(1, 'days').format('LL'), italics: true, color: 'gray', alignment : "center" }, 'RUTA', { text: ruta, italics: true, color: 'gray', alignment : "center" }],
+                        ['COBRADOR', { text: cobrador !== 'Sin asignar' ? cobrador.nombres.toUpperCase() + ' ' + cobrador.apellidos.toUpperCase() : 'SIN ASIGNAR' , italics: true, color: 'gray', alignment : "center" }, 'TELEFONO', { text: cobrador !== 'Sin asignar' ? cobrador.telefono1.toUpperCase() : 'SIN ASIGNAR' , italics: true, color: 'gray', alignment : "center" }, 'FECHA', { text: moment().add(1, 'days').format('LL'), italics: true, color: 'gray', alignment : "center" }, 'RUTA', { text: ruta, italics: true, color: 'gray', alignment : "center" }],
                     ]
                 },
                 margin: [0, 10, 10, 10]
@@ -170,7 +169,7 @@ export function exportDataGrid(list, ruta) {
             }
         }
     };
-    console.log(docDefinition.content)
+    // console.log(docDefinition.content)
     data.forEach((x) => {
         docDefinition.content[1].table.body.push(
             [
@@ -195,7 +194,7 @@ export function exportDataGrid(list, ruta) {
         )
     })
 
-    pdfMake.createPdf(docDefinition).download();
+    pdfMake.createPdf(docDefinition).download("Listado Ruta-" + ruta + "; del " + moment().format("YYYY-MM-DD") );
 }
 
 export const operators = [

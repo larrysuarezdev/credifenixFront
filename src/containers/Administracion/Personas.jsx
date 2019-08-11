@@ -10,18 +10,21 @@ import TableVirtualized from '../../components/Common/TableVirtualized'
 
 //DATA
 import { getUsuarios, saveAction } from '../../actions/usuarios'
+import { getListRutas } from '../../actions/rutas'
 import { selectAction, changeAttr, newRow } from '../../actions/common'
+
 
 class Personas extends Component {
 
     componentWillMount() {
         this.props.getUsuarios();
+        this.props.getListRutas();
     }
 
     render() {
-        const { list, ids, selected, selectRow, changeAttr, saveAction, newRow } = this.props;
+        const { list, ids, selected, selectRow, changeAttr, saveAction, newRow, rutas } = this.props;
         const tipo = "USUARIO";
-
+        
         const buttons = [
             <BoxButton key="bp[0][0]" name="plus" onClick={() => newRow(tipo)} title="Agregar nuevo" classCSS="info" />,
             <BoxButton key="bp[0][1]" name="save" onClick={() => saveAction()} title="Guardar" classCSS="success" disabled={selectRow !== null ? false : true} />,
@@ -49,14 +52,14 @@ class Personas extends Component {
                         </div>
                         {
                             selectRow !== null ?
-                                <div className="col-md-5" style={{ paddingRight : 30 }}>
+                                <div className="col-md-5" style={{ paddingRight: 30 }}>
                                     <div className="row">
                                         <div className="col-md-6">
                                             <label >Nombres</label>
                                             <input className="form-control form-control-sm" type="text" value={selectRow.get('nombres')} onChange={(e) => changeAttr(tipo, 'nombres', e.target.value)} ></input>
                                         </div>
                                         <div className="col-md-6">
-                                            <label >Apelldios</label>
+                                            <label >Apellidos</label>
                                             <input className="form-control form-control-sm" type="text" value={selectRow.get('apellidos')} onChange={(e) => changeAttr(tipo, 'apellidos', e.target.value)}></input>
                                         </div>
                                     </div>
@@ -94,7 +97,22 @@ class Personas extends Component {
                                                     <input className="form-control form-control-sm" type="password" value={selectRow.get('password')} onChange={(e) => changeAttr(tipo, 'password', e.target.value)} ></input>
                                                 </div>
                                             </div>
-                                            : null
+                                            :
+                                            <div className="row">
+                                                <div className="col-md-12">
+                                                    <label >Ruta</label>
+                                                    <select className="form-control form-control-sm" value={selectRow !== null ? selectRow.get('ruta') : 0} onChange={(e) => changeAttr(tipo, 'ruta', e.target.value)} >
+                                                        <option value={0} key={0}>Seleccione...</option>
+                                                        {
+                                                            rutas.map((x) => {
+                                                                return (
+                                                                    <option value={x.get("value")} key={x.get("value")}>{x.get("label")}</option>
+                                                                )
+                                                            })
+                                                        }
+                                                    </select>
+                                                </div>
+                                            </div>
                                     }
                                 </div>
                                 : null
@@ -114,6 +132,7 @@ function mapStateToProps(state) {
         ids: state.usuarios.get('ids'),
         selected: state.usuarios.get('selected'),
         selectRow: state.usuarios.get('selectRow'),
+        rutas: state.rutas.get('rutas'),
     }
 }
 
@@ -124,6 +143,7 @@ function mapDispatchToProps(dispatch) {
         newRow: (tipo) => dispatch(newRow(tipo)),
         saveAction: () => dispatch(saveAction()),
         changeAttr: (tipo, attr, value) => dispatch(changeAttr(tipo, attr, value)),
+        getListRutas: () => dispatch(getListRutas()),
     }
 }
 

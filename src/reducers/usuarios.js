@@ -9,7 +9,8 @@ const newRow = {
     login: false,
     email: '',
     username: '',
-    password: ''
+    password: '',
+    ruta: 0
 }
 
 const INITIAL_STATE = Immutable.fromJS({

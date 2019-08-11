@@ -203,11 +203,15 @@ class AddClientes extends Component {
                             <label>Dirección </label>
                             <input className="form-control form-control-sm" value={selectRowReferencia === undefined || selectRowReferencia === null ? '' : selectRowReferencia.get('direccion')} onChange={(e) => changeAttr("REFERENCIA", 'direccion', e.target.value)} ></input>
                         </div>
-                        <div className="col-md-6">
+                        <div className="col-md-4">
                             <label>Barrio </label>
                             <input className="form-control form-control-sm" value={selectRowReferencia === undefined || selectRowReferencia === null ? '' : selectRowReferencia.get('barrio')} onChange={(e) => changeAttr("REFERENCIA", 'barrio', e.target.value)} ></input>
                         </div>
-                        <div className="col-md-6">
+                        <div className="col-md-4">
+                            <label>Teléfono </label>
+                            <input className="form-control form-control-sm" value={selectRowReferencia === undefined || selectRowReferencia === null ? '' : selectRowReferencia.get('telefono')} onChange={(e) => changeAttr("REFERENCIA", 'telefono', e.target.value)} ></input>
+                        </div>
+                        <div className="col-md-4">
                             <label>Parentesco </label>
                             <input className="form-control form-control-sm" value={selectRowReferencia === undefined || selectRowReferencia === null ? '' : selectRowReferencia.get('parentesco')} onChange={(e) => changeAttr("REFERENCIA", 'parentesco', e.target.value)} ></input>
                         </div>

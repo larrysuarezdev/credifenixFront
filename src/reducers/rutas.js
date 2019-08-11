@@ -1,6 +1,7 @@
 import * as types from '../actions/types'
 import Immutable from 'immutable'
 import { recalculate } from '../utils/helpers'
+import objectifyArray from 'objectify-array'
 
 const newRow = {
     cliente: null,
@@ -20,11 +21,13 @@ const newRenovacion = {
 
 const INITIAL_STATE = Immutable.fromJS({
     list: [],
+    AllList: [],
     detalles: [],
     renovaciones: [],
     ids: [],
     clientes: [],
     cartera: 0,
+    cobrador: 'Sin asignar',
     rutas: [],
     periodos: [],
     idRuta: null,
@@ -42,10 +45,16 @@ export default function (state = INITIAL_STATE, action) {
         case types.GET_RUTAS:
             creditos = recalculate(Immutable.fromJS(action.payload.data), 'id', true)
             state = state.set('list', creditos.list)
+            state = state.set('AllList', creditos.list)
             state = state.set('reorder', creditos.list.sortBy(x => x.get('orden')).toList().toJS())
             state = state.set('ids', state.get('list').sortBy(x => x.get('orden')).keySeq().toList())
             state = state.set('idRuta', action.payload.id)
             state = state.set('cartera', creditos.cartera)
+            if (action.payload.cobrador !== null)
+                state = state.set('cobrador', action.payload.cobrador)
+            else
+                state = state.set('cobrador', 'Sin asignar')
+
             return state
         case types.GET_LISTA_RUTAS:
             state = state.set('rutas', Immutable.fromJS(action.payload.data))
@@ -117,6 +126,16 @@ export default function (state = INITIAL_STATE, action) {
             state = state.setIn(['list', String(action.payload.id), 'renovacion'], state.get('renovacion').toJS());
             console.log(state.get('list').toJS())
             return state;
+
+        case types.UPDATED_MAESTRA_RUTAS:
+            const data = objectifyArray(action.payload, {
+                by: ['id'],
+                recursive: true
+            })
+            state = state.set('list', Immutable.fromJS(data))
+            state = state.set('selected', null)
+            state = state.set('ids', state.get('list').sortBy(x => x.get('id')).keySeq().toList())
+            return state
         default:
             return state
     }

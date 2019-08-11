@@ -65,3 +65,22 @@ export const tableColumnsFlujoUtilidades = [
     { ID: 3, CAPTION: 'Fecha', VALUE: 'fecha', TYPE: 'DATE', FORMAT: 'YYYY-MM-DD HH:MM', WIDTH: 160, FIXED: false },
     { ID: 4, CAPTION: 'Valor', VALUE: 'valor', TYPE: 'NUMBER', FORMAT: '', WIDTH: 150, FIXED: false },
 ]
+
+export const tableColumnsRutas = [
+    { ID: 0, VALUE : 'orden', CAPTION: 'Orden', editable: false, width: 60, frozen: true },
+    { ID: 1, VALUE : 'cliente.titular', CAPTION: 'Cliente', editable: false, width: 200 },
+    { ID: 3, VALUE : 'mora', CAPTION: 'Mora', editable: false, width: 50, frozen: true },
+    { ID: 5, VALUE : 'valor_prestamo', CAPTION: 'Prestamo', editable: false, width: 100 },
+    { ID: 6, VALUE : 'mod_cuota', CAPTION: 'Cuota', editable: false, width: 80 },
+    { ID: 7, VALUE : 'mod_dias', CAPTION: 'Días', editable: false, width: 50 },
+    { ID: 8, VALUE : 'saldo', CAPTION: 'Saldo', editable: false, width: 100 },
+    { ID: 9, VALUE : 'valor_total', CAPTION: 'Total', editable: false, width: 100 },
+    { ID: 10, VALUE : 'valor_ultimo_pago', CAPTION: 'Valor ult pag', editable: false, width: 110 },
+    { ID: 11, VALUE : 'fecha_ultimo_pago', CAPTION: 'Fecha ult pag', editable: false, width: 110 },
+    { ID: 12, VALUE : 'inicio_credito', CAPTION: 'Inicio', editable: false, width: 120 },
+    { ID: 13, VALUE : 'neg_titular', CAPTION: 'Negocio', editable: false, width: 200 },
+    { ID: 14, VALUE : 'dir_titular', CAPTION: 'Dirección', editable: false, width: 200 },
+    { ID: 15, VALUE : 'telefono', CAPTION: 'Telefono', editable: false, width: 200 },
+    { ID: 16, VALUE : 'fiador', CAPTION: 'Fiador', editable: false, width: 200 },
+    { ID: 17, VALUE : 'tel_fiador', CAPTION: 'Telefono', editable: false, width: 200 },
+];
