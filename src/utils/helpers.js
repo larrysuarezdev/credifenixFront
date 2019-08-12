@@ -113,7 +113,7 @@ export function recalculate(data, id, cargue = false) {
 export function exportDataGrid(list, ruta, cobrador) {
     pdfMake.vfs = pdfFonts.pdfMake.vfs;
     const data = list.toList().toJS().sort(function (a, b) { return a.orden - b.orden });
-
+    console.log(data);
     var docDefinition = {
         pageSize: 'A3',
         pageOrientation: 'landscape',
@@ -124,7 +124,7 @@ export function exportDataGrid(list, ruta, cobrador) {
                 table: {
                     widths: ['*', '*', '*', '*', '*', '*', '*', '*'],
                     body: [
-                        ['COBRADOR', { text: cobrador !== 'Sin asignar' ? cobrador.nombres.toUpperCase() + ' ' + cobrador.apellidos.toUpperCase() : 'SIN ASIGNAR' , italics: true, color: 'gray', alignment : "center" }, 'TELEFONO', { text: cobrador !== 'Sin asignar' ? cobrador.telefono1.toUpperCase() : 'SIN ASIGNAR' , italics: true, color: 'gray', alignment : "center" }, 'FECHA', { text: moment().add(1, 'days').format('LL'), italics: true, color: 'gray', alignment : "center" }, 'RUTA', { text: ruta, italics: true, color: 'gray', alignment : "center" }],
+                        ['COBRADOR', { text: cobrador !== 'Sin asignar' ? cobrador.nombres.toUpperCase() + ' ' + cobrador.apellidos.toUpperCase() : 'SIN ASIGNAR', italics: true, color: 'gray', alignment: "center" }, 'TELEFONO', { text: cobrador !== 'Sin asignar' ? cobrador.telefono1.toUpperCase() : 'SIN ASIGNAR', italics: true, color: 'gray', alignment: "center" }, 'FECHA', { text: moment().add(1, 'days').format('LL'), italics: true, color: 'gray', alignment: "center" }, 'RUTA', { text: ruta, italics: true, color: 'gray', alignment: "center" }],
                     ]
                 },
                 margin: [0, 10, 10, 10]
@@ -132,9 +132,10 @@ export function exportDataGrid(list, ruta, cobrador) {
             {
                 table: {
                     headerRows: 1,
-                    widths: [35, 'auto', 30, 30, 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto'],
+                    widths: [25, 30, 'auto', 30, 25, 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto'],
                     body: [
                         [
+                            { text: 'Obs', style: 'header' },
                             { text: 'Orden', style: 'header' },
                             { text: 'Cliente', style: 'header' },
                             { text: 'Cuota', style: 'header' },
@@ -171,13 +172,16 @@ export function exportDataGrid(list, ruta, cobrador) {
     };
     // console.log(docDefinition.content)
     data.forEach((x) => {
+        const entries = Object.entries(x.creditos_renovaciones);
+
         docDefinition.content[1].table.body.push(
             [
+                { text: entries.length > 0 ? '#' + entries.length : '', style: 'tableBody' },
                 { text: x.orden, style: 'tableBody' },
                 { text: x.cliente.titular, style: 'tableBody' },
                 { text: x.cuota, style: 'tableBody' },
                 { text: x.mora, style: 'tableBody' },
-                { text: x.cuotas_pagas, style: 'tableBody' },
+                { text: x.cuotas_pagas.toFixed(1), style: 'tableBody' },
                 { text: x.valor_prestamo, style: 'tableBody' },
                 { text: x.mod_cuota, style: 'tableBody' },
                 { text: x.mod_dias, style: 'tableBody' },
@@ -194,7 +198,7 @@ export function exportDataGrid(list, ruta, cobrador) {
         )
     })
 
-    pdfMake.createPdf(docDefinition).download("Listado Ruta-" + ruta + "; del " + moment().format("YYYY-MM-DD") );
+    pdfMake.createPdf(docDefinition).download("Listado Ruta-" + ruta + "; del " + moment().format("YYYY-MM-DD"));
 }
 
 export const operators = [

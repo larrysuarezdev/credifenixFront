@@ -29,7 +29,8 @@ export function getCreditos(id) {
                     payload: {
                         data,
                         id,
-                        cobrador: res[0].data.cobrador
+                        cobrador: res[0].data.cobrador,
+                        nuevos: 0
                     }
                 })
             })
@@ -101,7 +102,7 @@ export function getClientes() {
 export function saveCredito() {
     return (dispatch, getState) => {
         let row = getState().rutas.get('selectRow').toJS();
-        console.log(row)
+
         if (row.cliente !== null) {
             row.cliente_id = row.cliente.id;
             row.mod_cuota = row.cuota * 1000;
@@ -124,7 +125,8 @@ export function saveCredito() {
                         payload: {
                             data,
                             id: row.cliente.id,
-                            cobrador: res.data.cobrador
+                            cobrador: res.data.cobrador,
+                            nuevos: row.valor_prestamo
                         }
                     })
 
@@ -145,7 +147,7 @@ export function saveCredito() {
 }
 
 
-export function saveAbonos(entrada, salida) {
+export function saveAbonos(entrada, salida, utilidad) {
     return (dispatch, getState) => {
         let rows = getState().rutas.get('list').valueSeq().toJS();
         const id = getState().rutas.get('idRuta');
@@ -159,9 +161,7 @@ export function saveAbonos(entrada, salida) {
             }
         });
 
-        console.log(renovaciones);
-
-        axios.post(`${API_URL}/creditos/abonos`, { 'cuotas': dataToSend, 'idRuta': id, 'renovaciones': renovaciones, 'flujoCaja': { 'entrada': entrada, 'salida': salida } })
+        axios.post(`${API_URL}/creditos/abonos`, { 'cuotas': dataToSend, 'idRuta': id, 'renovaciones': renovaciones, 'flujoCaja': { 'entrada': entrada, 'salida': salida, 'utilidad': utilidad } })
             .then((res) => {
                 const data = objectifyArray(res.data.data, {
                     by: ['id'],
@@ -173,7 +173,8 @@ export function saveAbonos(entrada, salida) {
                     payload: {
                         data,
                         id,
-                        cobrador: res.data.cobrador
+                        cobrador: res.data.cobrador,
+                        nuevos: 0
                     }
                 })
 
@@ -188,7 +189,7 @@ export function saveAbonos(entrada, salida) {
 }
 
 export function saveRenovacion(id) {
-    return (dispatch, getState) => {
+    return (dispatch) => {
 
         axios.post(`${API_URL}/creditos/renovaciones`, { 'id': id })
             .then((res) => {
@@ -199,6 +200,23 @@ export function saveRenovacion(id) {
                     }
                 });
                 dispatch(toggleModal());
+            })
+            .catch((err) => {
+                messageHandler(dispatch, err)
+            })
+    }
+}
+
+export function saveRenovacionInmediata(id) {
+    return (dispatch) => {
+        axios.post(`${API_URL}/creditos/renovaciones`, { 'id': id })
+            .then((res) => {
+                dispatch({
+                    type: types.SET_DATA_RENOVACION,
+                    payload: {
+                        id
+                    }
+                });
             })
             .catch((err) => {
                 messageHandler(dispatch, err)
@@ -239,9 +257,14 @@ export function cleanDataRutas() {
     }
 }
 
-export function cleanRenovacion() {
+export function cleanRenovacion(id) {
     return (dispatch) => {
-        dispatch({ type: types.CLEAN_DATA_RENOVACION })
+        dispatch({
+            type: types.CLEAN_DATA_RENOVACION,
+            payload: {
+                id
+            }
+        })
     }
 }
 

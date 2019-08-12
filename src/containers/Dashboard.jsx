@@ -80,7 +80,7 @@ class Dashboard extends Component {
             <div className="card-header py-3 d-flex flex-row align-items-center justify-content-between">
               <h6 className="m-0 font-weight-bold text-success">Clientes en el último mes</h6>
             </div>
-            <ul className="nav nav-tabs nav-justified" id="myTab" role="tablist">
+            {/* <ul className="nav nav-tabs nav-justified" id="myTab" role="tablist">
               {
                 tabs.map(x => {
                   return (
@@ -97,7 +97,7 @@ class Dashboard extends Component {
                   )
                 })
               }
-            </ul>
+            </ul> */}
             <div className="tab-content">
               <div className="tab-pane fade show active" style={{ minHeight: 'calc(100vh - 255px)' }}>
                 {tabs[tab].component}

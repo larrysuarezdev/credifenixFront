@@ -9,6 +9,8 @@ import DraggableItem from '../../components/Administracion/Roles/DraggableItem'
 
 
 import { addClass, removeClass } from '../../utils/helpers'
+import { getPermisoByRol, changePermision } from '../../actions/roles'
+
 
 class Roles extends Component {
 
@@ -24,8 +26,8 @@ class Roles extends Component {
         removeClass(e.target, 'draggingover')
         const obj = JSON.parse(e.dataTransfer.getData("text"))
         const origin = obj.origin
-        const item = obj.item
-        this.props.redistributeCamposAndColumnas(origin, destination, item)
+        const item = obj.item;
+        this.props.changePermision(item)
     }
 
     handleDropOnItem = (e, itemover, destination) => {
@@ -39,7 +41,7 @@ class Roles extends Component {
     }
 
     render() {
-        const { vistas, selected } = this.props;
+        const { vistas, selected, getPermisoByRol } = this.props;
         // const buttons = [
         //   <BoxButton key="bb[0][0]" name="plus" onClick={() => console.log('debe agregar')} title="Agregar referencia" classCSS="info" />,
         // ]
@@ -51,10 +53,11 @@ class Roles extends Component {
                         <div className="col-md-3">
                             <div className="form-group">
                                 <label>Seleccione el rol...</label>
-                                <select className="form-control form-control-sm" id="exampleFormControlSelect1">
-                                    <option>Administrador</option>
-                                    <option>Supervisor</option>
-                                    <option>Empleado</option>
+                                <select className="form-control form-control-sm" id="exampleFormControlSelect1" onChange={(e) => getPermisoByRol(e.target.value)}>
+                                    <option value="0">Seleccione...</option>
+                                    <option value="1">Administrador</option>
+                                    <option value="2">Supervisor</option>
+                                    <option value="3">Empleado</option>
                                 </select>
                             </div>
                         </div>
@@ -64,9 +67,9 @@ class Roles extends Component {
                                     <label>Vistas disponibles</label>
                                     <DroppableArea fillPage onDrop={(e) => this.handleDrop(e, 0)} >
                                         {
-                                            vistas.map((item, index) => {
+                                            vistas.filter(x => x.get('ver') === false).map((item, index) => {
                                                 return (
-                                                    <DraggableItem key={`div0[${item.get('Nombre')}]`} onDragStart={(e) => { this.handleDragStart(e, item.get('Nombre'), 0) }} onDrop={(e) => { this.handleDropOnItem(e, item.get('Nombre'), 0) }} caption={item.get('Nombre')} order={item.get('Orden')} color={item.get('Color')} selected={selected === item.get('Nombre')} />
+                                                    <DraggableItem key={`div0[${item.get('pantalla')}]`} onDragStart={(e) => { this.handleDragStart(e, item.get('pantalla'), 0) }} onDrop={(e) => { this.handleDropOnItem(e, item.get('pantalla'), 0) }} caption={item.get('pantalla')} selected={selected === item.get('pantalla')} />
                                                 )
                                             })
                                         }
@@ -78,9 +81,9 @@ class Roles extends Component {
                                     <label>Vistas a las que tiene permiso el rol</label>
                                     <DroppableArea fillPage onDrop={(e) => this.handleDrop(e, 0)} >
                                         {
-                                            vistas.map((item, index) => {
+                                            vistas.filter(x => x.get('ver') === true).map((item, index) => {
                                                 return (
-                                                    <DraggableItem key={`div1[${item.get('Nombre')}]`} onDragStart={(e) => { this.handleDragStart(e, item.get('Nombre'), 0) }} onDrop={(e) => { this.handleDropOnItem(e, item.get('Nombre'), 0) }} caption={item.get('Nombre')} order={item.get('Orden')} color={item.get('Color')} selected={selected === item.get('Nombre')} />
+                                                    <DraggableItem key={`div1[${item.get('pantalla')}]`} onDragStart={(e) => { this.handleDragStart(e, item.get('pantalla'), 0) }} onDrop={(e) => { this.handleDropOnItem(e, item.get('pantalla'), 0) }} caption={item.get('pantalla')}  selected={selected === item.get('pantalla')} />
                                                 )
                                             })
                                         }
@@ -104,7 +107,9 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-    return {
+    return {        
+        getPermisoByRol: (id) => dispatch(getPermisoByRol(id)),
+        changePermision: (vista) => dispatch(changePermision(vista)),
     }
 }
 

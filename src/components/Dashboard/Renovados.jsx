@@ -6,7 +6,7 @@ class Nuevos extends Component {
 
   render() {
     const { label, dataSET } = this.props;
-
+    console.log(dataSET)
     const data = {
       labels: label,
       datasets: [

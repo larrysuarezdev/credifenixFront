@@ -21,7 +21,7 @@ export default class DraggableItem extends Component {
         let style = {}
         style.color = (!color) ? '#1796D7' : color
         return (
-            <div className={ `draggable-item ${selected ? 'selected' : ''}` } draggable={ true } onDragEnd={ (e) => { this.handleDragEnd(e) } } onDragStart={ onDragStart } onDragEnter={ this.handleDragEnter } onDragLeave={ this.handleDragLeave } onDrop={ onDrop } >
+            <div className={ `draggable-item ${selected ? 'selected' : ''}` } id={1} draggable={ true } onDragEnd={ (e) => { this.handleDragEnd(e) } } onDragStart={ onDragStart } onDragEnter={ this.handleDragEnter } onDragLeave={ this.handleDragLeave } onDrop={ onDrop } >
                 <span style={{ marginRight: '4px', fontWeight: 'bold' }}>{ order }</span>
                 { caption }
                 <span style={{ float: 'right' }}><FontAwesome name="square" style={ style } /></span>

@@ -21,7 +21,7 @@ import AddClientes from '../../components/Administracion/Clientes/AddClientes'
 import ModalFilterMaestras from '../../components/Common/ModalFilterMaestras'
 
 
-import { getCreditos, saveCredito, getListRutas, getListPeriodos, saveAbonos, saveRenovacion, cleanDataRutas, reorderData } from '../../actions/rutas'
+import { getCreditos, saveCredito, getListRutas, getListPeriodos, saveAbonos, saveRenovacion, cleanDataRutas, reorderData, saveRenovacionInmediata } from '../../actions/rutas'
 import { cleanCliente } from '../../actions/clientes'
 import { selectAction, changeAttr2, toggleModal, newRow } from '../../actions/common'
 import { exportDataGrid } from '../../utils/helpers'
@@ -36,6 +36,7 @@ class Rutas extends Component {
         this.changeAction = this.changeAction.bind(this);
         this.actionClick = this.actionClick.bind(this);
         this.actionClickRenovados = this.actionClickRenovados.bind(this);
+        this.actionClickRenovadosInmediatos = this.actionClickRenovadosInmediatos.bind(this);
         this.createAction = this.createAction.bind(this);
         this.onChangeSelect = this.onChangeSelect.bind(this);
         this.actionToogleSidebarRigth = this.actionToogleSidebarRigth.bind(this);
@@ -59,16 +60,16 @@ class Rutas extends Component {
     componentWillMount() {
         this.props.cleanDataRutas();
         this.props.getListRutas();
-        this.props.getListPeriodos();             
+        this.props.getListPeriodos();
         this.props.cleanCliente();
     }
 
     componentDidMount() {
         var node = ReactDOM.findDOMNode(this.refs["dataExport"]);
         var gridHeight = node.clientHeight;
-        this.setState({ gridHeight : gridHeight });
+        this.setState({ gridHeight: gridHeight });
     }
-    
+
     createAction() {
         this.setState({ tipoModal: 0 })
         this.props.newRow("RUTA");
@@ -87,9 +88,28 @@ class Rutas extends Component {
 
     actionClickRenovados(rowId) {
         this.setState({ idRenovar: rowId })
-        this.setState({ tipoModal: 2 })
+        this.setState({ tipoModal: 2 });
         this.props.toggleModal();
     }
+
+    actionClickRenovadosInmediatos(rowId) {
+        Swal.fire({
+            title: 'Renovar credito',
+            html: `<div> 
+                    <p> Realmente desea renovar este credito? </p>
+                   </div>`,
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Confirmar cambios'
+        }).then((result) => {
+            if (result.value) {
+                this.setState({ idRenovar: rowId })
+                this.props.saveRenovacionInmediata(rowId);
+            }
+        })
+    }
+
 
     actionClickReorder() {
         this.setState({ tipoModal: 3 })
@@ -126,35 +146,33 @@ class Rutas extends Component {
     }
 
     saveAbonos() {
-        let entrada = 0, salida = 0;
+        let entrada = 0, salida = 0, utilidad = 0;
 
         this.props.list.map((x) => {
             entrada = entrada + Number(x.get('cuota'));
             if (x.get('renovacion')) {
-                salida = salida + Number(x.getIn(['renovacion', 'monto'])) //SUMARLE el total de los creditos NUEVOS
+                salida = salida + Number(x.getIn(['renovacion', 'monto']));
+                utilidad = utilidad + (x.get('valor_total') - x.get('valor_prestamo'));
             }
         })
 
         entrada = entrada * 1000;
-        salida = salida * 1000;
-
-//UTILIDAD: 
+        salida = (salida * 1000) + this.props.nuevos;
 
         Swal.fire({
             title: 'FLUJO DE CAJA',
             html: `<div> 
                     <p> Entran: ${numeral(entrada).format('')} </p>
                     <p> Salen: ${numeral(salida).format('')} </p>
-                    <p> Utilidad: ${numeral(entrada + salida).format('')} </p>
+                    <p> Utilidad: ${numeral(utilidad).format('')} </p>
                    </div>`,
-            // type: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
             confirmButtonText: 'Confirmar cambios'
         }).then((result) => {
             if (result.value) {
-                this.props.saveAbonos(entrada, salida)
+                this.props.saveAbonos(entrada, salida, utilidad)
             }
         })
     }
@@ -212,7 +230,7 @@ class Rutas extends Component {
             case 2:
                 return (
                     <Modal title="Renovar crédito" buttons={buttons1} brand={true} >
-                        <RenovarCredito />
+                        <RenovarCredito id={this.state.idRenovar} />
                     </Modal>
                 )
             case 3:
@@ -228,7 +246,7 @@ class Rutas extends Component {
 
 
     render() {
-        const { ids, list, rutas, cartera, cobrador, idRuta } = this.props;
+        const { ids, list, rutas, cartera, cobrador, idRuta, nuevos } = this.props;
         var today = moment((new Date())).format('YYYY-MM-DD');
 
         const buttons = [
@@ -257,7 +275,7 @@ class Rutas extends Component {
                     </div>
                     <div className="col-md-3">
                         <label >Cobrador</label>
-                        <input className="form-control form-control-sm" type="text" value={cobrador !== 'Sin asignar' ? cobrador.nombres + ' ' + cobrador.apellidos : cobrador } readOnly disabled ></input>
+                        <input className="form-control form-control-sm" type="text" value={cobrador !== 'Sin asignar' ? cobrador.nombres + ' ' + cobrador.apellidos : cobrador} readOnly disabled ></input>
                     </div>
                 </div>
                 <div className="col-md-12 col-xs-12" style={{ padding: 0 }} >
@@ -269,6 +287,7 @@ class Rutas extends Component {
                             changeAction={this.changeAction}
                             actionClick={this.actionClick}
                             actionClickRenovados={this.actionClickRenovados}
+                            actionClickRenovadosInmediatos={this.actionClickRenovadosInmediatos}
                         />
                     </div>
                 </div>
@@ -306,23 +325,25 @@ function mapStateToProps(state) {
         ids: state.rutas.get('ids'),
         rutas: state.rutas.get('rutas'),
         cartera: state.rutas.get('cartera'),
+        nuevos: state.rutas.get('nuevos'),
         idRuta: state.rutas.get('idRuta'),
-        cobrador: state.rutas.get('cobrador')        
+        cobrador: state.rutas.get('cobrador')
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
         getListRutas: () => dispatch(getListRutas()),
-        getListPeriodos: () => dispatch(getListPeriodos()),        
+        getListPeriodos: () => dispatch(getListPeriodos()),
         getCreditos: (id) => dispatch(getCreditos(id)),
         selectAction: (id, reloadGrid, tipo) => dispatch(selectAction(id, reloadGrid, tipo)),
         changeAttr2: (tipo, id, attr, value) => dispatch(changeAttr2(tipo, id, attr, value)),
         toggleModal: () => dispatch(toggleModal()),
         newRow: (tipo) => dispatch(newRow(tipo)),
         saveCredito: () => dispatch(saveCredito()),
-        saveAbonos: (entrada, salida) => dispatch(saveAbonos(entrada, salida)),
+        saveAbonos: (entrada, salida, utilidad) => dispatch(saveAbonos(entrada, salida, utilidad)),
         saveRenovacion: (id) => dispatch(saveRenovacion(id)),
+        saveRenovacionInmediata: (id) => dispatch(saveRenovacionInmediata(id)),
         cleanCliente: () => dispatch(cleanCliente()),
         cleanDataRutas: () => dispatch(cleanDataRutas()),
         reorderData: () => dispatch(reorderData()),

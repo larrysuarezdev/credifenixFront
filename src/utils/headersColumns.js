@@ -54,15 +54,14 @@ export const tableColumnsFlujoCaja = [
     { ID: 0, CAPTION: '', VALUE: '', TYPE: 'BUTTON', FORMAT: '', WIDTH: 20, FIXED: true },
     { ID: 1, CAPTION: 'Descripción', VALUE: 'descripcion', TYPE: 'VARCHAR2', FORMAT: '', WIDTH: 250, FIXED: true },
     { ID: 2, CAPTION: 'Tipo', VALUE: 'tipo', TYPE: 'VARCHAR3', FORMAT: '', WIDTH: 100, FIXED: false },
-    { ID: 3, CAPTION: 'Fecha', VALUE: 'fecha', TYPE: 'DATE', FORMAT: 'YYYY-MM-DD HH:MM', WIDTH: 160, FIXED: false },
+    { ID: 3, CAPTION: 'Fecha', VALUE: 'fecha', TYPE: 'DATE', FORMAT: 'YYYY-MM-DD', WIDTH: 160, FIXED: false },
     { ID: 4, CAPTION: 'Valor', VALUE: 'valor', TYPE: 'NUMBER', FORMAT: '', WIDTH: 150, FIXED: false },
 ]
 
 export const tableColumnsFlujoUtilidades = [
     { ID: 0, CAPTION: '', VALUE: '', TYPE: 'BUTTON', FORMAT: '', WIDTH: 20, FIXED: true },
     { ID: 1, CAPTION: 'Descripción', VALUE: 'descripcion', TYPE: 'VARCHAR2', FORMAT: '', WIDTH: 250, FIXED: true },
-    { ID: 2, CAPTION: 'Tipo', VALUE: 'tipo', TYPE: 'VARCHAR3', FORMAT: '', WIDTH: 100, FIXED: false },
-    { ID: 3, CAPTION: 'Fecha', VALUE: 'fecha', TYPE: 'DATE', FORMAT: 'YYYY-MM-DD HH:MM', WIDTH: 160, FIXED: false },
+    { ID: 3, CAPTION: 'Fecha', VALUE: 'fecha', TYPE: 'DATE', FORMAT: 'YYYY-MM-DD', WIDTH: 160, FIXED: false },
     { ID: 4, CAPTION: 'Valor', VALUE: 'valor', TYPE: 'NUMBER', FORMAT: '', WIDTH: 150, FIXED: false },
 ]
 

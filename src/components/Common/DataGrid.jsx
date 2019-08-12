@@ -20,15 +20,19 @@ function ExampleContextMenu({
     id,
     rowIdx,
     onRenovarCredito,
-    onDetallesCredito
+    onDetallesCredito,
+    onRenovarCreditoInmediato
 }) {
     return (
         <ContextMenu id={id}>
+            <MenuItem data={{ rowIdx, idx }} onClick={onRenovarCreditoInmediato}>
+                Renovación inmediata
+            </MenuItem>
             <MenuItem data={{ rowIdx, idx }} onClick={onRenovarCredito}>
-                Ronovar credito
+                Renovación editable
             </MenuItem>
             <MenuItem data={{ rowIdx, idx }} onClick={onDetallesCredito}>
-                Detalles
+                Detalles del crédito
             </MenuItem>
         </ContextMenu>
     );
@@ -47,7 +51,7 @@ const columns = [
     { key: 'valor_total', name: 'Total', editable: false, width: 100, frozen: false },
     { key: 'valor_ultimo_pago', name: 'Valor ult pag', editable: false, width: 110, frozen: false, formatter: ValorUltimoPagoFormatter },
     { key: 'fecha_ultimo_pago', name: 'Fecha ult pag', editable: false, width: 110, frozen: false, formatter: FechaUltimoPagoFormatter  },
-    { key: 'inicio_credito', name: 'Inicio', editable: false, width: 120, frozen: false },
+    { key: 'inicio_credito', name: 'Inicio', editable: false, width: 110, frozen: false },
     { key: 'neg_titular', name: 'Negocio', editable: false, width: 200, frozen: false, formatter: NegocioFormatter },
     { key: 'dir_titular', name: 'Dirección', editable: false, width: 200, frozen: false, formatter: DireccionFormatter },
     { key: 'telefono', name: 'Telefono', editable: false, width: 200, frozen: false, formatter: TelefonoClienteFormatter },
@@ -75,6 +79,11 @@ class DataGrid extends Component {
         this.props.actionClickRenovados(id)
     }
 
+    onRenovarCreditoInmediato(rowIdx) {
+        const id = this.props.ids.get(rowIdx);
+        this.props.actionClickRenovadosInmediatos(id)
+    }
+
     onDetallesCredito(rowIdx) {
         const id = this.props.ids.get(rowIdx);
         this.props.actionClick(id)
@@ -97,6 +106,7 @@ class DataGrid extends Component {
                     <ExampleContextMenu
                         onRenovarCredito={(e, { rowIdx }) => this.onRenovarCredito(rowIdx)}
                         onDetallesCredito={(e, { rowIdx }) => this.onDetallesCredito(rowIdx)}
+                        onRenovarCreditoInmediato={(e, { rowIdx }) => this.onRenovarCreditoInmediato(rowIdx)}
                     />
                 }
                 RowsContainer={ContextMenuTrigger}

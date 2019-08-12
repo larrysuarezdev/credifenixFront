@@ -15,6 +15,9 @@ const newRow = {
 
 const newRenovacion = {
     observaciones: '',
+    valor: '',
+    cuota: '',
+    dias: '',
     monto: '',
     modalidad: 1
 }
@@ -27,6 +30,7 @@ const INITIAL_STATE = Immutable.fromJS({
     ids: [],
     clientes: [],
     cartera: 0,
+    nuevos: 0,
     cobrador: 'Sin asignar',
     rutas: [],
     periodos: [],
@@ -40,7 +44,7 @@ const INITIAL_STATE = Immutable.fromJS({
 })
 
 export default function (state = INITIAL_STATE, action) {
-    let creditos;
+    let creditos, row;
     switch (action.type) {
         case types.GET_RUTAS:
             creditos = recalculate(Immutable.fromJS(action.payload.data), 'id', true)
@@ -50,6 +54,7 @@ export default function (state = INITIAL_STATE, action) {
             state = state.set('ids', state.get('list').sortBy(x => x.get('orden')).keySeq().toList())
             state = state.set('idRuta', action.payload.id)
             state = state.set('cartera', creditos.cartera)
+            state = state.set('nuevos', action.payload.nuevos)
             if (action.payload.cobrador !== null)
                 state = state.set('cobrador', action.payload.cobrador)
             else
@@ -106,6 +111,13 @@ export default function (state = INITIAL_STATE, action) {
             state = INITIAL_STATE
             return state
         case types.CLEAN_DATA_RENOVACION:
+            row = state.getIn(['list', String(action.payload.id)]).toJS();
+            newRenovacion.valor = row.valor_prestamo / 1000;
+            newRenovacion.cuota = row.mod_cuota / 1000;
+            newRenovacion.dias = row.mod_dias;
+            newRenovacion.valor_prestamo = row.valor_prestamo;
+            newRenovacion.saldo = row.saldo;
+            
             state = state.set('renovacion', Immutable.fromJS(newRenovacion))
             return state
         case types.REORDER_LIST_RUTA:
@@ -124,7 +136,12 @@ export default function (state = INITIAL_STATE, action) {
 
         case types.SET_RENOVACION:
             state = state.setIn(['list', String(action.payload.id), 'renovacion'], state.get('renovacion').toJS());
-            console.log(state.get('list').toJS())
+            return state;
+
+        case types.SET_DATA_RENOVACION:
+            row = state.getIn(['list', String(action.payload.id)]).toJS()
+            state = state.set('renovacion', Immutable.fromJS({observaciones : "", monto : (row.valor_prestamo - row.saldo) / 1000, modalidad : row.modalidad }))
+            state = state.setIn(['list', String(action.payload.id), 'renovacion'], state.get('renovacion'));
             return state;
 
         case types.UPDATED_MAESTRA_RUTAS:

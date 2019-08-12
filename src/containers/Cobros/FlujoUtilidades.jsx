@@ -8,18 +8,19 @@ import BrandButton from '../../components/Common/BrandButton'
 import TableVirtualized from '../../components/Common/TableVirtualized'
 // import ModalClientes from '../../Cobros/Rutas/ModalClientes'
 
-import { 
-    // getFlujoUtilidades, 
-    saveAction } from '../../actions/flujoCaja'
+import {
+    getFlujoUtilidades,
+    saveAction
+} from '../../actions/flujoUtilidades'
 import { selectAction, changeAttr, newRow } from '../../actions/common'
 import { tableColumnsFlujoUtilidades } from '../../utils/headersColumns'
 
 class FlujoUtilidades extends Component {
 
     componentWillMount() {
-        // this.props.getFlujoUtilidades();
+        this.props.getFlujoUtilidades();
     }
-    
+
     render() {
         const { ids, list, selected, selectAction, selectRow, changeAttr } = this.props;
         var today = moment((new Date())).format('YYYY-MM-DD');
@@ -42,26 +43,19 @@ class FlujoUtilidades extends Component {
                         <div className={`col-md-4 ${selectRow !== null ? "" : "disabledDiv"} `}>
                             <div className="col-md-12">
                                 <label htmlFor="fecha">Fecha</label>
-                                <input className="form-control form-control-sm" id="fecha" type="date" max={today} value={selectRow !== null ?  moment(selectRow.get('fecha')).format('YYYY-MM-DD') : ''} onChange={(e) => changeAttr(tipo, 'fecha', e.target.value)} />
+                                <input className="form-control form-control-sm" id="fecha" type="date" max={today} value={selectRow !== null ? moment(selectRow.get('fecha')).format('YYYY-MM-DD') : ''} onChange={(e) => changeAttr(tipo, 'fecha', e.target.value)} />
                             </div>
                             <div className="col-md-12">
                                 <label htmlFor="observaciones">Descripción</label>
                                 <textarea className="form-control form-control-sm" id="descripcion" rows="3" value={selectRow !== null ? selectRow.get('descripcion') : ''} onChange={(e) => changeAttr(tipo, 'descripcion', e.target.value)}></textarea>
-                            </div>
-                            <div className="col-md-12">
-                                <label htmlFor="tipo">Tipo</label>
-                                <select className="form-control form-control-sm" id="tipo" value={selectRow !== null ? selectRow.get('tipo') : ''} onChange={(e) => changeAttr(tipo, 'tipo', e.target.value)} >
-                                    <option value="1">Entrada</option>
-                                    <option value="2">Salida</option>
-                                </select>
-                            </div>
+                            </div>                            
                             <div className="col-md-12">
                                 <label htmlFor="valor">Valor</label>
-                                <input className="form-control form-control-sm" type="number" id="valor" value={selectRow !== null ? selectRow.get('valor') : ''} onChange={(e) => changeAttr(tipo, 'valor', e.target.value)}/>
+                                <input className="form-control form-control-sm" type="number" id="valor" value={selectRow !== null ? selectRow.get('valor') : ''} onChange={(e) => changeAttr(tipo, 'valor', e.target.value)} />
                             </div>
                         </div>
                         <div className="col-md-8">
-                            {/* <TableVirtualized
+                            <TableVirtualized
                                 tableColumns={tableColumnsFlujoUtilidades}
                                 ids={ids}
                                 list={list}
@@ -70,7 +64,7 @@ class FlujoUtilidades extends Component {
                                 selected={selected}
                                 tipo={tipo}
                                 actionDoubleClick={this.props.toggleModal}
-                            /> */}
+                            />
                         </div>
                     </div>
                 </div>
@@ -81,16 +75,16 @@ class FlujoUtilidades extends Component {
 
 function mapStateToProps(state) {
     return {
-        list: state.flujoCaja.get('list'),
-        selected: state.flujoCaja.get('selected'),
-        ids: state.flujoCaja.get('ids'),
-        selectRow: state.flujoCaja.get('selectRow'),
+        list: state.flujoUtilidades.get('list'),
+        selected: state.flujoUtilidades.get('selected'),
+        ids: state.flujoUtilidades.get('ids'),
+        selectRow: state.flujoUtilidades.get('selectRow'),
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        // getFlujoUtilidades: () => dispatch(getFlujoUtilidades()),
+        getFlujoUtilidades: () => dispatch(getFlujoUtilidades()),
         saveAction: () => dispatch(saveAction()),
         selectAction: (id, reloadGrid, tipo) => dispatch(selectAction(id, reloadGrid, tipo)),
         changeAttr: (tipo, attr, value) => dispatch(changeAttr(tipo, attr, value)),
