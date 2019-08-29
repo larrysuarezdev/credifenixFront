@@ -10,12 +10,14 @@ const newRow = {
     email: '',
     username: '',
     password: '',
-    ruta: 0
+    ruta: 0,
+    ruta: '',
 }
 
 const INITIAL_STATE = Immutable.fromJS({
     list: [],
     ids: [],
+    roles: [],
     selected: null,
     selectRow: null,
     edit: false
@@ -44,6 +46,9 @@ export default function (state = INITIAL_STATE, action) {
         case types.CLEAN_USUARIO:
             state = state.set('selectRow', INITIAL_STATE.get('selectRow'))
             state = state.set('selected', INITIAL_STATE.get('selected'))
+            return state
+        case types.GET_LISTA_ROLES:
+            state = state.set('roles', Immutable.fromJS(action.payload.data))
             return state
         default:
             return state

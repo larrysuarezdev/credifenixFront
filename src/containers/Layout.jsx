@@ -5,7 +5,7 @@ import { toast } from 'react-toastify'
 //UI
 import Sidebar from '../components/Layout/Sidebar'
 import Navbar from '../components/Layout/Navbar'
-// import Modal from '../components/Common/Modal'
+import Loading from '../components/Common/Loading'
 // import BoxButton from '../components/Common/BoxButton'
 // import FontAwesome from 'react-fontawesome'
 
@@ -190,15 +190,16 @@ class Layout extends Component {
       }
     }
 
-    const { user, signOut } = this.props;
+    const { user, signOut, rol } = this.props;
     const { isOpen, sidebarItems } = this.state
-    // console.log(sidebarItems)
+    
     return (
       <div id="wrapper">
         <Sidebar
           isOpen={isOpen}
           toggle={this.toggle}
           sidebarItems={sidebarItems}
+          permission={rol}
           onClick={this.handleChangeSelectedItem}
           onClick1={this.handleChangeSelectedSubItem}
         />
@@ -223,6 +224,7 @@ class Layout extends Component {
             <i className="fas fa-angle-up"></i>
           </a>
         </div>
+        <Loading />
       </div>
     );
   }
@@ -232,6 +234,7 @@ function mapStateToProps(state) {
   return {
     isAuthenticated: state.auth.isAuthenticated,
     user: state.auth.user,
+    rol: state.auth.rol,
     messages: state.messages.get('message'),
   }
 }

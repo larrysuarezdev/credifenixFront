@@ -10,7 +10,7 @@ const INITIAL_STATE = Immutable.fromJS({
     modalFilter: false,
     modalFilters: [],
     waiting: false,
-    searchBack : false
+    searchBack: false
 })
 
 export default function (state = INITIAL_STATE, action) {
@@ -64,6 +64,11 @@ export default function (state = INITIAL_STATE, action) {
         case types.CONMUTAR_SELECCION_CRITERIO_FILTRADO_MAESTRAS:
             state = state.setIn(`modalFilters.${action.payload.index}.checked`.split('.'), action.payload.checked)
             return state
+
+        case types.SET_LOADING:
+            state = state.set("waiting", action.payload)
+            return state
+
         default:
             return state
     }

@@ -15,6 +15,27 @@ const CuotaFormatter = ({ row }) => {
         return row.cuota;
 };
 
+const MoraFormatter = ({ row }) => {
+    var res = "";
+
+    switch (true) {
+        case row.mora >= 5 && row.mora <= 9:
+            res = <div style={{ background: '#FBF462', textAlign : "center" }}>{row.mora}</div>;
+            break;
+        case row.mora >= 10 && row.mora <= 19:
+            res = <div style={{ background: '#F1775C', textAlign : "center" }}>{row.mora}</div>;
+            break;
+        case row.mora >= 20:
+            res = <div style={{ background: '#A25EEA', textAlign : "center" }}>{row.mora}</div>;
+            break;
+        default:
+            res = <div style={{ textAlign : "center" }}>{row.mora}</div>;
+            break;
+    }
+    return res;
+};
+
+
 function ExampleContextMenu({
     idx,
     id,
@@ -42,7 +63,7 @@ const columns = [
     { key: 'orden', name: 'Orden', editable: false, width: 60, frozen: true },
     { key: 'cliente', name: 'Cliente', editable: false, width: 200, frozen: true, formatter: ClienteFormatter },
     { key: 'cuota', name: 'Cuota', editable: true, width: 60, frozen: true, formatter: CuotaFormatter },
-    { key: 'mora', name: 'Mora', editable: false, width: 50, frozen: true },
+    { key: 'mora', name: 'Mora', editable: false, width: 50, frozen: true, formatter: MoraFormatter },
     { key: 'cuotas_pagas', name: 'PAG', editable: false, width: 50, frozen: false },
     { key: 'valor_prestamo', name: 'Prestamo', editable: false, width: 100, frozen: false },
     { key: 'mod_cuota', name: 'Cuota', editable: false, width: 80, frozen: false },
@@ -50,7 +71,7 @@ const columns = [
     { key: 'saldo', name: 'Saldo', editable: false, width: 100, frozen: false },
     { key: 'valor_total', name: 'Total', editable: false, width: 100, frozen: false },
     { key: 'valor_ultimo_pago', name: 'Valor ult pag', editable: false, width: 110, frozen: false, formatter: ValorUltimoPagoFormatter },
-    { key: 'fecha_ultimo_pago', name: 'Fecha ult pag', editable: false, width: 110, frozen: false, formatter: FechaUltimoPagoFormatter  },
+    { key: 'fecha_ultimo_pago', name: 'Fecha ult pag', editable: false, width: 110, frozen: false, formatter: FechaUltimoPagoFormatter },
     { key: 'inicio_credito', name: 'Inicio', editable: false, width: 110, frozen: false },
     { key: 'neg_titular', name: 'Negocio', editable: false, width: 200, frozen: false, formatter: NegocioFormatter },
     { key: 'dir_titular', name: 'Dirección', editable: false, width: 200, frozen: false, formatter: DireccionFormatter },
@@ -92,7 +113,7 @@ class DataGrid extends Component {
     render() {
         const { height } = this.props;
         const data = this.props.rows.toList().toJS().sort(function (a, b) { return a.orden - b.orden });
-        
+
         return (
             <ReactDataGrid
                 columns={columns}

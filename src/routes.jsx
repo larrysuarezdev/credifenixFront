@@ -18,16 +18,16 @@ import requireAuth from './lib/requireAuth'
 
 export default (
 	<Switch>
-		<Route exact path="/login" component={Login} />
+		<Route path="/login" component={Login} />
 		<Layout>
 			<Route exact path="/" component={ requireAuth(Dashboard) } />					
-			<Route exact path="/administracion/clientes" component={ requireAuth(Clientes) } />					
-			<Route exact path="/administracion/personas" component={ requireAuth(Personas) } />					
-			<Route exact path="/administracion/maestras" component={ requireAuth(Maestras) } />					
-			<Route exact path="/administracion/roles" component={ requireAuth(Roles) } />					
-			<Route exact path="/cobros/rutas" component={ requireAuth(Rutas) } />					
-			<Route exact path="/cobros/flujoCaja" component={ requireAuth(FlujoCaja) } />					
-			<Route exact path="/cobros/flujoUtilidades" component={ requireAuth(FlujoUtilidades) } />					
+			<Route path="/administracion/clientes" component={ requireAuth(Clientes) } />					
+			<Route path="/administracion/personas" component={ requireAuth(Personas) } />					
+			<Route path="/administracion/maestras" component={ requireAuth(Maestras) } />					
+			<Route path="/administracion/roles" component={ requireAuth(Roles) } />					
+			<Route path="/cobros/rutas" component={ requireAuth(Rutas) } />					
+			<Route path="/cobros/flujoCaja" component={ requireAuth(FlujoCaja) } />					
+			<Route path="/cobros/flujoUtilidades" component={ requireAuth(FlujoUtilidades) } />					
 			{/* <Route path="/rutaInstruccion/recetas" component={requireAuth(Recetas)} /> */}
 		</Layout>
 	</Switch>

@@ -5,6 +5,7 @@ export const ClienteFormatter = ({ row }) => {
     return row.cliente.titular;
 };
 
+
 export const NegocioFormatter = ({ row }) => {
     return row.cliente.neg_titular;
 };

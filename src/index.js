@@ -31,9 +31,10 @@ const history = createBrowserHistory()
 
 const token = cookie.get('token')
 const user = cookie.get('user')
+const rol = cookie.get('rol')
 
 if (token) {
-    store.dispatch({ type: INICIAR_SESION, payload: user })
+    store.dispatch({ type: INICIAR_SESION, payload: { user, rol } })
 }
 
 window.root = window.document.getElementById('root')

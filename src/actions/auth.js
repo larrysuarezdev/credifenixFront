@@ -12,12 +12,14 @@ export function signIn({ username, password }, callback) {
         axios
             .post(`${API_URL}/account/signin`, { username, password })
             .then((res) => {
-
                 cookie.set('token', res.data.token, { path: '/' })
                 cookie.set('user', res.data.user, { path: '/' })
-                dispatch({ type: types.INICIAR_SESION, payload: res.data.user })
+                cookie.set('rol', res.data.rol, { path: '/' })
+                
+                dispatch({ type: types.INICIAR_SESION, payload: { user : res.data.user, rol : res.data.rol } })
 
                 window.location.href = `${CLIENT_ROOT_URL}`
+
                 if (callback instanceof Function) {
                     callback()
                 }
@@ -40,6 +42,7 @@ export function signOut() {
         dispatch({ type: types.CERRAR_SESION })
         cookie.remove('token', { path: '/' })
         cookie.remove('user', { path: '/' })
+        cookie.remove('rol', { path: '/' })
         window.location.href = `${CLIENT_ROOT_URL}/login`
     }
 }
@@ -47,5 +50,6 @@ export function signOut() {
 export function signOutOn401(dispatch) {
     cookie.remove('token', { path: '/' })
     cookie.remove('user', { path: '/' })
+    cookie.remove('rol', { path: '/' })
     dispatch({ type: types.CERRAR_SESION })
 }

@@ -52,7 +52,7 @@ class AddCredito extends Component {
                         {
                             periodos.map((x) => {
                                 return (
-                                    <option value={x.get("value")}>{ x.get("label") }</option>
+                                    <option value={x.get("value")} key={x.get("label")}>{ x.get("label") }</option>
                                 )
                             })
                         }

@@ -4,12 +4,11 @@ import { Link } from 'react-router-dom'
 export default class Sidebar extends Component {
 
     render() {
-        const { sidebarItems, toggle, isOpen, onClick, onClick1 } = this.props;
+        const { sidebarItems, toggle, isOpen, onClick, onClick1, permission } = this.props;
         return (
             <ul className={isOpen ? "navbar-nav bg-gradient-fenix sidebar sidebar-dark accordion" : "navbar-nav bg-gradient-primary sidebar sidebar-dark accordion toggled"} id="accordionSidebar">
                 <a className="sidebar-brand d-flex align-items-center justify-content-center" href="/">
                     <div className="sidebar-brand-icon rotate-n-15">
-                        {/* <i className="fas fa-laugh-wink"></i> */}
                         <i className="fab fa-earlybirds"></i>
                     </div>
                     <div className="sidebar-brand-text mx-3"> <sup>CREDI </sup> FENIX </div>
@@ -42,10 +41,22 @@ export default class Sidebar extends Component {
                                         {
                                             item.subitems.map((subitems, index) => {
                                                 return (
-                                                    <Link key={`[0][${index}}]`} className="collapse-item" onClick={(e) => onClick1(e, subitems.caption)} to={subitems.url}>
-                                                        <i className={`fas fa-fw fa-${subitems.icon}`} style={{ marginRight : 5}} ></i>
-                                                        {subitems.caption}
-                                                    </Link>
+                                                    permission.map((x) => {
+                                                        if (x.ver) {
+                                                            if (x.pantalla === subitems.title) {
+                                                                return (
+                                                                    <Link key={`[0][${index}}]`} className="collapse-item" onClick={(e) => onClick1(e, subitems.caption)} to={subitems.url}>
+                                                                        <i className={`fas fa-fw fa-${subitems.icon}`} style={{ marginRight: 5 }} ></i>
+                                                                        {subitems.caption}
+                                                                    </Link>
+                                                                )
+                                                            } else {
+                                                                return (null)
+                                                            }
+                                                        } else {
+                                                            return (null)
+                                                        }
+                                                    })
                                                 )
                                             })
                                         }

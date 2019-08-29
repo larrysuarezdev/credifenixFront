@@ -92,8 +92,19 @@ export function recalculate(data, id, cargue = false) {
                 x.fecha_ultimo_pago = "";
             }
         }
+        
         x.saldo = x.valor_total - abonos;
         x.cuotas_pagas = (x.valor_total - x.saldo) / x.mod_cuota
+
+        const DiaAct = new Date(moment().format("YYYY-MM-DD"));
+        const inicioCredito = new Date(moment(x.inicio_credito).format("YYYY-MM-DD"));
+        var Difference_In_Time = DiaAct.getTime() - inicioCredito.getTime();
+
+        var days = Difference_In_Time / (1000 * 3600 * 24);
+        days = days - Math.floor(days / 7);
+        
+        x.mora = days - Math.floor(x.cuotas_pagas);
+
         if (cargue) {
             x.cuota = ''
         }

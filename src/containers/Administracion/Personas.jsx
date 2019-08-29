@@ -9,7 +9,7 @@ import BoxButton from '../../components/Common/BoxButtonV2'
 import TableVirtualized from '../../components/Common/TableVirtualized'
 
 //DATA
-import { getUsuarios, saveAction } from '../../actions/usuarios'
+import { getUsuarios, saveAction, getListRoles } from '../../actions/usuarios'
 import { getListRutas } from '../../actions/rutas'
 import { selectAction, changeAttr, newRow } from '../../actions/common'
 
@@ -19,10 +19,11 @@ class Personas extends Component {
     componentWillMount() {
         this.props.getUsuarios();
         this.props.getListRutas();
+        this.props.getListRoles();
     }
 
     render() {
-        const { list, ids, selected, selectRow, changeAttr, saveAction, newRow, rutas } = this.props;
+        const { list, ids, selected, selectRow, changeAttr, saveAction, newRow, rutas, roles } = this.props;
         const tipo = "USUARIO";
         
         const buttons = [
@@ -84,9 +85,22 @@ class Personas extends Component {
                                     {
                                         selectRow.get('login') ?
                                             <div className="row">
-                                                <div className="col-md-8">
+                                                <div className="col-md-6">
                                                     <label >Email</label>
                                                     <input className="form-control form-control-sm" type="text" value={selectRow.get('email')} onChange={(e) => changeAttr(tipo, 'email', e.target.value)}></input>
+                                                </div>
+                                                <div className="col-md-6">
+                                                    <label >Rol</label>
+                                                    <select className="form-control form-control-sm" value={selectRow !== null ? selectRow.get('rol') : 0} onChange={(e) => changeAttr(tipo, 'rol', e.target.value)} >
+                                                        <option value={0} key={0}>Seleccione...</option>
+                                                        {
+                                                            roles.map((x) => {
+                                                                return (
+                                                                    <option value={x.get("value")} key={x.get("value")}>{x.get("label")}</option>
+                                                                )
+                                                            })
+                                                        }
+                                                    </select>
                                                 </div>
                                                 <div className="col-md-6">
                                                     <label >Nombre de usuario</label>
@@ -96,6 +110,7 @@ class Personas extends Component {
                                                     <label >Contraseña</label>
                                                     <input className="form-control form-control-sm" type="password" value={selectRow.get('password')} onChange={(e) => changeAttr(tipo, 'password', e.target.value)} ></input>
                                                 </div>
+                                                
                                             </div>
                                             :
                                             <div className="row">
@@ -119,7 +134,6 @@ class Personas extends Component {
                         }
 
                     </div>
-                    {/* </Card> */}
                 </div>
             </div>
         )
@@ -133,6 +147,7 @@ function mapStateToProps(state) {
         selected: state.usuarios.get('selected'),
         selectRow: state.usuarios.get('selectRow'),
         rutas: state.rutas.get('rutas'),
+        roles: state.usuarios.get('roles'),
     }
 }
 
@@ -144,6 +159,7 @@ function mapDispatchToProps(dispatch) {
         saveAction: () => dispatch(saveAction()),
         changeAttr: (tipo, attr, value) => dispatch(changeAttr(tipo, attr, value)),
         getListRutas: () => dispatch(getListRutas()),
+        getListRoles: () => dispatch(getListRoles()),
     }
 }
 

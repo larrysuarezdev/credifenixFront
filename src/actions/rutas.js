@@ -1,6 +1,6 @@
 import * as types from './types'
 import { createAxiosInstance } from '../utils/helpers'
-import { toggleModal } from './common'
+import { toggleModal, setLoading } from './common'
 
 import { API_URL, messageHandler } from './index'
 import objectifyArray from 'objectify-array'
@@ -16,6 +16,7 @@ export function getCreditos(id) {
     }
 
     return (dispatch) => {
+        dispatch(setLoading(true));
         Promise.all([getCredit()])
             .then((res) => {
 
@@ -23,6 +24,8 @@ export function getCreditos(id) {
                     by: ['id'],
                     recursive: true
                 })
+
+                dispatch(setLoading(false));
 
                 dispatch({
                     type: types.GET_RUTAS,
@@ -35,6 +38,7 @@ export function getCreditos(id) {
                 })
             })
             .catch((err) => {
+                dispatch(setLoading(false));
                 messageHandler(dispatch, err)
             })
     }
@@ -149,6 +153,7 @@ export function saveCredito() {
 
 export function saveAbonos(entrada, salida, utilidad) {
     return (dispatch, getState) => {
+        dispatch(setLoading(true));
         let rows = getState().rutas.get('list').valueSeq().toJS();
         const id = getState().rutas.get('idRuta');
 
@@ -168,6 +173,8 @@ export function saveAbonos(entrada, salida, utilidad) {
                     recursive: true
                 })
 
+                dispatch(setLoading(false));
+
                 dispatch({
                     type: types.GET_RUTAS,
                     payload: {
@@ -183,6 +190,7 @@ export function saveAbonos(entrada, salida, utilidad) {
                 })
             })
             .catch((err) => {
+                dispatch(setLoading(false));
                 messageHandler(dispatch, err)
             })
     }
@@ -190,7 +198,6 @@ export function saveAbonos(entrada, salida, utilidad) {
 
 export function saveRenovacion(id) {
     return (dispatch) => {
-
         axios.post(`${API_URL}/creditos/renovaciones`, { 'id': id })
             .then((res) => {
                 dispatch({

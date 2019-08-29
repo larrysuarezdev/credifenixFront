@@ -19,9 +19,11 @@ export function messageHandler(dispatch, error) {
 
     if (error.response) {
         switch (error.response.status) {
+            case 400:
+                Swal.fire('No está autorizado para proceder con esta solicitud. Por favor, inicie sesión y vuelva a intentarlo')
+                signOutOn401(dispatch)
             case 401:
                 Swal.fire('No está autorizado para proceder con esta solicitud. Por favor, inicie sesión y vuelva a intentarlo')
-                // dispatch({ type: types.MOSTRAR_MENSAJE, payload: { type: 'danger', message: '' } })
                 signOutOn401(dispatch)
                 break;
             case 422:
@@ -44,7 +46,6 @@ export function messageHandler(dispatch, error) {
                 break;
             default:
                 Swal.fire(error.response.data)
-
                 console.log('error : ' + error.response.data)
                 break;
         }

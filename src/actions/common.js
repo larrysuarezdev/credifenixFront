@@ -56,3 +56,11 @@ export function editRow(tipo, id) {
         dispatch({ type: types[`EDIT_${tipo}`], payload: { id } })
     }
 }
+
+export function setLoading(estado) {
+    return (dispatch) => {
+        dispatch({ type: types.SET_LOADING, payload: estado })
+    }
+}
+
+

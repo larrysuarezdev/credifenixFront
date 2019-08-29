@@ -9,6 +9,14 @@ import { getClientes, selectCliente } from '../../../actions/rutas'
 
 class ModalClientes extends Component {
 
+    constructor(props){
+        super(props);
+
+        this.state = {
+            filter : ''
+        };
+    }
+
     componentDidMount() {
         this.props.getClientes();
     }
@@ -20,14 +28,16 @@ class ModalClientes extends Component {
 
     render() {
         const { clientes } = this.props;
+        const filter = this.state == undefined ? '' : this.state.filter;
 
+        console.log(this.state, filter)
         return (
             <ModalB isOpen={this.props.modal} toggle={this.props.toggleModalClientes} className={this.props.className} centered={true} scrollable="true" style={{ width: 450 }}  >
                 <ModalHeader toggle={this.props.toggleModalClientes}>Clientes</ModalHeader>
                 <div style={{ backgroundColor: '#dddfeb', padding: '10px 10px 0px 10px' }}>
                     <div className="form-group has-search">
                         <span className="fa fa-search form-control-feedback"></span>
-                        <input type="text" className="form-control form-control-sm" placeholder="Buscar" />
+                        <input type="text" className="form-control form-control-sm" onChange={(e) => this.setState({ filter : e.target.value })} placeholder="Buscar" />
                     </div>
                 </div>
                 <ModalBody style={{ maxHeight: 350, overflowY: 'auto' }}>
@@ -41,7 +51,7 @@ class ModalClientes extends Component {
                         </thead>
                         <tbody>
                             {
-                                clientes.sortBy(x => x.get('id')).valueSeq().map((x) => {
+                                clientes.filter(function(x){ return x.get('titular').toUpperCase().indexOf(filter.toUpperCase())>-1}).sortBy(x => x.get('id')).valueSeq().map((x) => {
                                     return (
                                         <tr key={x.get('id')} onDoubleClick={() => this.selectCliente(x.get('id'))}>
                                             <td>{x.get('cc_titular')}</td>

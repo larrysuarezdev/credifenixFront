@@ -5,11 +5,11 @@ import { connect } from 'react-redux'
 import Card from '../../components/Common/Card'
 import DroppableArea from '../../components/Administracion/Roles/DroppableArea'
 import DraggableItem from '../../components/Administracion/Roles/DraggableItem'
-// import BoxButton from '../../components/Common/BoxButton'
+import BoxButtonV1 from '../../components/Common/BoxButtonV1'
 
 
 import { addClass, removeClass } from '../../utils/helpers'
-import { getPermisoByRol, changePermision } from '../../actions/roles'
+import { getPermisoByRol, changePermision, updatedAction } from '../../actions/roles'
 
 
 class Roles extends Component {
@@ -42,14 +42,14 @@ class Roles extends Component {
 
     render() {
         const { vistas, selected, getPermisoByRol } = this.props;
-        // const buttons = [
-        //   <BoxButton key="bb[0][0]" name="plus" onClick={() => console.log('debe agregar')} title="Agregar referencia" classCSS="info" />,
-        // ]
+        const buttons = [
+            <BoxButtonV1 key="bb[0][0]" name="save" onClick={() => this.props.updatedAction()} title="Guardar cambios" classCSS="success" />,
+        ]
 
         return (
             <div className="row">
                 <div className="col-md-12 col-xs-12">
-                    <Card text="Asignación de permisos"  >
+                    <Card text="Asignación de permisos" buttons={buttons}  >
                         <div className="col-md-3">
                             <div className="form-group">
                                 <label>Seleccione el rol...</label>
@@ -83,7 +83,7 @@ class Roles extends Component {
                                         {
                                             vistas.filter(x => x.get('ver') === true).map((item, index) => {
                                                 return (
-                                                    <DraggableItem key={`div1[${item.get('pantalla')}]`} onDragStart={(e) => { this.handleDragStart(e, item.get('pantalla'), 0) }} onDrop={(e) => { this.handleDropOnItem(e, item.get('pantalla'), 0) }} caption={item.get('pantalla')}  selected={selected === item.get('pantalla')} />
+                                                    <DraggableItem key={`div1[${item.get('pantalla')}]`} onDragStart={(e) => { this.handleDragStart(e, item.get('pantalla'), 0) }} onDrop={(e) => { this.handleDropOnItem(e, item.get('pantalla'), 0) }} caption={item.get('pantalla')} selected={selected === item.get('pantalla')} />
                                                 )
                                             })
                                         }
@@ -107,9 +107,10 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-    return {        
+    return {
         getPermisoByRol: (id) => dispatch(getPermisoByRol(id)),
         changePermision: (vista) => dispatch(changePermision(vista)),
+        updatedAction: () => dispatch(updatedAction()),
     }
 }
 

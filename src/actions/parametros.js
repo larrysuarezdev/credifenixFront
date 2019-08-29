@@ -64,8 +64,5 @@ export function updatedAction() {
             .catch(err => {
                 messageHandler(dispatch, err)
             })
-
-
     }
 }
-
