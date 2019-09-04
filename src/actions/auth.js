@@ -1,10 +1,13 @@
-import { axiosNoAuth as axios } from '../utils/helpers'
+import { axiosNoAuth as axios, createAxiosInstance } from '../utils/helpers'
 import { Cookies } from 'react-cookie';
 import {
     API_URL, CLIENT_ROOT_URL, messageHandler
 } from './index'
+
+import { setLoading }  from './common'
 import * as types from './types'
 
+const axios1 = createAxiosInstance();
 const cookie = new Cookies();
 
 export function signIn({ username, password }, callback) {
@@ -34,6 +37,25 @@ export function signIn({ username, password }, callback) {
                     callback()
                 }
             })
+    }
+}
+
+export function changePassword(pass){
+    return function (dispatch, getState) {
+        dispatch(setLoading(true));
+        const user = getState().auth.user;
+        const data = { userId : user.id, password : pass}
+        axios1.post(`${API_URL}/usuarios/changePassword`, data)
+                .then(() => {
+                    dispatch(setLoading(false));
+                    messageHandler(dispatch, {
+                        success: 'Se ha modificado la contraseña'
+                    })
+                })
+                .catch(err => {
+                    dispatch(setLoading(false));
+                    messageHandler(dispatch, err);
+                })  
     }
 }
 

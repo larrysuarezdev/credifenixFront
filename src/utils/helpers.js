@@ -92,17 +92,20 @@ export function recalculate(data, id, cargue = false) {
                 x.fecha_ultimo_pago = "";
             }
         }
-        
+        const creditos_renovaciones = Object.entries(x.creditos_renovaciones);
+
+        const inicio_credito = creditos_renovaciones.length > 0 ? creditos_renovaciones[0].fecha : x.inicio_credito;
+
         x.saldo = x.valor_total - abonos;
         x.cuotas_pagas = (x.valor_total - x.saldo) / x.mod_cuota
 
         const DiaAct = new Date(moment().format("YYYY-MM-DD"));
-        const inicioCredito = new Date(moment(x.inicio_credito).format("YYYY-MM-DD"));
+        const inicioCredito = new Date(moment(inicio_credito).format("YYYY-MM-DD"));
         var Difference_In_Time = DiaAct.getTime() - inicioCredito.getTime();
 
         var days = Difference_In_Time / (1000 * 3600 * 24);
         days = days - Math.floor(days / 7);
-        
+
         x.mora = days - Math.floor(x.cuotas_pagas);
 
         if (cargue) {
@@ -128,7 +131,7 @@ export function exportDataGrid(list, ruta, cobrador) {
     var docDefinition = {
         pageSize: 'A3',
         pageOrientation: 'landscape',
-        fontSize: 5,
+        fontSize: 3,
         pageMargins: [4, 4, 4, 4],
         content: [
             {
@@ -184,14 +187,25 @@ export function exportDataGrid(list, ruta, cobrador) {
     // console.log(docDefinition.content)
     data.forEach((x) => {
         const entries = Object.entries(x.creditos_renovaciones);
-
+        let color = ''
+        switch (true) {
+            case x.mora >= 5 && x.mora <= 9:
+                color = '#FBF462';
+                break;
+            case x.mora >= 10 && x.mora <= 19:
+                color = '#F1775C';
+                break;
+            case x.mora >= 20:
+                color = '#A25EEA';
+                break;
+        }
         docDefinition.content[1].table.body.push(
             [
                 { text: entries.length > 0 ? '#' + entries.length : '', style: 'tableBody' },
                 { text: x.orden, style: 'tableBody' },
                 { text: x.cliente.titular, style: 'tableBody' },
                 { text: x.cuota, style: 'tableBody' },
-                { text: x.mora, style: 'tableBody' },
+                { text: x.mora, style: 'tableBody', fillColor: color },
                 { text: x.cuotas_pagas.toFixed(1), style: 'tableBody' },
                 { text: x.valor_prestamo, style: 'tableBody' },
                 { text: x.mod_cuota, style: 'tableBody' },
@@ -210,6 +224,55 @@ export function exportDataGrid(list, ruta, cobrador) {
     })
 
     pdfMake.createPdf(docDefinition).download("Listado Ruta-" + ruta + "; del " + moment().format("YYYY-MM-DD"));
+}
+
+export function exportAbonos(list) {
+    pdfMake.vfs = pdfFonts.pdfMake.vfs;
+    const data = list.toList().toJS();
+    console.log(data);
+    var docDefinition = {
+        pageSize: 'LEGAL',
+        pageOrientation: 'landscape',
+        fontSize: 3,
+        pageMargins: [10, 10, 10, 10],
+        content: [
+            {
+                table: {
+                    headerRows: 1,
+                    widths: ['auto', 'auto', 'auto'],
+                    body: [
+                        [
+                            { text: 'Fecha', style: 'header' },
+                            { text: 'Abono', style: 'header' },
+                            { text: 'Usuario', style: 'header' },
+                        ],
+                    ]
+                },
+            },
+        ],
+        styles: {
+            header: {
+                fontSize: 10,
+                bold: true,
+                italics: true
+            },
+            tableBody: {
+                alignment: 'right',
+                fontSize: 10,
+            }
+        }
+    };
+
+    data.forEach((x) => {
+        docDefinition.content[0].table.body.push(
+            [
+                { text: moment(x.fecha_abono).format("YYYY-MM-DD"), style: 'tableBody' },
+                { text: x.abono, style: 'tableBody' },
+                { text: x.user.nombres + " " + x.user.apellidos, style: 'tableBody' }
+            ]
+        )
+    })
+    pdfMake.createPdf(docDefinition).download("Abonos - " + moment().format("YYYY-MM-DD"));
 }
 
 export const operators = [

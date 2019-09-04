@@ -42,7 +42,8 @@ function ExampleContextMenu({
     rowIdx,
     onRenovarCredito,
     onDetallesCredito,
-    onRenovarCreditoInmediato
+    onRenovarCreditoInmediato,
+    onCancelarRenovado
 }) {
     return (
         <ContextMenu id={id}>
@@ -51,6 +52,9 @@ function ExampleContextMenu({
             </MenuItem>
             <MenuItem data={{ rowIdx, idx }} onClick={onRenovarCredito}>
                 Renovación editable
+            </MenuItem>
+            <MenuItem data={{ rowIdx, idx }} onClick={onCancelarRenovado}>
+                Cancelar renovación
             </MenuItem>
             <MenuItem data={{ rowIdx, idx }} onClick={onDetallesCredito}>
                 Detalles del crédito
@@ -105,6 +109,11 @@ class DataGrid extends Component {
         this.props.actionClickRenovadosInmediatos(id)
     }
 
+    onCancelarRenovado(rowIdx) {
+        const id = this.props.ids.get(rowIdx);
+        this.props.actionClickCancelarRenovado(id)
+    }
+
     onDetallesCredito(rowIdx) {
         const id = this.props.ids.get(rowIdx);
         this.props.actionClick(id)
@@ -123,11 +132,13 @@ class DataGrid extends Component {
                 enableCellSelect={true}
                 rowHeight={25}
                 minHeight={height}
+                CellNavigationMode={"NONE"}
                 contextMenu={
                     <ExampleContextMenu
                         onRenovarCredito={(e, { rowIdx }) => this.onRenovarCredito(rowIdx)}
                         onDetallesCredito={(e, { rowIdx }) => this.onDetallesCredito(rowIdx)}
                         onRenovarCreditoInmediato={(e, { rowIdx }) => this.onRenovarCreditoInmediato(rowIdx)}
+                        onCancelarRenovado={(e, { rowIdx }) => this.onCancelarRenovado(rowIdx)}
                     />
                 }
                 RowsContainer={ContextMenuTrigger}

@@ -225,7 +225,7 @@
     background-color: #bdbdbd59;
     width: 100vw;
     position: absolute;
-    z-index: 100;
+    z-index: 10000;
 }
 
 .textLoading {

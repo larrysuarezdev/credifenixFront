@@ -22,7 +22,7 @@ class Clientes extends Component {
     this.state = {
       tabs: [
         { id: 0, caption: 'Listado clientes', component: <GridClientes actionNewRow={this.actionNewRow} actionEditCliente={this.actionEditCliente} actionEstadoCliente={this.actionEstadoCliente} />, active: true },
-        { id: 1, caption: 'Agregar - Modificar', component: <AddClientes />, active: false },
+        { id: 1, caption: 'Agregar - Modificar', component: <AddClientes showReferencias={true} />, active: false },
       ],
       tab: 0
     };

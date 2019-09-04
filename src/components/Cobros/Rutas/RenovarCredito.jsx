@@ -48,7 +48,7 @@ class RenovarCredito extends Component {
                     </div>
                     <div className="col-md-6">
                         <label htmlFor="monto">Monto dado</label>
-                        <input className="form-control form-control-sm" type="number" id="monto" value={selectRow !== null ? selectRow.get('valor_prestamo') - selectRow.get('saldo') : ''} onChange={(e) => changeAttr(tipo, 'monto', e.target.value)} />
+                        <input className="form-control form-control-sm" type="number" id="monto" value={selectRow !== null ? selectRow.get('monto') : ''} onChange={(e) => changeAttr(tipo, 'monto', e.target.value)} />
                     </div>
                     <div className="col-md-12">
                         <label htmlFor="observaciones">Observaciones</label>

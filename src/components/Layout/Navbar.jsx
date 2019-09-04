@@ -46,10 +46,10 @@ export default class Navbar extends Component {
                         </a>
                         {/* <!-- Dropdown - User Information --> */}
                         <div className={`dropdown-menu dropdown-menu-right shadow animated--grow-in ${this.state.dropDown ? 'show' : ''} `} aria-labelledby="userDropdown">
-                            {/* <a className="dropdown-item" href="#">
+                            <a className="dropdown-item" href="/perfil">
                                 <i className="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
-                                Settings
-                            </a> */}
+                                Mi perfil
+                            </a>
                             {/* <div className="dropdown-divider"></div> */}
                             <a className="dropdown-item" onClick={() => this.props.signOut()}>
                                 <i className="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>

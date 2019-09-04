@@ -10,7 +10,6 @@ const axios = createAxiosInstance();
 
 
 export function getCreditos(id) {
-    id = id.value;
     function getCredit() {
         return axios.get(`${API_URL}/creditos/${id}`);
     }
@@ -105,7 +104,9 @@ export function getClientes() {
 
 export function saveCredito() {
     return (dispatch, getState) => {
+        dispatch(setLoading(true));
         let row = getState().rutas.get('selectRow').toJS();
+        let ruta = getState().rutas.get('idRuta').toJS();
 
         if (row.cliente !== null) {
             row.cliente_id = row.cliente.id;
@@ -117,7 +118,7 @@ export function saveCredito() {
 
             axios.post(`${API_URL}/creditos`, row)
                 .then((res) => {
-
+                    dispatch(setLoading(false));
                     const data = objectifyArray(res.data.data, {
                         by: ['id'],
                         recursive: true
@@ -128,7 +129,7 @@ export function saveCredito() {
                         type: types.GET_RUTAS,
                         payload: {
                             data,
-                            id: row.cliente.id,
+                            id: ruta,
                             cobrador: res.data.cobrador,
                             nuevos: row.valor_prestamo
                         }
@@ -139,17 +140,18 @@ export function saveCredito() {
                     })
                 })
                 .catch((err) => {
+                    dispatch(setLoading(false));
                     messageHandler(dispatch, err)
                 })
         }
         else {
+            dispatch(setLoading(false));
             messageHandler(dispatch, {
                 warning: 'El cliente no puede estar vacío'
             })
         }
     }
 }
-
 
 export function saveAbonos(entrada, salida, utilidad) {
     return (dispatch, getState) => {
@@ -159,7 +161,7 @@ export function saveAbonos(entrada, salida, utilidad) {
 
         const dataToSend = []
         const renovaciones = []
-        rows.map((x, i) => {
+        rows.map((x) => {
             dataToSend.push({ id: x.id, cuota: x.cuota ? Number(x.cuota) * 1000 : null, orden: x.orden })
             if (x.renovacion) {
                 renovaciones.push({ id: x.id, excedente: x.renovacion.monto * 1000, observaciones: x.renovacion.observaciones, modalidad: x.renovacion.modalidad })
@@ -168,13 +170,36 @@ export function saveAbonos(entrada, salida, utilidad) {
 
         axios.post(`${API_URL}/creditos/abonos`, { 'cuotas': dataToSend, 'idRuta': id, 'renovaciones': renovaciones, 'flujoCaja': { 'entrada': entrada, 'salida': salida, 'utilidad': utilidad } })
             .then((res) => {
+                dispatch(setLoading(false));
+                dispatch(reorderDataDB());
+                messageHandler(dispatch, {
+                    success: 'Se han guadado los abonos de la ruta'
+                })
+            })
+            .catch((err) => {
+                dispatch(setLoading(false));
+                messageHandler(dispatch, err)
+            })
+    }
+}
+
+export function reorderDataDB() {
+    return (dispatch, getState) => {
+        dispatch(setLoading(true));
+        let rows = getState().rutas.get('list').valueSeq().toJS();
+        const id = getState().rutas.get('idRuta');
+        const dataToSend = []
+        rows.map((x) => {
+            dataToSend.push(x.id);
+        });
+
+        axios.post(`${API_URL}/creditos/reorder`, { 'data': dataToSend, 'idRuta': id })
+            .then((res) => {
+                dispatch(setLoading(false));
                 const data = objectifyArray(res.data.data, {
                     by: ['id'],
                     recursive: true
-                })
-
-                dispatch(setLoading(false));
-
+                });
                 dispatch({
                     type: types.GET_RUTAS,
                     payload: {
@@ -186,7 +211,7 @@ export function saveAbonos(entrada, salida, utilidad) {
                 })
 
                 messageHandler(dispatch, {
-                    success: 'Se han guadado los abonos de la ruta'
+                    success: 'Se han ordenado los creditos'
                 })
             })
             .catch((err) => {
@@ -200,17 +225,23 @@ export function saveRenovacion(id) {
     return (dispatch) => {
         axios.post(`${API_URL}/creditos/renovaciones`, { 'id': id })
             .then((res) => {
-                dispatch({
-                    type: types.SET_RENOVACION,
-                    payload: {
-                        id
-                    }
-                });
                 dispatch(toggleModal());
             })
             .catch((err) => {
                 messageHandler(dispatch, err)
             })
+    }
+}
+
+export function saveRenovacion1(id) {
+    return (dispatch) => {
+        dispatch({
+            type: types.SET_RENOVACION,
+            payload: {
+                id
+            }
+        });
+        dispatch(toggleModal());
     }
 }
 
@@ -228,6 +259,17 @@ export function saveRenovacionInmediata(id) {
             .catch((err) => {
                 messageHandler(dispatch, err)
             })
+    }
+}
+
+export function deleteRenovacion(id) {
+    return (dispatch) => {
+        dispatch({
+            type: types.DELETE_RENOVACION,
+            payload: {
+                id
+            }
+        });
     }
 }
 

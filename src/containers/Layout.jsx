@@ -29,7 +29,7 @@ class Layout extends Component {
           icon: 'cog', caption: 'Administración', isActive: false, isOpen: false,
           subitems: [
             { caption: 'Clientes', isActive: false, title: 'Clientes', url: '/administracion/clientes', icon: 'user' },
-            { caption: 'Personas', isActive: false, title: 'Personas', url: '/administracion/personas', icon: 'user-friends' },
+            { caption: 'Usuarios', isActive: false, title: 'Usuarios', url: '/administracion/usuarios', icon: 'user-friends' },
             { caption: 'Maestras', isActive: false, title: 'Maestras', url: '/administracion/maestras', icon: 'list-ol' },
             { caption: 'Roles', isActive: false, title: 'Maestras', url: '/administracion/roles', icon: 'user-cog' }
           ]

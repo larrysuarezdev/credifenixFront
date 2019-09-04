@@ -1,5 +1,6 @@
 import * as types from './types'
 import { createAxiosInstance } from '../utils/helpers'
+import { setLoading } from './common'
 
 import { API_URL, messageHandler } from './index'
 import objectifyArray from 'objectify-array'
@@ -8,13 +9,14 @@ const axios = createAxiosInstance();
 
 export function getClientes() {
     return (dispatch) => {
+        dispatch(setLoading(true));
         axios.get(`${API_URL}/clientes`, {})
             .then((res) => {
                 const data = objectifyArray(res.data.data, {
                     by: ['id'],
                     recursive: true
                 })
-
+                dispatch(setLoading(false));
                 dispatch({
                     type: types.GET_CLIENTES,
                     payload: {
@@ -23,6 +25,7 @@ export function getClientes() {
                 })
             })
             .catch((err) => {
+                dispatch(setLoading(false));
                 messageHandler(dispatch, err)
             })
     }
@@ -30,9 +33,9 @@ export function getClientes() {
 
 export function saveAction() {
     return (dispatch, getState) => {
+        dispatch(setLoading(true));
         const row = getState().clientes.get('selectRow').toJS()
         const newRow = getState().clientes.get('edit')
-        console.log(newRow)
         if (!newRow) {
             axios.post(`${API_URL}/clientes`, row)
                 .then(() => {
@@ -43,6 +46,7 @@ export function saveAction() {
                     })
                 })
                 .catch(err => {
+                    dispatch(setLoading(false));
                     messageHandler(dispatch, err)
                 })
         } else {
@@ -55,6 +59,7 @@ export function saveAction() {
                     })
                 })
                 .catch(err => {
+                    dispatch(setLoading(false));
                     messageHandler(dispatch, err)
                 })
         }
@@ -64,13 +69,14 @@ export function saveAction() {
 
 export function changeState(id) {
     return (dispatch) => {
+        dispatch(setLoading(true));
         axios.post(`${API_URL}/clientes/${id}`)
             .then((res) => {
+                dispatch(setLoading(false));
                 const data = objectifyArray(res.data.data, {
                     by: ['id'],
                     recursive: true
                 })
-
                 dispatch({
                     type: types.GET_CLIENTES,
                     payload: {

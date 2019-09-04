@@ -1,14 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
+import moment from 'moment'
 
 //UI
 import SelectorInput from '../../Common/SelectorInput'
 import ModalClientes from '../../Cobros/Rutas/ModalClientes'
-// import Modal from '../../components/Common/Modal'
-// import TableVirtualized from '../../components/Common/TableVirtualized2'
-// import SelectComponent from '../../components/Common/SelectComponent';
 
-// import { getRutas } from '../../actions/rutas'
 import { changeAttr, toggleModalClientes } from '../../../actions/common'
 
 class AddCredito extends Component {
@@ -29,7 +26,7 @@ class AddCredito extends Component {
                     {/* <input className="form-control form-control-sm" type="text" value={ selectRow.get('cliente') } ></input> */}
                 </div>
                 <div className="col-md-5">
-                    <a className="btn btn-sm btn-success btn-icon-split float-right padding-bottom" href="#" onClick={() => this.props.action()} style={{ marginTop: 27 }} >
+                    <a className="btn btn-sm btn-success btn-icon-split padding-bottom" href="#" onClick={() => this.props.action()} style={{ marginTop: 27 }} >
                         <span className="icon text-white-50">
                             <i className="fas fa-male"></i>
                         </span>
@@ -40,7 +37,7 @@ class AddCredito extends Component {
                 </div>
                 <div className="col-md-4">
                     <label >Fecha del crédito</label>
-                    <input className="form-control form-control-sm" type="date" value={selectRow.get('fecha')} onChange={(e) => changeAttr(tipo, 'fecha', e.target.value)} />
+                    <input className="form-control form-control-sm" type="date" value={selectRow !== null ? moment(selectRow.get('fecha')).format('YYYY-MM-DD') : ''} onChange={(e) => changeAttr(tipo, 'fecha', e.target.value)} />
                 </div>
                 <div className="col-md-4">
                     <label >Valor a prestar</label>

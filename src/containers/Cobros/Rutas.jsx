@@ -21,7 +21,7 @@ import AddClientes from '../../components/Administracion/Clientes/AddClientes'
 import ModalFilterMaestras from '../../components/Common/ModalFilterMaestras'
 
 
-import { getCreditos, saveCredito, getListRutas, getListPeriodos, saveAbonos, saveRenovacion, cleanDataRutas, reorderData, saveRenovacionInmediata } from '../../actions/rutas'
+import { getCreditos, saveCredito, getListRutas, getListPeriodos, saveAbonos, saveRenovacion, saveRenovacion1, cleanDataRutas, reorderData, saveRenovacionInmediata, deleteRenovacion } from '../../actions/rutas'
 import { cleanCliente } from '../../actions/clientes'
 import { selectAction, changeAttr2, toggleModal, newRow } from '../../actions/common'
 import { exportDataGrid } from '../../utils/helpers'
@@ -36,6 +36,7 @@ class Rutas extends Component {
         this.changeAction = this.changeAction.bind(this);
         this.actionClick = this.actionClick.bind(this);
         this.actionClickRenovados = this.actionClickRenovados.bind(this);
+        this.actionClickCancelarRenovado = this.actionClickCancelarRenovado.bind(this);
         this.actionClickRenovadosInmediatos = this.actionClickRenovadosInmediatos.bind(this);
         this.createAction = this.createAction.bind(this);
         this.onChangeSelect = this.onChangeSelect.bind(this);
@@ -89,7 +90,8 @@ class Rutas extends Component {
     actionClickRenovados(rowId) {
         this.setState({ idRenovar: rowId })
         this.setState({ tipoModal: 2 });
-        this.props.toggleModal();
+        this.props.saveRenovacion(rowId);
+        // this.props.toggleModal();
     }
 
     actionClickRenovadosInmediatos(rowId) {
@@ -110,6 +112,22 @@ class Rutas extends Component {
         })
     }
 
+    actionClickCancelarRenovado(rowId) {
+        Swal.fire({
+            title: 'Cancelar renovación',
+            html: `<div> 
+                    <p> Realmente desea devolver el estado de la renovación? </p>
+                   </div>`,
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Confirmar cambios'
+        }).then((result) => {
+            if (result.value) {
+                this.props.deleteRenovacion(rowId);
+            }
+        });
+    }
 
     actionClickReorder() {
         this.setState({ tipoModal: 3 })
@@ -118,6 +136,10 @@ class Rutas extends Component {
 
     saveRenovacion() {
         this.props.saveRenovacion(this.state.idRenovar)
+    }
+
+    saveRenovacion1() {
+        this.props.saveRenovacion1(this.state.idRenovar)
     }
 
     onChangeSelect(id) {
@@ -130,7 +152,6 @@ class Rutas extends Component {
             return x;
         })
         tabs[tabs.findIndex(x => x.id === tab.id)].active = true;
-
         this.setState({ tabs, tab: tab.id });
     }
 
@@ -183,7 +204,7 @@ class Rutas extends Component {
         ]
 
         const buttons1 = [
-            <BoxButton key="b2[0][0]" name="save" onClick={() => this.saveRenovacion()} title="Guardar crédito" classCSS="info" />,
+            <BoxButton key="b2[0][0]" name="save" onClick={() => this.saveRenovacion1()} title="Guardar crédito" classCSS="info" />,
         ]
 
         const buttons2 = [
@@ -258,12 +279,23 @@ class Rutas extends Component {
         ]
 
         return (
-            <div className="card border-left-success">                
+            <div className="card border-left-success">
                 <BrandButton buttons={buttons} />
-                <div className="row" style={{ marginBottom: 5, background: '#f7f7f7', marginLeft: 0, marginRight: 0, paddingBottom: 5 }}>
+                <div className="row" style={{ marginBottom: 0, background: '#f7f7f7', marginLeft: 0, marginRight: 0, paddingBottom: 0 }}>
                     <div className="col-md-3">
                         <label >Ruta</label>
-                        <SelectComponent options={rutas.toJS()} onChange={this.onChangeSelect} />
+                        <div className="form-group">
+                            <select className="form-control form-control-sm" id="exampleFormControlSelect1" onChange={(e) => this.onChangeSelect(e.target.value)}>
+                                <option value="0">Seleccione...</option>
+                                {
+                                    rutas.map((x) => {
+                                        return (
+                                            <option value={x.get('value')} key={x.get('value')} >{x.get('label')}</option>
+                                        )
+                                    })
+                                }
+                            </select>
+                        </div>
                     </div>
                     <div className="col-md-3">
                         <label >Fecha</label>
@@ -287,6 +319,7 @@ class Rutas extends Component {
                             changeAction={this.changeAction}
                             actionClick={this.actionClick}
                             actionClickRenovados={this.actionClickRenovados}
+                            actionClickCancelarRenovado={this.actionClickCancelarRenovado}
                             actionClickRenovadosInmediatos={this.actionClickRenovadosInmediatos}
                         />
                     </div>
@@ -308,7 +341,7 @@ class Rutas extends Component {
                                     </div>
                                 </div>
                             </div>
-                            <AddClientes />
+                            <AddClientes showReferencias={false} />
                         </div>
                         : null
                 }
@@ -343,7 +376,9 @@ function mapDispatchToProps(dispatch) {
         saveCredito: () => dispatch(saveCredito()),
         saveAbonos: (entrada, salida, utilidad) => dispatch(saveAbonos(entrada, salida, utilidad)),
         saveRenovacion: (id) => dispatch(saveRenovacion(id)),
+        saveRenovacion1: (id) => dispatch(saveRenovacion1(id)),
         saveRenovacionInmediata: (id) => dispatch(saveRenovacionInmediata(id)),
+        deleteRenovacion: (id) => dispatch(deleteRenovacion(id)),
         cleanCliente: () => dispatch(cleanCliente()),
         cleanDataRutas: () => dispatch(cleanDataRutas()),
         reorderData: () => dispatch(reorderData()),

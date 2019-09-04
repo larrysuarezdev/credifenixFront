@@ -4,12 +4,14 @@ import Immutable from 'immutable'
 const newRow = {
     descripcion: '',
     fecha: new Date(),
-    valor: '',
+    tipo: 1,
+    valor: ''
 }
 
 const INITIAL_STATE = Immutable.fromJS({
     list: [],
     ids: [],
+    total: 0,
     selected: null,
     selectRow: null,
 })
@@ -18,6 +20,7 @@ export default function (state = INITIAL_STATE, action) {
     let creditos;
     switch (action.type) {
         case types.GET_FLUJO_UTILIDADES:
+            state = state.set('total', action.payload.sum)
             state = state.set('list', Immutable.fromJS(action.payload.data))
             state = state.set('ids', state.get('list').sortBy(x => x.get('id')).keySeq().toList())
             return state

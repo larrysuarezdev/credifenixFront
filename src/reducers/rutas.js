@@ -2,6 +2,7 @@ import * as types from '../actions/types'
 import Immutable from 'immutable'
 import { recalculate } from '../utils/helpers'
 import objectifyArray from 'objectify-array'
+import Swal from 'sweetalert2'
 
 const newRow = {
     cliente: null,
@@ -83,10 +84,14 @@ export default function (state = INITIAL_STATE, action) {
             if (state.getIn(['list', String(action.payload.id), 'renovacion']) !== undefined) {
 
             } else {
-                state = state.setIn(['list', String(action.payload.id), String(action.payload.attr)], action.payload.value)
-                creditos = recalculate(state.get('list'), 'id')
-                state = state.set('list', creditos.list)
-                state = state.set('cartera', creditos.cartera)
+                if ((action.payload.value * 1000) > state.getIn(['list', String(action.payload.id), "saldo"])) {
+                    alert("No puede digitar un valor mayor al saldo!");
+                } else {
+                    state = state.setIn(['list', String(action.payload.id), String(action.payload.attr)], action.payload.value)
+                    creditos = recalculate(state.get('list'), 'id')
+                    state = state.set('list', creditos.list)
+                    state = state.set('cartera', creditos.cartera)
+                }
             }
             return state
         case types.CHANGE_ATTR_RUTA:
@@ -117,7 +122,8 @@ export default function (state = INITIAL_STATE, action) {
             newRenovacion.dias = row.mod_dias;
             newRenovacion.valor_prestamo = row.valor_prestamo;
             newRenovacion.saldo = row.saldo;
-            
+            newRenovacion.monto = (newRenovacion.valor_prestamo - row.saldo) / 1000;
+
             state = state.set('renovacion', Immutable.fromJS(newRenovacion))
             return state
         case types.REORDER_LIST_RUTA:
@@ -140,8 +146,13 @@ export default function (state = INITIAL_STATE, action) {
 
         case types.SET_DATA_RENOVACION:
             row = state.getIn(['list', String(action.payload.id)]).toJS()
-            state = state.set('renovacion', Immutable.fromJS({observaciones : "", monto : (row.valor_prestamo - row.saldo) / 1000, modalidad : row.modalidad }))
+            state = state.set('renovacion', Immutable.fromJS({ observaciones: "RENOVACIÓN AUTOMATICA", monto: (row.valor_prestamo - row.saldo) / 1000, modalidad: row.modalidad }))
             state = state.setIn(['list', String(action.payload.id), 'renovacion'], state.get('renovacion'));
+            return state;
+
+        case types.DELETE_RENOVACION:
+            // row = state.getIn(['list', String(action.payload.id)]).toJS()
+            state = state.setIn(['list', String(action.payload.id), 'renovacion'], null);
             return state;
 
         case types.UPDATED_MAESTRA_RUTAS:
