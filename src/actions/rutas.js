@@ -106,7 +106,7 @@ export function saveCredito() {
     return (dispatch, getState) => {
         dispatch(setLoading(true));
         let row = getState().rutas.get('selectRow').toJS();
-        let ruta = getState().rutas.get('idRuta').toJS();
+        let ruta = getState().rutas.get('idRuta');
 
         if (row.cliente !== null) {
             row.cliente_id = row.cliente.id;
@@ -164,7 +164,7 @@ export function saveAbonos(entrada, salida, utilidad) {
         rows.map((x) => {
             dataToSend.push({ id: x.id, cuota: x.cuota ? Number(x.cuota) * 1000 : null, orden: x.orden })
             if (x.renovacion) {
-                renovaciones.push({ id: x.id, excedente: x.renovacion.monto * 1000, observaciones: x.renovacion.observaciones, modalidad: x.renovacion.modalidad })
+                renovaciones.push({ id: x.id, excedente: x.renovacion.monto * 1000, observaciones: x.renovacion.observaciones, modalidad: x.renovacion.modalidad, dias : Number(x.renovacion.dias), cuota : x.renovacion.cuota * 1000, valor_prestamo : x.renovacion.valor * 1000 })
             }
         });
 

@@ -11,7 +11,7 @@ const axios = createAxiosInstance();
 export function getFlujoUtilidades() {
 
     function getFlujoUtilidades() {
-        return axios.get(`${API_URL}/flujoUtilidades`);
+        return axios.get(`${API_URL}/flujoCaja/utilidades`);
     }
 
     return (dispatch) => {
@@ -55,7 +55,7 @@ export function saveAction() {
         row.fecha = moment(row.fecha).format('YYYY-MM-DD');
         row.valor = row.valor * 1000;
         
-        axios.post(`${API_URL}/flujoUtilidades`, row)
+        axios.post(`${API_URL}/flujoCaja/utilidades`, row)
             .then(() => {
                 dispatch(getFlujoUtilidades());
                 dispatch({ type: types.CLEAN_FLUJO_UTILIDADES })

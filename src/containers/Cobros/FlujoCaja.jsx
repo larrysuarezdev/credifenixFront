@@ -15,7 +15,7 @@ import { selectAction, changeAttr, newRow } from '../../actions/common'
 import { tableColumnsFlujoCaja } from '../../utils/headersColumns'
 
 class FlujoCaja extends Component {
-    
+
     componentWillMount() {
         this.props.getFlujoCaja();
     }
@@ -33,32 +33,18 @@ class FlujoCaja extends Component {
 
         return (
             <div>
-                <div className="row mb-2">
-                    <div className="col-xl-8 col-md-6">
-                    </div>
-                    <div className="col-xl-4 col-md-6">
-                        <div className="card border-left-primary shadow h-100 ">
-                            <div className="card-body">
-                                <div className="row no-gutters align-items-center">
-                                    <div className="col mr-2">
-                                        <div className="text-xs font-weight-bold text-primary text-uppercase mb-1">Total en caja</div>
-                                        <div className="h5 mb-0 font-weight-bold text-gray-800">{numeral(total).format()}</div>
-                                    </div>
-                                    <div className="col-auto">
-                                        <i className="fas fa-dollar-sign fa-2x text-gray-300"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
                 <div className="card shadow border-left-success mb-4">
                     <div className="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                         <h6 className="m-0 font-weight-bold text-success">Flujo de caja</h6>
                     </div>
                     <BrandButton buttons={buttons} />
-                    <div style={{ height: 'calc(100vh - 342px)' }}>
-                        <div className="row" style={{ height: 'calc(100vh - 342px)' }}>
+                    <div className="card-header py-3 d-flex float-right">
+                        Total en caja: <h5 className="m-1 font-weight-bold text-success">
+                            {numeral(total).format()}
+                        </h5>
+                    </div>
+                    <div style={{ height: 'calc(100vh - 313px)' }}>
+                        <div className="row" style={{ height: 'calc(100vh - 313px)' }}>
                             <div className={`col-md-4 ${selectRow !== null ? "" : "disabledDiv"} `}>
                                 <div className="col-md-12">
                                     <label htmlFor="fecha">Fecha</label>

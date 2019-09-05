@@ -13,6 +13,8 @@ class RenovarCredito extends Component {
     render() {
 
         const { changeAttr, selectRow, periodos } = this.props;
+
+        console.log(selectRow != null ? selectRow.toJS() : "");
         const tipo = "RENOVACION"
 
         return (
@@ -38,9 +40,9 @@ class RenovarCredito extends Component {
                         <label htmlFor="modalidad">Modalidad</label>
                         <select className="form-control form-control-sm" id="modalidad" value={selectRow !== null ? selectRow.get('modalidad') : ''} onChange={(e) => changeAttr(tipo, 'modalidad', e.target.value)} >
                             {
-                                periodos.map((x) => {
+                                periodos.map((x, i) => {
                                     return (
-                                        <option value={x.get("value")}>{x.get("label")}</option>
+                                        <option value={x.get("value")} key={i}>{x.get("label")}</option>
                                     )
                                 })
                             }
@@ -48,7 +50,7 @@ class RenovarCredito extends Component {
                     </div>
                     <div className="col-md-6">
                         <label htmlFor="monto">Monto dado</label>
-                        <input className="form-control form-control-sm" type="number" id="monto" value={selectRow !== null ? selectRow.get('monto') : ''} onChange={(e) => changeAttr(tipo, 'monto', e.target.value)} />
+                        <input className="form-control form-control-sm" type="number" id="monto" value={selectRow !== null ? selectRow.get('monto') : ''} readOnly />
                     </div>
                     <div className="col-md-12">
                         <label htmlFor="observaciones">Observaciones</label>

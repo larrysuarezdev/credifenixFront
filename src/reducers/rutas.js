@@ -99,6 +99,11 @@ export default function (state = INITIAL_STATE, action) {
             return state
         case types.CHANGE_ATTR_RENOVACION:
             state = state.setIn(['renovacion', String(action.payload.attr)], action.payload.value)
+            if (action.payload.attr == 'valor') {
+                const renovacion = state.get('renovacion').toJS();
+                console.log(renovacion);
+                state = state.setIn(['renovacion', 'monto'], Number(renovacion.valor) - renovacion.saldo)
+            }
             return state
         case types.NEW_RUTA:
             state = state.set('selectRow', Immutable.fromJS(newRow))
@@ -120,9 +125,9 @@ export default function (state = INITIAL_STATE, action) {
             newRenovacion.valor = row.valor_prestamo / 1000;
             newRenovacion.cuota = row.mod_cuota / 1000;
             newRenovacion.dias = row.mod_dias;
-            newRenovacion.valor_prestamo = row.valor_prestamo;
-            newRenovacion.saldo = row.saldo;
-            newRenovacion.monto = (newRenovacion.valor_prestamo - row.saldo) / 1000;
+            newRenovacion.saldo = row.saldo  / 1000;
+            newRenovacion.monto =  newRenovacion.valor - newRenovacion.saldo;
+            newRenovacion.editable =  true;
 
             state = state.set('renovacion', Immutable.fromJS(newRenovacion))
             return state
@@ -141,7 +146,13 @@ export default function (state = INITIAL_STATE, action) {
             return state;
 
         case types.SET_RENOVACION:
-            state = state.setIn(['list', String(action.payload.id), 'renovacion'], state.get('renovacion').toJS());
+            const renovacion = state.get('renovacion').toJS();
+            state = state.setIn(['list', String(action.payload.id), 'valor_prestamo'], renovacion.valor * 1000);
+            state = state.setIn(['list', String(action.payload.id), 'mod_cuota'], renovacion.cuota * 1000);
+            state = state.setIn(['list', String(action.payload.id), 'mod_dias'], renovacion.dias);
+            state = state.setIn(['list', String(action.payload.id), 'valor_total'], renovacion.dias * (renovacion.cuota * 1000));
+            state = state.setIn(['list', String(action.payload.id), 'renovacion'], renovacion);
+
             return state;
 
         case types.SET_DATA_RENOVACION:

@@ -298,3 +298,18 @@
         opacity: 1;
     }
 }
+
+.totales {
+    border-radius: calc(0.35rem - 1px) calc(0.35rem - 1px) 0 0;
+    border: 1px solid #e3e6f0;
+    padding-bottom: 1rem !important;
+    padding-top: 1rem !important;
+    display: table;
+    top: 0;
+    left: 0;
+    background-color: #f8f9fc;
+    height: 32px;
+    width: 100%;
+    text-align: right;
+    padding-right: 10px;
+}

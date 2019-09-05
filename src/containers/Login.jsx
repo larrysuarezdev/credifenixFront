@@ -72,37 +72,40 @@ class Login extends Component {
                     <div className="cn">
                         <div className="inner font-weight-bold text-primary" style={{ fontSize: '15vh', fontFamily: 'Impact, Charcoal, sans-serif' }}>
                             CREDIFENIX
-    </div>
+                        </div>
                     </div>
-
                 </div>
 
-                <div style={{ minWidth: '360px', height: '100%', width: '20%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-                    <div></div>
-                    <form onSubmit={this.onSignIn} style={{ padding: 25 }}>
-                        <div style={{ textAlign: 'center' }}>
-                            <img src={logo} alt="Logo" />
+                <div style={{ minWidth: 400, height: '100%', width: '20%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+
+                    <div className="container d-flex h-100">
+                        <div className="row justify-content-center align-self-center">
+                            <form onSubmit={this.onSignIn} style={{ padding: 25, width : '100%' }} >
+                                <div style={{ textAlign: 'center' }}>
+                                    <img src={logo} alt="Logo" />
+                                </div>
+                                <div style={{ textAlign: 'center', margin: 15, fontSize: 20 }}>
+                                    <strong>Bienvenido de vuelta</strong>
+                                </div>
+                                <div style={{ textAlign: 'center', margin: '10px' }}>
+                                    <input className="form-control form-control-sm" type="text" autocomplete="off" name="username" onChange={(e) => this.setState({ username: e.target.value })} placeholder="Nombre de usuario" />
+                                </div>
+                                <div style={{ textAlign: 'center', margin: '10px', position: 'relative' }}>
+                                    <input className="form-control form-control-sm flat" type={this.state.showPwd ? 'text' : 'password'} name="password" onChange={(e) => this.setState({ password: e.target.value })} placeholder="Contraseña" />
+                                    <FontAwesome name="eye" onMouseDown={e => this.setState({ showPwd: true })} onMouseUp={e => this.setState({ showPwd: false })} style={{ position: 'absolute', top: '7px', right: '5px' }} />
+                                </div>
+                                <div style={{ textAlign: 'center', margin: '10px' }}>
+                                    <button className="btn btn-success btn-block flat" style={{ padding: '10px' }} type="submit" disabled={this.state.signin}>
+                                        {
+                                            (this.state.signin) ? <span><FontAwesome name="cog" spin />  Iniciando sesión ...</span> : 'Iniciar sesion'
+                                        }
+                                    </button>
+                                </div>
+                            </form>
+                            <div className="text-center my-auto">
+                                <span style={{ fontSize: '0.8em' }}>&copy; Larry suarez, Software Development 2019</span>
+                            </div>
                         </div>
-                        <div style={{ textAlign: 'center', margin: 15, fontSize: 20 }}>
-                            <strong>Bienvenido de vuelta</strong>
-                        </div>
-                        <div style={{ textAlign: 'center', margin: '10px' }}>
-                            <input className="form-control form-control-sm" type="text" name="username" onChange={(e) => this.setState({ username: e.target.value })} placeholder="Nombre de usuario" />
-                        </div>
-                        <div style={{ textAlign: 'center', margin: '10px', position: 'relative' }}>
-                            <input className="form-control form-control-sm flat" type={this.state.showPwd ? 'text' : 'password'} name="password" onChange={(e) => this.setState({ password: e.target.value })} placeholder="Contraseña" />
-                            <FontAwesome name="eye" onMouseDown={e => this.setState({ showPwd: true })} onMouseUp={e => this.setState({ showPwd: false })} style={{ position: 'absolute', top: '5px', right: '5px' }} />
-                        </div>
-                        <div style={{ textAlign: 'center', margin: '10px' }}>
-                            <button className="btn btn-success btn-block flat" style={{ padding: '10px' }} type="submit" disabled={this.state.signin}>
-                                {
-                                    (this.state.signin) ? <span><FontAwesome name="cog" spin />  Iniciando sesión ...</span> : 'Iniciar sesion'
-                                }
-                            </button>
-                        </div>
-                    </form>
-                    <div className="text-center my-auto">
-                        <span style={{ fontSize: '0.8em' }}>&copy; Larry suarez, Software Development 2019</span>
                     </div>
                 </div>
                 {/* <MsgBox /> */}

@@ -20,13 +20,13 @@ const MoraFormatter = ({ row }) => {
 
     switch (true) {
         case row.mora >= 5 && row.mora <= 9:
-            res = <div style={{ background: '#FBF462', textAlign : "center" }}>{row.mora}</div>;
+            res = <div style={{ background: '#FBF462', textAlign : "center", color : "#fff" }}>{row.mora}</div>;
             break;
         case row.mora >= 10 && row.mora <= 19:
-            res = <div style={{ background: '#F1775C', textAlign : "center" }}>{row.mora}</div>;
+            res = <div style={{ background: '#F1775C', textAlign : "center", color : "#fff" }}>{row.mora}</div>;
             break;
         case row.mora >= 20:
-            res = <div style={{ background: '#A25EEA', textAlign : "center" }}>{row.mora}</div>;
+            res = <div style={{ background: '#A25EEA', textAlign : "center", color : "#fff" }}>{row.mora}</div>;
             break;
         default:
             res = <div style={{ textAlign : "center" }}>{row.mora}</div>;
