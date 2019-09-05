@@ -127,12 +127,12 @@ export function recalculate(data, id, cargue = false) {
 export function exportDataGrid(list, ruta, cobrador) {
     pdfMake.vfs = pdfFonts.pdfMake.vfs;
     const data = list.toList().toJS().sort(function (a, b) { return a.orden - b.orden });
-    console.log(data);
+
     var docDefinition = {
-        pageSize: 'A3',
+        pageSize: 'LEGAL',
         pageOrientation: 'landscape',
         fontSize: 3,
-        pageMargins: [4, 4, 4, 4],
+        pageMargins: [20, 20, 20, 20],
         content: [
             {
                 table: {
@@ -146,7 +146,7 @@ export function exportDataGrid(list, ruta, cobrador) {
             {
                 table: {
                     headerRows: 1,
-                    widths: [25, 30, 'auto', 30, 25, 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto', 'auto'],
+                    widths: [25, 30, 'auto', 25, 20, 'auto', 20, 30, 'auto', 'auto', 30, 'auto', 'auto', 'auto', 'auto', 'auto', 'auto'],
                     body: [
                         [
                             { text: 'Obs', style: 'header' },
@@ -156,8 +156,7 @@ export function exportDataGrid(list, ruta, cobrador) {
                             { text: 'Mora', style: 'header' },
                             { text: 'PAG', style: 'header' },
                             { text: 'Prestamo', style: 'header' },
-                            { text: 'Cuota', style: 'header' },
-                            { text: 'Dias', style: 'header' },
+                            { text: 'Modo', style: 'header' },
                             { text: 'Saldo', style: 'header' },
                             { text: 'Ult pag', style: 'header' },
                             { text: '$UP', style: 'header' },
@@ -174,17 +173,18 @@ export function exportDataGrid(list, ruta, cobrador) {
         ],
         styles: {
             header: {
-                fontSize: 10,
+                fontSize: 8,
                 bold: true,
-                italics: true
+                italics: true,
+                fillColor: "#f9f9f9"
             },
             tableBody: {
                 alignment: 'right',
-                fontSize: 10,
+                fontSize: 8,
             }
         }
     };
-    // console.log(docDefinition.content)
+    
     data.forEach((x) => {
         const entries = Object.entries(x.creditos_renovaciones);
         let color = ''
@@ -207,12 +207,11 @@ export function exportDataGrid(list, ruta, cobrador) {
                 { text: x.cuota, style: 'tableBody' },
                 { text: x.mora, style: 'tableBody', fillColor: color },
                 { text: x.cuotas_pagas.toFixed(1), style: 'tableBody' },
-                { text: x.valor_prestamo, style: 'tableBody' },
-                { text: x.mod_cuota, style: 'tableBody' },
-                { text: x.mod_dias, style: 'tableBody' },
-                { text: x.saldo, style: 'tableBody' },
+                { text: x.valor_prestamo / 1000, style: 'tableBody' },
+                { text: x.mod_dias + "-" + (x.mod_cuota / 1000), style: 'tableBody' },
+                { text: x.saldo / 1000, style: 'tableBody' },
                 { text: x.fecha_ultimo_pago == "" ? "" : moment(x.fecha_ultimo_pago).format("YYYY-MM-DD"), style: 'tableBody' },
-                { text: x.valor_ultimo_pago, style: 'tableBody' },
+                { text: x.valor_ultimo_pago / 1000, style: 'tableBody' },
                 { text: moment(x.inicio_credito).format("YYYY-MM-DD"), style: 'tableBody' },
                 { text: x.cliente.neg_titular, style: 'tableBody' },
                 { text: x.cliente.dir_cobro, style: 'tableBody' },

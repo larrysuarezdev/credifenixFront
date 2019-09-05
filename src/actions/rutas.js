@@ -156,7 +156,9 @@ export function saveCredito() {
 export function saveAbonos(entrada, salida, utilidad) {
     return (dispatch, getState) => {
         dispatch(setLoading(true));
-        let rows = getState().rutas.get('list').valueSeq().toJS();
+        let rows = getState().rutas.get('list').sortBy(
+            (f) => f.get('orden')
+          ).toList().toJS();
         const id = getState().rutas.get('idRuta');
 
         const dataToSend = []
@@ -164,14 +166,28 @@ export function saveAbonos(entrada, salida, utilidad) {
         rows.map((x) => {
             dataToSend.push({ id: x.id, cuota: x.cuota ? Number(x.cuota) * 1000 : null, orden: x.orden })
             if (x.renovacion) {
-                renovaciones.push({ id: x.id, excedente: x.renovacion.monto * 1000, observaciones: x.renovacion.observaciones, modalidad: x.renovacion.modalidad, dias : Number(x.renovacion.dias), cuota : x.renovacion.cuota * 1000, valor_prestamo : x.renovacion.valor * 1000 })
+                renovaciones.push({ id: x.id, excedente: x.renovacion.monto * 1000, observaciones: x.renovacion.observaciones, modalidad: x.renovacion.modalidad, dias: Number(x.renovacion.dias), cuota: x.renovacion.cuota * 1000, valor_prestamo: x.renovacion.valor * 1000 })
             }
         });
 
         axios.post(`${API_URL}/creditos/abonos`, { 'cuotas': dataToSend, 'idRuta': id, 'renovaciones': renovaciones, 'flujoCaja': { 'entrada': entrada, 'salida': salida, 'utilidad': utilidad } })
             .then((res) => {
                 dispatch(setLoading(false));
-                dispatch(reorderDataDB());
+                // dispatch(reorderDataDB());
+                const data = objectifyArray(res.data.data, {
+                    by: ['id'],
+                    recursive: true
+                });
+                dispatch({
+                    type: types.GET_RUTAS,
+                    payload: {
+                        data,
+                        id,
+                        cobrador: res.data.cobrador,
+                        nuevos: 0
+                    }
+                })
+
                 messageHandler(dispatch, {
                     success: 'Se han guadado los abonos de la ruta'
                 })
