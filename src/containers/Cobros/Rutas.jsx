@@ -173,7 +173,11 @@ class Rutas extends Component {
             entrada = entrada + Number(x.get('cuota'));
             if (x.get('renovacion')) {
                 salida = salida + Number(x.getIn(['renovacion', 'monto']));
-                utilidad = utilidad + (x.get('valor_total') - x.get('valor_prestamo'));
+                if (x.getIn(['renovacion', 'editable'])) {
+                    utilidad = utilidad + (x.getIn(['renovacion', 'utilidad']) * 1000);
+                } else {
+                    utilidad = utilidad + (x.get('valor_total') - x.get('valor_prestamo'));
+                }
             }
         })
 
@@ -274,7 +278,7 @@ class Rutas extends Component {
             <BoxButton key="br[0][0]" name="plus" onClick={() => this.createAction()} title="Agregar crédito" classCSS="info" disabled={idRuta != null ? false : true} />,
             <BoxButton key="br[0][1]" name="exchange-alt" onClick={() => this.actionClickReorder()} title="Enrutar" classCSS="info" disabled={idRuta != null ? false : true} />,
             <BoxButton key="br[0][2]" name="save" onClick={() => this.saveAbonos()} title="Guardar abonos" classCSS="info" disabled={idRuta != null ? false : true} />,
-            <BoxButton key="br[0][3]" name="filter" onClick={() => this.props.showHideModalFilter(true, tableColumnsRutas, 'rutas')} title="Filtrar información" classCSS="info" disabled={idRuta != null ? false : true} />,
+            // <BoxButton key="br[0][3]" name="filter" onClick={() => this.props.showHideModalFilter(true, tableColumnsRutas, 'rutas')} title="Filtrar información" classCSS="info" disabled={idRuta != null ? false : true} />,
             <BoxButton key="br[0][4]" name="file-pdf" onClick={() => exportDataGrid(list, idRuta, cobrador)} title="Exportar ruta" classCSS="info" disabled={idRuta != null ? false : true} />,
         ]
 

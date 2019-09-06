@@ -67,11 +67,11 @@ class Personas extends Component {
                                     <div className="row">
                                         <div className="col-md-6">
                                             <label >Telefono 1</label>
-                                            <input className="form-control form-control-sm" type="text" value={selectRow.get('telefono1')} onChange={(e) => changeAttr(tipo, 'telefono1', e.target.value)}></input>
+                                            <input className="form-control form-control-sm" type="number" value={selectRow.get('telefono1')} onChange={(e) => changeAttr(tipo, 'telefono1', e.target.value)}></input>
                                         </div>
                                         <div className="col-md-6">
                                             <label >Telefono 2</label>
-                                            <input className="form-control form-control-sm" type="text" value={selectRow.get('telefono2')} onChange={(e) => changeAttr(tipo, 'telefono2', e.target.value)}></input>
+                                            <input className="form-control form-control-sm" type="number" value={selectRow.get('telefono2')} onChange={(e) => changeAttr(tipo, 'telefono2', e.target.value)}></input>
                                         </div>
                                     </div>
                                     <div className="row">

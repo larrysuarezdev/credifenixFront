@@ -14,7 +14,7 @@ class RenovarCredito extends Component {
 
         const { changeAttr, selectRow, periodos } = this.props;
 
-        console.log(selectRow != null ? selectRow.toJS() : "");
+        // console.log(selectRow != null ? selectRow.toJS() : "");
         const tipo = "RENOVACION"
 
         return (

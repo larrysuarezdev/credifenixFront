@@ -166,7 +166,7 @@ export function saveAbonos(entrada, salida, utilidad) {
         rows.map((x) => {
             dataToSend.push({ id: x.id, cuota: x.cuota ? Number(x.cuota) * 1000 : null, orden: x.orden })
             if (x.renovacion) {
-                renovaciones.push({ id: x.id, excedente: x.renovacion.monto * 1000, observaciones: x.renovacion.observaciones, modalidad: x.renovacion.modalidad, dias: Number(x.renovacion.dias), cuota: x.renovacion.cuota * 1000, valor_prestamo: x.renovacion.valor * 1000 })
+                renovaciones.push({ id: x.id, excedente: x.renovacion.monto * 1000, observaciones: x.renovacion.observaciones, modalidad: x.renovacion.modalidad, dias: Number(x.renovacion.dias), cuota: x.renovacion.cuota * 1000, valor_prestamo: x.renovacion.valor * 1000, utilidad : x.renovacion.editable ? Number(x.renovacion.utilidad) : 0 })
             }
         });
 

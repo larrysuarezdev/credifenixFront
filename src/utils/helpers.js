@@ -75,7 +75,6 @@ export function recalculate(data, id, cargue = false) {
     data.map((x) => {
         x.valor_total = x.mod_cuota * x.mod_dias;
         let abonos = 0;
-        // console.log(x.creditos_detalles)
         if (x.creditos_detalles !== undefined) {
             const entries = Object.entries(x.creditos_detalles);
             entries.forEach(element => {
@@ -97,7 +96,7 @@ export function recalculate(data, id, cargue = false) {
         const inicio_credito = creditos_renovaciones.length > 0 ? creditos_renovaciones[0].fecha : x.inicio_credito;
 
         x.saldo = x.valor_total - abonos;
-        x.cuotas_pagas = (x.valor_total - x.saldo) / x.mod_cuota
+        x.cuotas_pagas = parseFloat((x.valor_total - x.saldo) / x.mod_cuota).toFixed(1);
 
         const DiaAct = new Date(moment().format("YYYY-MM-DD"));
         const inicioCredito = new Date(moment(inicio_credito).format("YYYY-MM-DD"));
@@ -107,6 +106,7 @@ export function recalculate(data, id, cargue = false) {
         days = days - Math.floor(days / 7);
 
         x.mora = days - Math.floor(x.cuotas_pagas);
+        
 
         if (cargue) {
             x.cuota = ''
@@ -228,7 +228,6 @@ export function exportDataGrid(list, ruta, cobrador) {
 export function exportAbonos(list) {
     pdfMake.vfs = pdfFonts.pdfMake.vfs;
     const data = list.toList().toJS();
-    console.log(data);
     var docDefinition = {
         pageSize: 'LEGAL',
         pageOrientation: 'landscape',
@@ -319,7 +318,6 @@ export function createModalFilterFunction(c) {
         case 'string':
             return f => {
                 const immF = Immutable.fromJS(f)
-                // console.log(immF.toJS(), c.get('column').split('.'))
                 const g = immF.getIn(c.get('column').split('.'))
                 let h = c.get('value')
                 let i = c.get('value1')

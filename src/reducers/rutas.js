@@ -101,7 +101,6 @@ export default function (state = INITIAL_STATE, action) {
             state = state.setIn(['renovacion', String(action.payload.attr)], action.payload.value)
             if (action.payload.attr == 'valor') {
                 const renovacion = state.get('renovacion').toJS();
-                console.log(renovacion);
                 state = state.setIn(['renovacion', 'monto'], Number(renovacion.valor) - renovacion.saldo)
             }
             return state
@@ -125,9 +124,10 @@ export default function (state = INITIAL_STATE, action) {
             newRenovacion.valor = row.valor_prestamo / 1000;
             newRenovacion.cuota = row.mod_cuota / 1000;
             newRenovacion.dias = row.mod_dias;
-            newRenovacion.saldo = row.saldo  / 1000;
-            newRenovacion.monto =  newRenovacion.valor - newRenovacion.saldo;
-            newRenovacion.editable =  true;
+            newRenovacion.saldo = row.saldo / 1000;
+            newRenovacion.monto = newRenovacion.valor - newRenovacion.saldo;
+            newRenovacion.utilidad = (newRenovacion.dias * newRenovacion.cuota) - newRenovacion.valor;
+            newRenovacion.editable = true;
 
             state = state.set('renovacion', Immutable.fromJS(newRenovacion))
             return state
@@ -152,13 +152,14 @@ export default function (state = INITIAL_STATE, action) {
             state = state.setIn(['list', String(action.payload.id), 'mod_dias'], renovacion.dias);
             state = state.setIn(['list', String(action.payload.id), 'valor_total'], renovacion.dias * (renovacion.cuota * 1000));
             state = state.setIn(['list', String(action.payload.id), 'renovacion'], renovacion);
-
+            state = state.setIn(['list', String(action.payload.id), 'cuota'], null);
             return state;
 
         case types.SET_DATA_RENOVACION:
             row = state.getIn(['list', String(action.payload.id)]).toJS()
-            state = state.set('renovacion', Immutable.fromJS({ observaciones: "RENOVACIÓN AUTOMATICA", monto: (row.valor_prestamo - row.saldo) / 1000, modalidad: row.modalidad }))
+            state = state.set('renovacion', Immutable.fromJS({ observaciones: "RENOVACIÓN AUTOMATICA", monto: (row.valor_prestamo - row.saldo) / 1000, modalidad: row.modalidad, cuota : row.mod_cuota / 1000, dias : row.mod_dias, valor : row.valor_prestamo / 1000, editable : false }))
             state = state.setIn(['list', String(action.payload.id), 'renovacion'], state.get('renovacion'));
+            state = state.setIn(['list', String(action.payload.id), 'cuota'], null);
             return state;
 
         case types.DELETE_RENOVACION:

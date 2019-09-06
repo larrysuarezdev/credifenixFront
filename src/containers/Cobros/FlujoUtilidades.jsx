@@ -41,7 +41,7 @@ class FlujoUtilidades extends Component {
                     </div>
                     <BrandButton buttons={buttons} />
                     <div className="card-header py-3 d-flex float-right">
-                        Total en caja: <h5 className="m-1 font-weight-bold text-success">
+                        Utilidad neta: <h5 className="m-1 font-weight-bold text-success">
                             {numeral(total).format()}
                         </h5>
                     </div>
