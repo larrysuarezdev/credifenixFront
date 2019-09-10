@@ -10,6 +10,8 @@ const { ContextMenu, MenuItem, ContextMenuTrigger } = Menu;
 const CuotaFormatter = ({ row }) => {
     if (row.renovacion) {
         return (<div className="disabledCell">RN</div>)
+    }else if(row.delete){
+        return (<div className="disabledCell">DEL</div>)
     }
     else
         return row.cuota;
@@ -20,16 +22,16 @@ const MoraFormatter = ({ row }) => {
 
     switch (true) {
         case row.mora >= 5 && row.mora <= 9:
-            res = <div style={{ background: '#FBF462', textAlign : "center", color : "#fff" }}>{row.mora}</div>;
+            res = <div style={{ background: '#FBF462', textAlign: "center", color: "#fff" }}>{row.mora}</div>;
             break;
         case row.mora >= 10 && row.mora <= 19:
-            res = <div style={{ background: '#F1775C', textAlign : "center", color : "#fff" }}>{row.mora}</div>;
+            res = <div style={{ background: '#F1775C', textAlign: "center", color: "#fff" }}>{row.mora}</div>;
             break;
         case row.mora >= 20:
-            res = <div style={{ background: '#A25EEA', textAlign : "center", color : "#fff" }}>{row.mora}</div>;
+            res = <div style={{ background: '#A25EEA', textAlign: "center", color: "#fff" }}>{row.mora}</div>;
             break;
         default:
-            res = <div style={{ textAlign : "center" }}>{row.mora}</div>;
+            res = <div style={{ textAlign: "center" }}>{row.mora}</div>;
             break;
     }
     return res;
@@ -43,7 +45,9 @@ function ExampleContextMenu({
     onRenovarCredito,
     onDetallesCredito,
     onRenovarCreditoInmediato,
-    onCancelarRenovado
+    onCancelarRenovado, 
+    onEliminarCredito, 
+    user
 }) {
     return (
         <ContextMenu id={id}>
@@ -59,6 +63,13 @@ function ExampleContextMenu({
             <MenuItem data={{ rowIdx, idx }} onClick={onDetallesCredito}>
                 Detalles del crédito
             </MenuItem>
+            {
+                user.rol == 1 ?
+                    <MenuItem data={{ rowIdx, idx }} onClick={onEliminarCredito}>
+                        Eliminar credito
+                    </MenuItem>
+                    : null
+            }
         </ContextMenu>
     );
 }
@@ -114,14 +125,21 @@ class DataGrid extends Component {
         this.props.actionClickCancelarRenovado(id)
     }
 
+    onEliminarCredito(rowIdx) {
+        const id = this.props.ids.get(rowIdx);
+        this.props.actionClickEliminarCredito(id)
+    }
+    
+
     onDetallesCredito(rowIdx) {
         const id = this.props.ids.get(rowIdx);
         this.props.actionClick(id)
     }
 
     render() {
-        const { height } = this.props;
+        const { height, user } = this.props;
         const data = this.props.rows.toList().toJS().sort(function (a, b) { return a.orden - b.orden });
+        // console.log('user', user);
 
         return (
             <ReactDataGrid
@@ -139,6 +157,8 @@ class DataGrid extends Component {
                         onDetallesCredito={(e, { rowIdx }) => this.onDetallesCredito(rowIdx)}
                         onRenovarCreditoInmediato={(e, { rowIdx }) => this.onRenovarCreditoInmediato(rowIdx)}
                         onCancelarRenovado={(e, { rowIdx }) => this.onCancelarRenovado(rowIdx)}
+                        onEliminarCredito={(e, { rowIdx }) => this.onEliminarCredito(rowIdx)}                        
+                        user={user}
                     />
                 }
                 RowsContainer={ContextMenuTrigger}
@@ -149,7 +169,6 @@ class DataGrid extends Component {
 
 function mapStateToProps(state) {
     return {
-
     }
 }
 

@@ -31,7 +31,8 @@ const INITIAL_STATE = Immutable.fromJS({
     ids: [],
     clientes: [],
     cartera: 0,
-    nuevos: 0,
+    nuevo: 0,
+    nuevos: [],
     cobrador: 'Sin asignar',
     rutas: [],
     periodos: [],
@@ -44,6 +45,13 @@ const INITIAL_STATE = Immutable.fromJS({
     renovacion: null
 })
 
+function removeItemFromArr(arr, item) {
+    return arr.filter(function (e) {
+        console.log(e, item)
+        return e.id !== item;
+    });
+};
+
 export default function (state = INITIAL_STATE, action) {
     let creditos, row;
     switch (action.type) {
@@ -55,7 +63,16 @@ export default function (state = INITIAL_STATE, action) {
             state = state.set('ids', state.get('list').sortBy(x => x.get('orden')).keySeq().toList())
             state = state.set('idRuta', action.payload.id)
             state = state.set('cartera', creditos.cartera)
-            state = state.set('nuevos', action.payload.nuevos)
+            if (action.payload.nuevo > 0) {
+                state = state.update('nuevos', filter => filter.push(Immutable.fromJS({ id: action.payload.idCredito, valor: Number(action.payload.nuevo) })))
+            }
+            else {
+                state = state.set('nuevo', INITIAL_STATE.get('nuevo'))
+            }
+
+            console.log(state.get('nuevos'))
+
+
             if (action.payload.cobrador !== null)
                 state = state.set('cobrador', action.payload.cobrador)
             else
@@ -157,15 +174,25 @@ export default function (state = INITIAL_STATE, action) {
 
         case types.SET_DATA_RENOVACION:
             row = state.getIn(['list', String(action.payload.id)]).toJS()
-            state = state.set('renovacion', Immutable.fromJS({ observaciones: "RENOVACIÓN AUTOMATICA", monto: (row.valor_prestamo - row.saldo) / 1000, modalidad: row.modalidad, cuota : row.mod_cuota / 1000, dias : row.mod_dias, valor : row.valor_prestamo / 1000, editable : false }))
+            state = state.set('renovacion', Immutable.fromJS({ observaciones: "RENOVACIÓN AUTOMATICA", monto: (row.valor_prestamo - row.saldo) / 1000, modalidad: row.modalidad, cuota: row.mod_cuota / 1000, dias: row.mod_dias, valor: row.valor_prestamo / 1000, editable: false }))
             state = state.setIn(['list', String(action.payload.id), 'renovacion'], state.get('renovacion'));
             state = state.setIn(['list', String(action.payload.id), 'cuota'], null);
             return state;
 
         case types.DELETE_RENOVACION:
-            // row = state.getIn(['list', String(action.payload.id)]).toJS()
             state = state.setIn(['list', String(action.payload.id), 'renovacion'], null);
             return state;
+
+        case types.DELETE_CREDITO:
+            state = state.setIn(['list', String(action.payload.id), 'delete'], true);
+
+            const index = state.get('nuevos').findIndex(x => x.get('id') === Number(action.payload.id))
+
+            if (index !== -1)
+                state = state.deleteIn(['nuevos', index]);
+
+            return state;
+
 
         case types.UPDATED_MAESTRA_RUTAS:
             const data = objectifyArray(action.payload, {

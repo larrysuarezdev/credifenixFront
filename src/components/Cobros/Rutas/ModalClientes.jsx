@@ -30,7 +30,7 @@ class ModalClientes extends Component {
         const { clientes } = this.props;
         const filter = this.state == undefined ? '' : this.state.filter;
 
-        console.log(this.state, filter)
+        // console.log(this.state, filter)
         return (
             <ModalB isOpen={this.props.modal} toggle={this.props.toggleModalClientes} className={this.props.className} centered={true} scrollable="true" style={{ width: 450 }}  >
                 <ModalHeader toggle={this.props.toggleModalClientes}>Clientes</ModalHeader>

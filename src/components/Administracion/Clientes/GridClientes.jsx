@@ -54,6 +54,7 @@ class GridClientes extends Component {
                                 <th scope="col">Cuota</th>
                                 <th scope="col">Dias</th>
                                 <th scope="col">Total a pagar</th>
+                                <th scope="col">Ruta</th>
                                 <th scope="col">Estado</th>
                             </tr>
                         </thead>
@@ -67,6 +68,7 @@ class GridClientes extends Component {
                                             <td>{x.get('mod_cuota')}</td>
                                             <td>{x.get('mod_dias')}</td>
                                             <td>{x.get('mod_cuota') * x.get('mod_dias')}</td>
+                                            <td>{x.get('ruta_id')}</td>
                                             <td align="center">
                                                 {
                                                     x.get('activo') ? <span className="badge badge-success">Activo</span> :

@@ -32,7 +32,7 @@ export function getCreditos(id) {
                         data,
                         id,
                         cobrador: res[0].data.cobrador,
-                        nuevos: 0
+                        nuevo: 0
                     }
                 })
             })
@@ -131,7 +131,8 @@ export function saveCredito() {
                             data,
                             id: ruta,
                             cobrador: res.data.cobrador,
-                            nuevos: row.valor_prestamo
+                            nuevo: row.valor_prestamo,
+                            idCredito: res.data.data[res.data.data.length - 1].id
                         }
                     })
 
@@ -158,19 +159,24 @@ export function saveAbonos(entrada, salida, utilidad) {
         dispatch(setLoading(true));
         let rows = getState().rutas.get('list').sortBy(
             (f) => f.get('orden')
-          ).toList().toJS();
+        ).toList().toJS();
         const id = getState().rutas.get('idRuta');
 
         const dataToSend = []
         const renovaciones = []
+        const eliminar = []
         rows.map((x) => {
-            dataToSend.push({ id: x.id, cuota: x.cuota ? Number(x.cuota) * 1000 : null, orden: x.orden })
-            if (x.renovacion) {
-                renovaciones.push({ id: x.id, excedente: x.renovacion.monto * 1000, observaciones: x.renovacion.observaciones, modalidad: x.renovacion.modalidad, dias: Number(x.renovacion.dias), cuota: x.renovacion.cuota * 1000, valor_prestamo: x.renovacion.valor * 1000, utilidad : x.renovacion.editable ? Number(x.renovacion.utilidad) : 0 })
+            if (x.delete) {
+                eliminar.push({ id: x.id })
+            } else {
+                dataToSend.push({ id: x.id, cuota: x.cuota ? Number(x.cuota) * 1000 : null, orden: x.orden })
+                if (x.renovacion) {
+                    renovaciones.push({ id: x.id, excedente: x.renovacion.monto * 1000, observaciones: x.renovacion.observaciones, modalidad: x.renovacion.modalidad, dias: Number(x.renovacion.dias), cuota: x.renovacion.cuota * 1000, valor_prestamo: x.renovacion.valor * 1000, utilidad: x.renovacion.editable ? Number(x.renovacion.utilidad) : 0 })
+                }
             }
         });
 
-        axios.post(`${API_URL}/creditos/abonos`, { 'cuotas': dataToSend, 'idRuta': id, 'renovaciones': renovaciones, 'flujoCaja': { 'entrada': entrada, 'salida': salida, 'utilidad': utilidad } })
+        axios.post(`${API_URL}/creditos/abonos`, { 'cuotas': dataToSend, 'idRuta': id, 'renovaciones': renovaciones, 'eliminar' : eliminar, 'flujoCaja': { 'entrada': entrada, 'salida': salida, 'utilidad': utilidad } })
             .then((res) => {
                 dispatch(setLoading(false));
                 // dispatch(reorderDataDB());
@@ -184,7 +190,7 @@ export function saveAbonos(entrada, salida, utilidad) {
                         data,
                         id,
                         cobrador: res.data.cobrador,
-                        nuevos: 0
+                        nuevo: 0
                     }
                 })
 
@@ -222,7 +228,7 @@ export function reorderDataDB() {
                         data,
                         id,
                         cobrador: res.data.cobrador,
-                        nuevos: 0
+                        nuevo: 0
                     }
                 })
 
@@ -282,6 +288,17 @@ export function deleteRenovacion(id) {
     return (dispatch) => {
         dispatch({
             type: types.DELETE_RENOVACION,
+            payload: {
+                id
+            }
+        });
+    }
+}
+
+export function deleteCredito(id) {
+    return (dispatch) => {
+        dispatch({
+            type: types.DELETE_CREDITO,
             payload: {
                 id
             }

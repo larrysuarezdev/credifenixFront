@@ -21,12 +21,12 @@ import AddClientes from '../../components/Administracion/Clientes/AddClientes'
 import ModalFilterMaestras from '../../components/Common/ModalFilterMaestras'
 
 
-import { getCreditos, saveCredito, getListRutas, getListPeriodos, saveAbonos, saveRenovacion, saveRenovacion1, cleanDataRutas, reorderData, saveRenovacionInmediata, deleteRenovacion } from '../../actions/rutas'
+import { getCreditos, saveCredito, getListRutas, getListPeriodos, saveAbonos, saveRenovacion, saveRenovacion1, cleanDataRutas, reorderData, saveRenovacionInmediata, deleteRenovacion, deleteCredito } from '../../actions/rutas'
 import { cleanCliente } from '../../actions/clientes'
 import { selectAction, changeAttr2, toggleModal, newRow } from '../../actions/common'
 import { exportDataGrid } from '../../utils/helpers'
 import { showHideModalFilter } from "../../actions/filtrarData";
-import { tableColumnsRutas } from '../../utils/headersColumns'
+// import { tableColumnsRutas } from '../../utils/headersColumns'
 
 const tipo = "RUTA";
 
@@ -38,6 +38,7 @@ class Rutas extends Component {
         this.actionClickRenovados = this.actionClickRenovados.bind(this);
         this.actionClickCancelarRenovado = this.actionClickCancelarRenovado.bind(this);
         this.actionClickRenovadosInmediatos = this.actionClickRenovadosInmediatos.bind(this);
+        this.actionClickEliminarCredito = this.actionClickEliminarCredito.bind(this);
         this.createAction = this.createAction.bind(this);
         this.onChangeSelect = this.onChangeSelect.bind(this);
         this.actionToogleSidebarRigth = this.actionToogleSidebarRigth.bind(this);
@@ -112,6 +113,24 @@ class Rutas extends Component {
         })
     }
 
+    actionClickEliminarCredito(rowId) {
+        Swal.fire({
+            title: 'Retirar credito',
+            html: `<div> 
+                    <p> Realmente desea retirar este credito de la ruta? </p>
+                   </div>`,
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Confirmar cambios'
+        }).then((result) => {
+            if (result.value) {
+                this.setState({ idRenovar: rowId })
+                this.props.deleteCredito(rowId);
+            }
+        })
+    }
+
     actionClickCancelarRenovado(rowId) {
         Swal.fire({
             title: 'Cancelar renovación',
@@ -181,8 +200,11 @@ class Rutas extends Component {
             }
         })
 
+        const _new = this.props.nuevos.map(entry => entry.get('valor')).reduce((prev, current) => prev + current);
+        console.log(this.props.nuevos, _new);
+        
         entrada = entrada * 1000;
-        salida = (salida * 1000) + this.props.nuevos;
+        salida = (salida * 1000) + _new;
 
         Swal.fire({
             title: 'FLUJO DE CAJA',
@@ -271,7 +293,7 @@ class Rutas extends Component {
 
 
     render() {
-        const { ids, list, rutas, cartera, cobrador, idRuta, nuevos } = this.props;
+        const { ids, list, rutas, cartera, cobrador, idRuta, user } = this.props;
         var today = moment((new Date())).format('YYYY-MM-DD');
 
         const buttons = [
@@ -325,6 +347,8 @@ class Rutas extends Component {
                             actionClickRenovados={this.actionClickRenovados}
                             actionClickCancelarRenovado={this.actionClickCancelarRenovado}
                             actionClickRenovadosInmediatos={this.actionClickRenovadosInmediatos}
+                            actionClickEliminarCredito={this.actionClickEliminarCredito}
+                            user={user}
                         />
                     </div>
                 </div>
@@ -364,6 +388,7 @@ function mapStateToProps(state) {
         cartera: state.rutas.get('cartera'),
         nuevos: state.rutas.get('nuevos'),
         idRuta: state.rutas.get('idRuta'),
+        user: state.auth.user,
         cobrador: state.rutas.get('cobrador')
     }
 }
@@ -383,6 +408,7 @@ function mapDispatchToProps(dispatch) {
         saveRenovacion1: (id) => dispatch(saveRenovacion1(id)),
         saveRenovacionInmediata: (id) => dispatch(saveRenovacionInmediata(id)),
         deleteRenovacion: (id) => dispatch(deleteRenovacion(id)),
+        deleteCredito: (id) => dispatch(deleteCredito(id)),
         cleanCliente: () => dispatch(cleanCliente()),
         cleanDataRutas: () => dispatch(cleanDataRutas()),
         reorderData: () => dispatch(reorderData()),

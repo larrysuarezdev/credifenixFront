@@ -206,7 +206,7 @@ export function exportDataGrid(list, ruta, cobrador) {
                 { text: x.cliente.titular, style: 'tableBody' },
                 { text: x.cuota, style: 'tableBody' },
                 { text: x.mora, style: 'tableBody', fillColor: color },
-                { text: x.cuotas_pagas.toFixed(1), style: 'tableBody' },
+                { text: x.cuotas_pagas, style: 'tableBody' },
                 { text: x.valor_prestamo / 1000, style: 'tableBody' },
                 { text: x.mod_dias + "-" + (x.mod_cuota / 1000), style: 'tableBody' },
                 { text: x.saldo / 1000, style: 'tableBody' },
