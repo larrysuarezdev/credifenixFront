@@ -67,10 +67,10 @@ export default function (state = INITIAL_STATE, action) {
                 state = state.update('nuevos', filter => filter.push(Immutable.fromJS({ id: action.payload.idCredito, valor: Number(action.payload.nuevo) })))
             }
             else {
-                state = state.set('nuevo', INITIAL_STATE.get('nuevo'))
+                state = state.set('nuevos', INITIAL_STATE.get('nuevos'))
             }
 
-            console.log(state.get('nuevos'))
+            // console.log(state.get('nuevos'))
 
 
             if (action.payload.cobrador !== null)

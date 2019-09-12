@@ -1,10 +1,21 @@
 import numeral from 'numeral'
 import moment from 'moment'
 
-export const ClienteFormatter = ({ row }) => {
-    return row.cliente.titular;
+export const TotalFormatter = ({ row }) => {
+    return numeral(row.valor_total).format();
 };
 
+export const SaldoFormatter = ({ row }) => {
+    return numeral(row.saldo).format();
+};
+
+export const CuotasFormatter = ({ row }) => {
+    return numeral(row.mod_cuota).format();
+};
+
+export const PrestamoFormatter = ({ row }) => {
+    return numeral(row.valor_prestamo).format();
+};
 
 export const NegocioFormatter = ({ row }) => {
     return row.cliente.neg_titular;

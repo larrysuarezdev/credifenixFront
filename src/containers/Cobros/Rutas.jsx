@@ -201,10 +201,16 @@ class Rutas extends Component {
         })
 
         const _new = this.props.nuevos.map(entry => entry.get('valor')).reduce((prev, current) => prev + current);
-        console.log(this.props.nuevos, _new);
         
         entrada = entrada * 1000;
-        salida = (salida * 1000) + _new;
+        salida = salida * 1000;
+
+        if(_new)
+        {
+            salida = salida + (_new)
+        }
+
+        console.log(this.props.nuevos, _new);
 
         Swal.fire({
             title: 'FLUJO DE CAJA',
