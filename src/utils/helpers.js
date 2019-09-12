@@ -141,12 +141,12 @@ export function exportDataGrid(list, ruta, cobrador) {
                         ['COBRADOR', { text: cobrador !== 'Sin asignar' ? cobrador.nombres.toUpperCase() + ' ' + cobrador.apellidos.toUpperCase() : 'SIN ASIGNAR', italics: true, color: 'gray', alignment: "center" }, 'TELEFONO', { text: cobrador !== 'Sin asignar' ? cobrador.telefono1.toUpperCase() : 'SIN ASIGNAR', italics: true, color: 'gray', alignment: "center" }, 'FECHA', { text: moment().add(1, 'days').format('LL'), italics: true, color: 'gray', alignment: "center" }, 'RUTA', { text: ruta, italics: true, color: 'gray', alignment: "center" }],
                     ]
                 },
-                margin: [0, 10, 10, 10]
+                margin: [20, 5, 20, 5]
             },
             {
                 table: {
                     headerRows: 1,
-                    widths: [25, 30, 'auto', 25, 20, 'auto', 20, 30, 'auto', 'auto', 30, 'auto', 'auto', 'auto', 'auto', 'auto', 'auto'],
+                    widths: [20, 20, 'auto', 25, 20, 'auto', 20, 30, 'auto', 'auto', 30, 'auto', 'auto', 'auto', 'auto', 'auto', 'auto'],
                     body: [
                         [
                             { text: 'Obs', style: 'header' },
@@ -169,18 +169,19 @@ export function exportDataGrid(list, ruta, cobrador) {
                         ],
                     ]
                 },
+                margin: [20, 0, 10, 0]
             },
         ],
         styles: {
             header: {
-                fontSize: 8,
+                fontSize: 7,
                 bold: true,
                 italics: true,
                 fillColor: "#f9f9f9"
             },
             tableBody: {
                 alignment: 'right',
-                fontSize: 8,
+                fontSize: 7,
             }
         }
     };
@@ -210,7 +211,7 @@ export function exportDataGrid(list, ruta, cobrador) {
                 { text: x.valor_prestamo / 1000, style: 'tableBody' },
                 { text: x.mod_dias + "-" + (x.mod_cuota / 1000), style: 'tableBody' },
                 { text: x.saldo / 1000, style: 'tableBody' },
-                { text: x.fecha_ultimo_pago == "" ? "" : moment(x.fecha_ultimo_pago).format("YYYY-MM-DD"), style: 'tableBody' },
+                { text: !x.fecha_ultimo_pago ? "" : moment(x.fecha_ultimo_pago).format("YYYY-MM-DD"), style: 'tableBody' },
                 { text: x.valor_ultimo_pago / 1000, style: 'tableBody' },
                 { text: moment(x.inicio_credito).format("YYYY-MM-DD"), style: 'tableBody' },
                 { text: x.cliente.neg_titular, style: 'tableBody' },
