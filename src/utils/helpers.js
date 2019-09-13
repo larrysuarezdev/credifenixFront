@@ -141,7 +141,7 @@ export function exportDataGrid(list, ruta, cobrador) {
                         ['COBRADOR', { text: cobrador !== 'Sin asignar' ? cobrador.nombres.toUpperCase() + ' ' + cobrador.apellidos.toUpperCase() : 'SIN ASIGNAR', italics: true, color: 'gray', alignment: "center" }, 'TELEFONO', { text: cobrador !== 'Sin asignar' ? cobrador.telefono1.toUpperCase() : 'SIN ASIGNAR', italics: true, color: 'gray', alignment: "center" }, 'FECHA', { text: moment().add(1, 'days').format('LL'), italics: true, color: 'gray', alignment: "center" }, 'RUTA', { text: ruta, italics: true, color: 'gray', alignment: "center" }],
                     ]
                 },
-                margin: [20, 5, 20, 5]
+                margin: [40, 5, 20, 5]
             },
             {
                 table: {
@@ -169,7 +169,7 @@ export function exportDataGrid(list, ruta, cobrador) {
                         ],
                     ]
                 },
-                margin: [20, 0, 10, 0]
+                margin: [40, 0, 10, 0]
             },
         ],
         styles: {
