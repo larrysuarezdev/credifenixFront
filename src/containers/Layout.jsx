@@ -45,7 +45,7 @@ class Layout extends Component {
         {
           icon: 'chart-line', caption: 'Reportes', isActive: false, isOpen: false,
           subitems: [
-            { caption: 'Pendientes', isActive: false, title: 'Clientes', url: '/reportes/reporte1' }
+            { caption: 'Coteos', isActive: false, title: 'Coteos', url: '/reportes/coteos', icon: 'file-invoice-dollar' }
           ]
         }
       ]

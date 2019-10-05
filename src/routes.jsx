@@ -3,7 +3,7 @@ import { Route, Switch } from 'react-router'
 
 import Login from './containers/Login'
 import Layout from './containers/Layout'
-import Page404 from './containers/404'
+// import Page404 from './containers/404'
 
 import Dashboard from './containers/Dashboard'
 import Perfil from './containers/Perfil'
@@ -14,6 +14,7 @@ import Roles from './containers/Administracion/Roles'
 import Rutas from './containers/Cobros/Rutas'
 import FlujoCaja from './containers/Cobros/FlujoCaja'
 import FlujoUtilidades from './containers/Cobros/FlujoUtilidades'
+import Coteos from './containers/Reportes/Coteos'
 
 
 import requireAuth from './lib/requireAuth'
@@ -31,8 +32,8 @@ export default (
 			<Route path="/cobros/rutas" component={requireAuth(Rutas)} />
 			<Route path="/cobros/flujoCaja" component={requireAuth(FlujoCaja)} />
 			<Route path="/cobros/flujoUtilidades" component={requireAuth(FlujoUtilidades)} />
+			<Route path="/reportes/coteos" component={requireAuth(Coteos)} />
 			{/* <Route component={requireAuth(Page404)} /> */}
-			{/* <Route path="/rutaInstruccion/recetas" component={requireAuth(Recetas)} /> */}
 		</Layout>
 	</Switch>
 )

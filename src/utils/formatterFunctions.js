@@ -44,3 +44,13 @@ export const ValorUltimoPagoFormatter = ({ row }) => {
 export const FechaUltimoPagoFormatter = ({ row }) => {
     return row.fecha_ultimo_pago == "" ? "" : moment(row.fecha_ultimo_pago).format("YYYY-MM-DD");
 };
+
+// FLUJOS DE CAJA Y UTILIDADES
+
+export const FechaFlujoFormatter = ({ row }) => {
+    return row.fecha == "" ? "" : moment(row.fecha).format("YYYY-MM-DD");
+};
+
+export const ValorFlujoFormatter = ({ row }) => {
+    return numeral(row.valor).format();
+};

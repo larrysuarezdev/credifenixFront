@@ -78,3 +78,7 @@
     content: attr(data-count);
     display: block;
 }
+
+/* .react-grid-Container{
+    padding-right: 23px;
+} */

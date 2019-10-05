@@ -83,6 +83,7 @@ export function recalculate(data, id, cargue = false) {
 
             if (entries.length > 0) {
                 const ultimoPago = entries.reduce(function (a, b) { return (a.id > b.id) ? a : b; });
+                // console.log(entries, ultimoPago);
 
                 x.valor_ultimo_pago = ultimoPago[1].abono;
                 x.fecha_ultimo_pago = ultimoPago[1].fecha_abono;
@@ -92,25 +93,26 @@ export function recalculate(data, id, cargue = false) {
             }
         }
         const creditos_renovaciones = Object.entries(x.creditos_renovaciones);
+        // console.log(creditos_renovaciones)
 
-        const inicio_credito = creditos_renovaciones.length > 0 ? creditos_renovaciones[0].fecha : x.inicio_credito;
-
+        const inicio_credito = creditos_renovaciones.length > 0 ? creditos_renovaciones[0][1].fecha : x.inicio_credito;
+        x.inicio_credito = inicio_credito;
+        
         x.saldo = x.valor_total - abonos;
         x.cuotas_pagas = parseFloat((x.valor_total - x.saldo) / x.mod_cuota).toFixed(1);
 
-        const DiaAct = new Date(moment().format("YYYY-MM-DD"));
-        const inicioCredito = new Date(moment(inicio_credito).format("YYYY-MM-DD"));
-        var Difference_In_Time = DiaAct.getTime() - inicioCredito.getTime();
+        // const DiaAct = new Date(moment().format("YYYY-MM-DD"));
+        // const inicioCredito = new Date(moment(inicio_credito).format("YYYY-MM-DD"));
+        // var Difference_In_Time = DiaAct.getTime() - inicioCredito.getTime();
 
-        var days = Difference_In_Time / (1000 * 3600 * 24);
-        days = days - Math.floor(days / 7);
-
-        x.mora = days - Math.floor(x.cuotas_pagas);
-        
+        // var days = Difference_In_Time / (1000 * 3600 * 24);
+        // days = days - Math.floor(days / 7);
+        // x.mora = days - Math.floor(x.cuotas_pagas);       
 
         if (cargue) {
             x.cuota = ''
         }
+        
         cartera = cartera + x.saldo;
         res.push(x)
         return x
@@ -124,7 +126,7 @@ export function recalculate(data, id, cargue = false) {
     return { list: Immutable.fromJS(res), cartera: cartera };
 }
 
-export function exportDataGrid(list, ruta, cobrador) {
+export function exportDataGrid(list, ruta, cobrador, fecha) {
     pdfMake.vfs = pdfFonts.pdfMake.vfs;
     const data = list.toList().toJS().sort(function (a, b) { return a.orden - b.orden });
 
@@ -138,7 +140,11 @@ export function exportDataGrid(list, ruta, cobrador) {
                 table: {
                     widths: ['*', '*', '*', '*', '*', '*', '*', '*'],
                     body: [
-                        ['COBRADOR', { text: cobrador !== 'Sin asignar' ? cobrador.nombres.toUpperCase() + ' ' + cobrador.apellidos.toUpperCase() : 'SIN ASIGNAR', italics: true, color: 'gray', alignment: "center" }, 'TELEFONO', { text: cobrador !== 'Sin asignar' ? cobrador.telefono1.toUpperCase() : 'SIN ASIGNAR', italics: true, color: 'gray', alignment: "center" }, 'FECHA', { text: moment().add(1, 'days').format('LL'), italics: true, color: 'gray', alignment: "center" }, 'RUTA', { text: ruta, italics: true, color: 'gray', alignment: "center" }],
+                        [
+                            'COBRADOR', { text: cobrador !== 'Sin asignar' ? cobrador.nombres.toUpperCase() + ' ' + cobrador.apellidos.toUpperCase() : 'SIN ASIGNAR', italics: true, color: 'gray', alignment: "center" }, 
+                            'TELEFONO', { text: cobrador !== 'Sin asignar' ? cobrador.telefono1.toUpperCase() : 'SIN ASIGNAR', italics: true, color: 'gray', alignment: "center" }, 
+                            'FECHA', { text: moment(fecha).format('LL'), italics: true, color: 'gray', alignment: "center" }, 
+                            'RUTA', { text: ruta, italics: true, color: 'gray', alignment: "center" }],
                     ]
                 },
                 margin: [40, 5, 20, 5]

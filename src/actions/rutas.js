@@ -154,7 +154,7 @@ export function saveCredito() {
     }
 }
 
-export function saveAbonos(entrada, salida, utilidad) {
+export function saveAbonos(entrada, salida, utilidad, coteos) {
     return (dispatch, getState) => {
         dispatch(setLoading(true));
         let rows = getState().rutas.get('list').sortBy(
@@ -176,7 +176,7 @@ export function saveAbonos(entrada, salida, utilidad) {
             }
         });
 
-        axios.post(`${API_URL}/creditos/abonos`, { 'cuotas': dataToSend, 'idRuta': id, 'renovaciones': renovaciones, 'eliminar' : eliminar, 'flujoCaja': { 'entrada': entrada, 'salida': salida, 'utilidad': utilidad } })
+        axios.post(`${API_URL}/creditos/abonos`, { 'cuotas': dataToSend, 'idRuta': id, 'renovaciones': renovaciones, 'eliminar' : eliminar, 'flujoCaja': { 'entrada': entrada, 'salida': salida, 'utilidad': utilidad, 'coteos' : coteos } })
             .then((res) => {
                 dispatch(setLoading(false));
                 // dispatch(reorderDataDB());

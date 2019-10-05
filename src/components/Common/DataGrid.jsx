@@ -45,7 +45,6 @@ const MoraFormatter = ({ row }) => {
     return res;
 };
 
-
 function ExampleContextMenu({
     idx,
     id,
@@ -106,7 +105,7 @@ const columns = [
 
 class DataGrid extends Component {
 
-    static defaultProps = { rowKey: "id" };
+    // static defaultProps = { rowKey: "id" };
 
     constructor(props) {
         super(props);

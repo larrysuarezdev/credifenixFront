@@ -67,7 +67,6 @@ class TableVirtualized extends Component {
                         alignment = 'right'
                         break
                     case 'BOOLEAN':
-                        console.log(value)
                         value = <div style={{ textAlign: 'center', fontSize: '1.1em' }}><FontAwesome name={`${value ? 'check-' : ''}square`} /></div>
                         break
                     case 'BUTTON':

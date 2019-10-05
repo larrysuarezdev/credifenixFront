@@ -28,15 +28,11 @@ export function getFlujoUtilidades() {
                         salidas += item["valor"]
                 }
                 sum = entradas - salidas;
-                const data = objectifyArray(res[0].data.data, {
-                    by: ['id'],
-                    recursive: true
-                })
 
                 dispatch({
                     type: types.GET_FLUJO_UTILIDADES,
                     payload: {
-                        data,
+                        data : res[0].data.data,
                         sum
                     }
                 })

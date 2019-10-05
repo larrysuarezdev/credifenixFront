@@ -42,7 +42,8 @@ class Rutas extends Component {
         this.createAction = this.createAction.bind(this);
         this.onChangeSelect = this.onChangeSelect.bind(this);
         this.actionToogleSidebarRigth = this.actionToogleSidebarRigth.bind(this);
-
+        this.getCoteoCuota = this.getCoteoCuota.bind(this);
+        this.onExportDataGrid = this.onExportDataGrid.bind(this);
 
         this.state = {
             tipoModal: 0,
@@ -54,7 +55,8 @@ class Rutas extends Component {
             tab: 0,
             toogleSidebarRigth: false,
             idRenovar: null,
-            gridHeight: 350
+            gridHeight: 350,
+            fechaExporte: moment().add(1, 'days')
         }
 
     }
@@ -70,6 +72,11 @@ class Rutas extends Component {
         var node = ReactDOM.findDOMNode(this.refs["dataExport"]);
         var gridHeight = node.clientHeight;
         this.setState({ gridHeight: gridHeight });
+    }
+
+    onExportDataGrid() {
+        this.setState({ tipoModal: 4 })
+        this.props.toggleModal();
     }
 
     createAction() {
@@ -185,32 +192,51 @@ class Rutas extends Component {
         this.props.toggleModal();
     }
 
+    getCoteoCuota(x) {
+        let coteo = 0
+        const rest = (x.get('cuota') * 1000) / x.get('mod_cuota')
+
+        if (x.get('cuota') >= 5) {
+            if ((x.get('cuota') * 1000) < x.get('mod_cuota')) {
+                coteo = 1;
+            }
+            else {
+                coteo = Math.floor(rest);
+            }
+
+        } else {
+            coteo = 0;
+        }
+
+        return coteo;
+    }
+
     saveAbonos() {
-        let entrada = 0, salida = 0, utilidad = 0;
+        let entrada = 0, salida = 0, utilidad = 0, coteos = 0;
 
         this.props.list.map((x) => {
             entrada = entrada + Number(x.get('cuota'));
             if (x.get('renovacion')) {
+                coteos++;
                 salida = salida + Number(x.getIn(['renovacion', 'monto']));
                 if (x.getIn(['renovacion', 'editable'])) {
                     utilidad = utilidad + (x.getIn(['renovacion', 'utilidad']) * 1000);
                 } else {
                     utilidad = utilidad + (x.get('valor_total') - x.get('valor_prestamo'));
                 }
+            } else {
+                coteos = coteos + this.getCoteoCuota(x);
             }
         })
 
         const _new = this.props.nuevos.map(entry => entry.get('valor')).reduce((prev, current) => prev + current);
-        
+
         entrada = entrada * 1000;
         salida = salida * 1000;
 
-        if(_new)
-        {
+        if (_new) {
             salida = salida + (_new)
         }
-
-        console.log(this.props.nuevos, _new);
 
         Swal.fire({
             title: 'FLUJO DE CAJA',
@@ -218,14 +244,15 @@ class Rutas extends Component {
                     <p> Entran: ${numeral(entrada).format('')} </p>
                     <p> Salen: ${numeral(salida).format('')} </p>
                     <p> Utilidad: ${numeral(utilidad).format('')} </p>
-                   </div>`,
+                    <p> Coteos: ${coteos} </p>
+                    </div>`,
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
             confirmButtonText: 'Confirmar cambios'
         }).then((result) => {
             if (result.value) {
-                this.props.saveAbonos(entrada, salida, utilidad)
+                this.props.saveAbonos(entrada, salida, utilidad, coteos)
             }
         })
     }
@@ -241,6 +268,10 @@ class Rutas extends Component {
 
         const buttons2 = [
             <BoxButton key="b3[0][0]" name="save" onClick={() => this.reorderData()} title="Guardar crédito" classCSS="info" />,
+        ]
+
+        const buttons3 = [
+            <BoxButton key="b1[0][0]" name="save" onClick={() => exportDataGrid(this.props.list, this.props.idRuta, this.props.cobrador, this.state.fechaExporte)} title="Guardar exporte" classCSS="info" />,
         ]
 
         const { tabs, tab } = this.state;
@@ -292,6 +323,17 @@ class Rutas extends Component {
                         <DnDListadoClientes />
                     </Modal>
                 )
+            case 4:
+                return (
+                    <Modal title="Exportar ruta" buttons={buttons3} brand={true}>
+                        <div className="row" style={{ padding : 20}}>
+                            <div className="col">La fecha de exporte es automática, si desea cambiarla por favor seleccione...</div>
+                            <div className="col">
+                                <input className="form-control form-control-sm" type="date" value={moment(this.state.fechaExporte).format('YYYY-MM-DD')} onChange={(e) => this.setState({ fechaExporte : e.target.value})} />
+                            </div>
+                        </div>
+                    </Modal>
+                )
             default:
                 return null;
         }
@@ -307,7 +349,7 @@ class Rutas extends Component {
             <BoxButton key="br[0][1]" name="exchange-alt" onClick={() => this.actionClickReorder()} title="Enrutar" classCSS="info" disabled={idRuta != null ? false : true} />,
             <BoxButton key="br[0][2]" name="save" onClick={() => this.saveAbonos()} title="Guardar abonos" classCSS="info" disabled={idRuta != null ? false : true} />,
             // <BoxButton key="br[0][3]" name="filter" onClick={() => this.props.showHideModalFilter(true, tableColumnsRutas, 'rutas')} title="Filtrar información" classCSS="info" disabled={idRuta != null ? false : true} />,
-            <BoxButton key="br[0][4]" name="file-pdf" onClick={() => exportDataGrid(list, idRuta, cobrador)} title="Exportar ruta" classCSS="info" disabled={idRuta != null ? false : true} />,
+            <BoxButton key="br[0][4]" name="file-pdf" onClick={() => this.onExportDataGrid(list, idRuta, cobrador)} title="Exportar ruta" classCSS="info" disabled={idRuta != null ? false : true} />,
         ]
 
         return (
@@ -409,7 +451,7 @@ function mapDispatchToProps(dispatch) {
         toggleModal: () => dispatch(toggleModal()),
         newRow: (tipo) => dispatch(newRow(tipo)),
         saveCredito: () => dispatch(saveCredito()),
-        saveAbonos: (entrada, salida, utilidad) => dispatch(saveAbonos(entrada, salida, utilidad)),
+        saveAbonos: (entrada, salida, utilidad, coteos) => dispatch(saveAbonos(entrada, salida, utilidad, coteos)),
         saveRenovacion: (id) => dispatch(saveRenovacion(id)),
         saveRenovacion1: (id) => dispatch(saveRenovacion1(id)),
         saveRenovacionInmediata: (id) => dispatch(saveRenovacionInmediata(id)),

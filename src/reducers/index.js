@@ -10,6 +10,7 @@ import rutas from './rutas'
 import flujoCaja from './flujoCaja'
 import flujoUtilidades from './flujoUtilidades'
 import usuarios from './usuarios'
+import reportes from './reportes'
 
 
 const appReducer = combineReducers({
@@ -23,7 +24,8 @@ const appReducer = combineReducers({
     rutas,
     flujoCaja,
     flujoUtilidades,
-    usuarios
+    usuarios,
+    reportes
 })
 
 const rootReducer = (state, action) => {
