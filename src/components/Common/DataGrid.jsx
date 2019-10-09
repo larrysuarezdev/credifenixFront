@@ -1,16 +1,17 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import ReactDataGrid from 'react-data-grid';
-import { Menu } from "react-data-grid-addons";
+import { Menu, Editors } from "react-data-grid-addons";
 
 import { NegocioFormatter, DireccionFormatter, TelefonoClienteFormatter, FiadorFormatter, TelefonoFiadorFormatter, ValorUltimoPagoFormatter, FechaUltimoPagoFormatter, TotalFormatter, SaldoFormatter, CuotasFormatter, PrestamoFormatter } from "../../utils/formatterFunctions";
 
+// console.log(this.props)
 const { ContextMenu, MenuItem, ContextMenuTrigger } = Menu;
 
 const CuotaFormatter = ({ row }) => {
     if (row.renovacion) {
         return (<div className="disabledCell">RN</div>)
-    }else if(row.delete){
+    } else if (row.delete) {
         return (<div className="disabledCell">DEL</div>)
     }
     else
@@ -19,10 +20,10 @@ const CuotaFormatter = ({ row }) => {
 
 const ClienteFormatter = ({ row }) => {
     return (
-        <div data-toggle="tooltip" data-placement="left" title={ row.cliente.titular } >
-           { row.cliente.titular } 
+        <div data-toggle="tooltip" data-placement="left" title={row.cliente.titular} >
+            {row.cliente.titular}
         </div>
-        );
+    );
 };
 
 const MoraFormatter = ({ row }) => {
@@ -50,14 +51,18 @@ function ExampleContextMenu({
     id,
     rowIdx,
     onRenovarCredito,
+    onCambiarDias,
     onDetallesCredito,
     onRenovarCreditoInmediato,
-    onCancelarRenovado, 
-    onEliminarCredito, 
+    onCancelarRenovado,
+    onEliminarCredito,
     user
 }) {
     return (
         <ContextMenu id={id}>
+            <MenuItem data={{ rowIdx, idx }} onClick={onCambiarDias}>
+                Cambiar días
+            </MenuItem>
             <MenuItem data={{ rowIdx, idx }} onClick={onRenovarCreditoInmediato}>
                 Renovación inmediata
             </MenuItem>
@@ -83,15 +88,16 @@ function ExampleContextMenu({
 
 const columns = [
     { key: 'orden', name: 'Ord', editable: false, width: 45, frozen: true },
+    { key: 'obs_dia', name: 'Día', editable: false, width: 70, frozen: true },
     { key: 'cliente', name: 'Cliente', editable: false, width: 250, frozen: true, formatter: ClienteFormatter },
     { key: 'cuota', name: 'Cuota', editable: true, width: 60, frozen: true, formatter: CuotaFormatter },
     { key: 'mora', name: 'Mora', editable: false, width: 50, frozen: true, formatter: MoraFormatter },
     { key: 'cuotas_pagas', name: 'PAG', editable: false, width: 50, frozen: false },
-    { key: 'valor_prestamo', name: 'Prestamo', editable: false, width: 100, frozen: false, formatter : PrestamoFormatter },
-    { key: 'mod_cuota', name: 'Cuota', editable: false, width: 80, frozen: false, formatter : CuotasFormatter },
+    { key: 'valor_prestamo', name: 'Prestamo', editable: false, width: 100, frozen: false, formatter: PrestamoFormatter },
+    { key: 'mod_cuota', name: 'Cuota', editable: false, width: 80, frozen: false, formatter: CuotasFormatter },
     { key: 'mod_dias', name: 'Días', editable: false, width: 50, frozen: false },
     { key: 'saldo', name: 'Saldo', editable: false, width: 100, frozen: false, formatter: SaldoFormatter },
-    { key: 'valor_total', name: 'Total', editable: false, width: 100, frozen: false, formatter : TotalFormatter },
+    { key: 'valor_total', name: 'Total', editable: false, width: 100, frozen: false, formatter: TotalFormatter },
     { key: 'valor_ultimo_pago', name: 'Valor ult pag', editable: false, width: 110, frozen: false, formatter: ValorUltimoPagoFormatter },
     { key: 'fecha_ultimo_pago', name: 'Fecha ult pag', editable: false, width: 110, frozen: false, formatter: FechaUltimoPagoFormatter },
     { key: 'inicio_credito', name: 'Inicio', editable: false, width: 110, frozen: false },
@@ -122,6 +128,11 @@ class DataGrid extends Component {
         this.props.actionClickRenovados(id)
     }
 
+    onCambiarDias(rowIdx) {
+        const id = this.props.ids.get(rowIdx);
+        this.props.actionClickDias(id)
+    }
+
     onRenovarCreditoInmediato(rowIdx) {
         const id = this.props.ids.get(rowIdx);
         this.props.actionClickRenovadosInmediatos(id)
@@ -136,7 +147,7 @@ class DataGrid extends Component {
         const id = this.props.ids.get(rowIdx);
         this.props.actionClickEliminarCredito(id)
     }
-    
+
 
     onDetallesCredito(rowIdx) {
         const id = this.props.ids.get(rowIdx);
@@ -144,9 +155,20 @@ class DataGrid extends Component {
     }
 
     render() {
-        const { height, user } = this.props;
+        const { height, user, obs_dias } = this.props;
         const data = this.props.rows.toList().toJS().sort(function (a, b) { return a.orden - b.orden });
-        // console.log('user', user);
+
+        // if (obs_dias) {
+        //     const issueTypes = [];
+        //     obs_dias.map((x) => {
+        //         issueTypes.push({ id: x.get("value"), value: x.get("value") })
+        //     })
+        //     const { DropDownEditor } = Editors;
+        //     // const IssueTypeEditor = <DropDownEditor options={issueTypes} />;
+        //     console.log(issueTypes);
+        //     columns[1].editor = <DropDownEditor options={issueTypes} />;
+        //     columns[1].name = "Hola";
+        // }
 
         return (
             <ReactDataGrid
@@ -161,10 +183,11 @@ class DataGrid extends Component {
                 contextMenu={
                     <ExampleContextMenu
                         onRenovarCredito={(e, { rowIdx }) => this.onRenovarCredito(rowIdx)}
+                        onCambiarDias={(e, { rowIdx }) => this.onCambiarDias(rowIdx)}                        
                         onDetallesCredito={(e, { rowIdx }) => this.onDetallesCredito(rowIdx)}
                         onRenovarCreditoInmediato={(e, { rowIdx }) => this.onRenovarCreditoInmediato(rowIdx)}
                         onCancelarRenovado={(e, { rowIdx }) => this.onCancelarRenovado(rowIdx)}
-                        onEliminarCredito={(e, { rowIdx }) => this.onEliminarCredito(rowIdx)}                        
+                        onEliminarCredito={(e, { rowIdx }) => this.onEliminarCredito(rowIdx)}
                         user={user}
                     />
                 }

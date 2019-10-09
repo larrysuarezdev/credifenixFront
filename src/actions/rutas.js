@@ -70,7 +70,8 @@ export function getListPeriodos() {
                 dispatch({
                     type: types.GET_LISTA_PERIODOS,
                     payload: {
-                        data: res.data.data
+                        data: res.data.data,
+                        obs_dias: res.data.dias
                     }
                 })
 
@@ -154,7 +155,7 @@ export function saveCredito() {
     }
 }
 
-export function saveAbonos(entrada, salida, utilidad, coteos) {
+export function saveAbonos(entrada, salida, utilidad, coteos, moras) {
     return (dispatch, getState) => {
         dispatch(setLoading(true));
         let rows = getState().rutas.get('list').sortBy(
@@ -169,14 +170,14 @@ export function saveAbonos(entrada, salida, utilidad, coteos) {
             if (x.delete) {
                 eliminar.push({ id: x.id })
             } else {
-                dataToSend.push({ id: x.id, cuota: x.cuota ? Number(x.cuota) * 1000 : null, orden: x.orden })
+                dataToSend.push({ id: x.id, cuota: x.cuota ? Number(x.cuota) * 1000 : null, orden: x.orden, obs : x.obs_dia })
                 if (x.renovacion) {
                     renovaciones.push({ id: x.id, excedente: x.renovacion.monto * 1000, observaciones: x.renovacion.observaciones, modalidad: x.renovacion.modalidad, dias: Number(x.renovacion.dias), cuota: x.renovacion.cuota * 1000, valor_prestamo: x.renovacion.valor * 1000, utilidad: x.renovacion.editable ? Number(x.renovacion.utilidad) : 0 })
                 }
             }
         });
 
-        axios.post(`${API_URL}/creditos/abonos`, { 'cuotas': dataToSend, 'idRuta': id, 'renovaciones': renovaciones, 'eliminar' : eliminar, 'flujoCaja': { 'entrada': entrada, 'salida': salida, 'utilidad': utilidad, 'coteos' : coteos } })
+        axios.post(`${API_URL}/creditos/abonos`, { 'cuotas': dataToSend, 'idRuta': id, 'calculoMoras': moras, 'renovaciones': renovaciones, 'eliminar': eliminar, 'flujoCaja': { 'entrada': entrada, 'salida': salida, 'utilidad': utilidad, 'coteos': coteos } })
             .then((res) => {
                 dispatch(setLoading(false));
                 // dispatch(reorderDataDB());

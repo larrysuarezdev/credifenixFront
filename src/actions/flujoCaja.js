@@ -4,7 +4,7 @@ import moment from 'moment'
 
 import { API_URL, messageHandler } from './index'
 import { setLoading } from './common'
-import objectifyArray from 'objectify-array'
+// import objectifyArray from 'objectify-array'
 
 const axios = createAxiosInstance();
 
@@ -32,7 +32,7 @@ export function getFlujoCaja() {
                 dispatch({
                     type: types.GET_FLUJO_CAJA,
                     payload: {
-                        data : res[0].data.data,
+                        data: res[0].data.data,
                         sum
                     }
                 })
@@ -47,22 +47,30 @@ export function getFlujoCaja() {
 export function saveAction() {
     return (dispatch, getState) => {
         dispatch(setLoading(true));
-        const row = getState().flujoCaja.get('selectRow').toJS();
-        row.fecha = moment(row.fecha).format('YYYY-MM-DD');
-        row.valor = row.valor * 1000;
+        let row = []
+        try {
+            row = getState().flujoCaja.get('selectRow').toJS();
+            console.log(row)
 
-        axios.post(`${API_URL}/flujoCaja`, row)
-            .then(() => {
-                dispatch(getFlujoCaja());
-                dispatch({ type: types.CLEAN_FLUJO_CAJA })
-                messageHandler(dispatch, {
-                    success: 'Se ha agregado un nuevo registro'
+            row.fecha = moment(row.fecha).format('YYYY-MM-DD');
+            row.valor = row.valor * 1000;
+            axios.post(`${API_URL}/flujoCaja`, row)
+                .then(() => {
+                    dispatch(getFlujoCaja());
+                    dispatch({ type: types.CLEAN_FLUJO_CAJA })
+                    messageHandler(dispatch, {
+                        success: 'Se ha agregado un nuevo registro'
+                    })
                 })
-            })
-            .catch(err => {
-                dispatch(setLoading(false));
-                messageHandler(dispatch, err)
-            })
+                .catch(err => {
+                    dispatch(setLoading(false));
+                    messageHandler(dispatch, err)
+                })
+        }
+        catch{
+            messageHandler(dispatch, { warning: 'Debe completar toda la información primero' });
+            dispatch(setLoading(false));
+        }
 
     }
 }

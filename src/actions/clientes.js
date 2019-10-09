@@ -89,6 +89,7 @@ export function changeState(id) {
                 })
             })
             .catch(err => {
+                dispatch(setLoading(false));
                 messageHandler(dispatch, err)
             })
     }

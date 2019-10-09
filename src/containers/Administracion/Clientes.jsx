@@ -83,12 +83,19 @@ class Clientes extends Component {
 
   render() {
     const { tabs, tab } = this.state;
-
+    const { list } = this.props;
+    
     return (
       <div className="col-xl-12 col-lg-12">
         <div className="card shadow mb-4">
           <div className="card-header py-3 d-flex flex-row align-items-center justify-content-between">
             <h6 className="m-0 font-weight-bold text-success">Gestión de clientes</h6>
+            <div>
+              Total <span className="badge badge-success">{list ? list.size : 0}</span>
+            </div>
+            <div>
+              Activos <span className="badge badge-success">{list ? list.filter(x => x.get("estado")).size : 0 }</span>
+            </div>
           </div>
           <ul className="nav nav-tabs nav-justified" id="myTab" role="tablist">
             {
@@ -122,6 +129,7 @@ class Clientes extends Component {
 function mapStateToProps(state) {
   return {
     selectRow: state.clientes.get('selectRow'),
+    list: state.clientes.get('list'),
   }
 }
 

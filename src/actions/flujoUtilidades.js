@@ -3,8 +3,8 @@ import { createAxiosInstance } from '../utils/helpers'
 import moment from 'moment'
 
 import { API_URL, messageHandler } from './index'
-import { setLoading } from './common' 
-import objectifyArray from 'objectify-array'
+import { setLoading } from './common'
+// import objectifyArray from 'objectify-array'
 
 const axios = createAxiosInstance();
 
@@ -32,7 +32,7 @@ export function getFlujoUtilidades() {
                 dispatch({
                     type: types.GET_FLUJO_UTILIDADES,
                     payload: {
-                        data : res[0].data.data,
+                        data: res[0].data.data,
                         sum
                     }
                 })
@@ -47,22 +47,29 @@ export function getFlujoUtilidades() {
 export function saveAction() {
     return (dispatch, getState) => {
         dispatch(setLoading(true));
-        const row = getState().flujoUtilidades.get('selectRow').toJS();
-        row.fecha = moment(row.fecha).format('YYYY-MM-DD');
-        row.valor = row.valor * 1000;
-        
-        axios.post(`${API_URL}/flujoCaja/utilidades`, row)
-            .then(() => {
-                dispatch(getFlujoUtilidades());
-                dispatch({ type: types.CLEAN_FLUJO_UTILIDADES })
-                messageHandler(dispatch, {
-                    success: 'Se ha agregado un nuevo registro'
+        let row = []
+        try {
+            row = getState().flujoUtilidades.get('selectRow').toJS();
+            row.fecha = moment(row.fecha).format('YYYY-MM-DD');
+            row.valor = row.valor * 1000;
+
+            axios.post(`${API_URL}/flujoCaja/utilidades`, row)
+                .then(() => {
+                    dispatch(getFlujoUtilidades());
+                    dispatch({ type: types.CLEAN_FLUJO_UTILIDADES })
+                    messageHandler(dispatch, {
+                        success: 'Se ha agregado un nuevo registro'
+                    })
                 })
-            })
-            .catch(err => {
-                dispatch(setLoading(false));
-                messageHandler(dispatch, err)
-            })
+                .catch(err => {
+                    dispatch(setLoading(false));
+                    messageHandler(dispatch, err)
+                })
+        }
+        catch{
+            messageHandler(dispatch, { warning: 'Debe completar toda la información primero' });
+            dispatch(setLoading(false));
+        }
 
     }
 }

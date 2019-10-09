@@ -60,6 +60,7 @@
     text-overflow: ellipsis;
     background: white;
 }
+
 .rvtablecell2-input {
     border-bottom: 1px solid #ddd;
     border-right: 1px solid #ddd;
@@ -88,3 +89,9 @@
     background: #eee!important;
     color: #eee!important;
 }
+
+/* th:first-child, td:first-child {
+    position: sticky;
+    left: 0px;
+    background-color: #ffffff;
+} */

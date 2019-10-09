@@ -36,6 +36,7 @@ const INITIAL_STATE = Immutable.fromJS({
     cobrador: 'Sin asignar',
     rutas: [],
     periodos: [],
+    obs_dias: [],
     idRuta: null,
     detalle_selected: null,
     renovacion_selected: null,
@@ -44,13 +45,6 @@ const INITIAL_STATE = Immutable.fromJS({
     reorder: [],
     renovacion: null
 })
-
-function removeItemFromArr(arr, item) {
-    return arr.filter(function (e) {
-        console.log(e, item)
-        return e.id !== item;
-    });
-};
 
 export default function (state = INITIAL_STATE, action) {
     let creditos, row;
@@ -70,9 +64,6 @@ export default function (state = INITIAL_STATE, action) {
                 state = state.set('nuevos', INITIAL_STATE.get('nuevos'))
             }
 
-            // console.log(state.get('nuevos'))
-
-
             if (action.payload.cobrador !== null)
                 state = state.set('cobrador', action.payload.cobrador)
             else
@@ -84,6 +75,7 @@ export default function (state = INITIAL_STATE, action) {
             return state
         case types.GET_LISTA_PERIODOS:
             state = state.set('periodos', Immutable.fromJS(action.payload.data))
+            state = state.set('obs_dias', Immutable.fromJS(action.payload.obs_dias))            
             return state
         case types.GET_CLIENTES_RUTA:
             state = state.set('clientes', Immutable.fromJS(action.payload.data))
@@ -174,7 +166,7 @@ export default function (state = INITIAL_STATE, action) {
 
         case types.SET_DATA_RENOVACION:
             row = state.getIn(['list', String(action.payload.id)]).toJS()
-            state = state.set('renovacion', Immutable.fromJS({ observaciones: "RENOVACIÓN AUTOMATICA", monto: (row.valor_prestamo - row.saldo) / 1000, modalidad: row.modalidad, cuota: row.mod_cuota / 1000, dias: row.mod_dias, valor: row.valor_prestamo / 1000, editable: false }))
+            state = state.set('renovacion', Immutable.fromJS({ observaciones: "RENOVACION AUTOMATICA", monto: (row.valor_prestamo - row.saldo) / 1000, modalidad: row.modalidad, cuota: row.mod_cuota / 1000, dias: row.mod_dias, valor: row.valor_prestamo / 1000, editable: false }))
             state = state.setIn(['list', String(action.payload.id), 'renovacion'], state.get('renovacion'));
             state = state.setIn(['list', String(action.payload.id), 'cuota'], null);
             return state;

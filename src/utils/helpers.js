@@ -8,6 +8,7 @@ import moment from 'moment'
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 
+const SIZE_EXPORT = window.SIZE_EXPORT;
 const cookie = new Cookies();
 
 export function createAxiosInstance() {
@@ -93,11 +94,11 @@ export function recalculate(data, id, cargue = false) {
             }
         }
         const creditos_renovaciones = Object.entries(x.creditos_renovaciones);
-        // console.log(creditos_renovaciones)
+        // console.log(creditos_renovaciones, x.id)
 
-        const inicio_credito = creditos_renovaciones.length > 0 ? creditos_renovaciones[0][1].fecha : x.inicio_credito;
+        const inicio_credito = creditos_renovaciones.length > 0 ? creditos_renovaciones[creditos_renovaciones.length - 1][1].fecha : x.inicio_credito;
         x.inicio_credito = inicio_credito;
-        
+
         x.saldo = x.valor_total - abonos;
         x.cuotas_pagas = parseFloat((x.valor_total - x.saldo) / x.mod_cuota).toFixed(1);
 
@@ -112,7 +113,7 @@ export function recalculate(data, id, cargue = false) {
         if (cargue) {
             x.cuota = ''
         }
-        
+
         cartera = cartera + x.saldo;
         res.push(x)
         return x
@@ -141,22 +142,23 @@ export function exportDataGrid(list, ruta, cobrador, fecha) {
                     widths: ['*', '*', '*', '*', '*', '*', '*', '*'],
                     body: [
                         [
-                            'COBRADOR', { text: cobrador !== 'Sin asignar' ? cobrador.nombres.toUpperCase() + ' ' + cobrador.apellidos.toUpperCase() : 'SIN ASIGNAR', italics: true, color: 'gray', alignment: "center" }, 
-                            'TELEFONO', { text: cobrador !== 'Sin asignar' ? cobrador.telefono1.toUpperCase() : 'SIN ASIGNAR', italics: true, color: 'gray', alignment: "center" }, 
-                            'FECHA', { text: moment(fecha).format('LL'), italics: true, color: 'gray', alignment: "center" }, 
+                            'COBRADOR', { text: cobrador !== 'Sin asignar' ? cobrador.nombres.toUpperCase() + ' ' + cobrador.apellidos.toUpperCase() : 'SIN ASIGNAR', italics: true, color: 'gray', alignment: "center" },
+                            'TELEFONO', { text: cobrador !== 'Sin asignar' ? cobrador.telefono1.toUpperCase() : 'SIN ASIGNAR', italics: true, color: 'gray', alignment: "center" },
+                            'FECHA', { text: moment(fecha).format('LL'), italics: true, color: 'gray', alignment: "center" },
                             'RUTA', { text: ruta, italics: true, color: 'gray', alignment: "center" }],
                     ]
                 },
-                margin: [40, 5, 20, 5]
+                margin: [SIZE_EXPORT, 5, 20, 5]
             },
             {
                 table: {
                     headerRows: 1,
-                    widths: [20, 20, 'auto', 25, 20, 'auto', 20, 30, 'auto', 'auto', 30, 'auto', 'auto', 'auto', 'auto', 'auto', 'auto'],
+                    widths: [20, 20, 'auto', 'auto', 25, 20, 'auto', 20, 30, 'auto', 'auto', 30, 'auto', 'auto', 'auto', 'auto', 'auto', 'auto'],
                     body: [
                         [
                             { text: 'Obs', style: 'header' },
                             { text: 'Orden', style: 'header' },
+                            { text: 'Días', style: 'header' },
                             { text: 'Cliente', style: 'header' },
                             { text: 'Cuota', style: 'header' },
                             { text: 'Mora', style: 'header' },
@@ -175,7 +177,7 @@ export function exportDataGrid(list, ruta, cobrador, fecha) {
                         ],
                     ]
                 },
-                margin: [40, 0, 10, 0]
+                margin: [SIZE_EXPORT, 0, 10, 0]
             },
         ],
         styles: {
@@ -191,7 +193,7 @@ export function exportDataGrid(list, ruta, cobrador, fecha) {
             }
         }
     };
-    
+
     data.forEach((x) => {
         const entries = Object.entries(x.creditos_renovaciones);
         let color = ''
@@ -210,6 +212,7 @@ export function exportDataGrid(list, ruta, cobrador, fecha) {
             [
                 { text: entries.length > 0 ? '#' + entries.length : '', style: 'tableBody' },
                 { text: x.orden, style: 'tableBody' },
+                { text: x.obs_dia, style: 'tableBody' },
                 { text: x.cliente.titular, style: 'tableBody' },
                 { text: x.cuota, style: 'tableBody' },
                 { text: x.mora, style: 'tableBody', fillColor: color },
@@ -230,6 +233,240 @@ export function exportDataGrid(list, ruta, cobrador, fecha) {
     })
 
     pdfMake.createPdf(docDefinition).download("Listado Ruta-" + ruta + "; del " + moment().format("YYYY-MM-DD"));
+}
+
+function getValorModalidadDia(list, tipo, dates) {
+    let ret = 0;
+    dates.map(fecha => {
+        var data = list.filter(item => moment(item.get('fecha')).format('YYYY-MM-DD') === fecha)
+        if (data !== undefined) {
+            data.map((item) => {
+
+                if (tipo == 1) {
+                    ret = item.get("total_creditos_dia") > 0 ? item.get("total_creditos_dia") : ret;
+                }
+                else
+                    ret = item.get("total_creditos_dia") > 0 ? item.get("total_creditos_sem") : ret
+            })
+        }
+    })
+    return ret;
+}
+
+function getCoteo(list, fecha) {
+    let ret = 0;
+    var data = list.filter(item => moment(item.get('fecha')).format('YYYY-MM-DD') === fecha)
+    if (data !== undefined) {
+        data.map((item) => {
+            ret = ret + item.get("coteos_dia")
+        })
+    }
+    return ret;
+}
+
+export function exportCoteos(list, dates) {
+    pdfMake.vfs = pdfFonts.pdfMake.vfs;
+        
+    // PRIMER RECUADRO
+    const dates1 = dates.slice(0, 10);
+    const columnsHeaderDate1 = [
+        { text: 'COBRADOR', style: 'header', rowSpan: 2 },
+        { text: 'CLIENTES CORTE 1', style: 'header', colSpan: 2 },
+        {}
+    ]
+
+    const columnsHeaderDate1_ = [
+        {},
+        { text: 'DIARIOS', style: 'header' },
+        { text: 'SEMANALES', style: 'header' }
+    ]
+
+    dates1.map(x => {
+        columnsHeaderDate1.push({ text: x, style: 'header' })
+        columnsHeaderDate1_.push({ text: "COTEO", style: 'header' })
+    })
+
+    columnsHeaderDate1.push({ text: 'COTEADO', style: 'header', rowSpan: 2 })
+    columnsHeaderDate1.push({ text: 'QUEDADO', style: 'header', rowSpan: 2 })
+    columnsHeaderDate1_.push({});
+    columnsHeaderDate1_.push({});
+
+    // SEGUNDO RECUADRO
+    const dates2 = dates.slice(10, 20);
+    const columnsHeaderDate2 = [
+        { text: 'COBRADOR', style: 'header', rowSpan: 2 },
+        { text: 'CLIENTES CORTE 2', style: 'header', colSpan: 2 },
+        {}
+    ]
+
+    const columnsHeaderDate2_ = [
+        {},
+        { text: 'DIARIOS', style: 'header' },
+        { text: 'SEMANALES', style: 'header' }
+    ]
+
+    dates2.map(x => {
+        columnsHeaderDate2.push({ text: x, style: 'header' })
+        columnsHeaderDate2_.push({ text: "COTEO", style: 'header' })
+    })
+
+    columnsHeaderDate2.push({ text: 'COTEADO', style: 'header', rowSpan: 2 })
+    columnsHeaderDate2.push({ text: 'QUEDADO', style: 'header', rowSpan: 2 })
+    columnsHeaderDate2_.push({});
+    columnsHeaderDate2_.push({});
+
+    // TERCER RECUADRO
+    const dates3 = dates.slice(20);
+    const columnsHeaderDate3 = [
+        { text: 'COBRADOR', style: 'header', rowSpan: 2 },
+        { text: 'CLIENTES CORTE 3', style: 'header', colSpan: 2 },
+        {}
+    ]
+
+    const columnsHeaderDate3_ = [
+        {},
+        { text: 'DIARIOS', style: 'header' },
+        { text: 'SEMANALES', style: 'header' }
+    ]
+
+    dates3.map(x => {
+        columnsHeaderDate3.push({ text: x, style: 'header' })
+        columnsHeaderDate3_.push({ text: "COTEO", style: 'header' })
+    })
+
+    columnsHeaderDate3.push({ text: 'COTEADO', style: 'header', rowSpan: 2 })
+    columnsHeaderDate3.push({ text: 'QUEDADO', style: 'header', rowSpan: 2 })
+    columnsHeaderDate3_.push({});
+    columnsHeaderDate3_.push({});
+
+    var docDefinition = {
+        pageSize: 'LEGAL',
+        pageOrientation: 'landscape',
+        pageMargins: [20, 20, 20, 20],
+        content: [
+            {
+                table: {
+                    headerRows: 2,
+                    widths: 'auto',
+                    body: [
+                        columnsHeaderDate1,
+                        columnsHeaderDate1_
+
+                    ]
+                },
+                margin: [SIZE_EXPORT, 10, 10, 0]
+            },
+            {
+                table: {
+                    headerRows: 2,
+                    widths: 'auto',
+                    body: [
+                        columnsHeaderDate2,
+                        columnsHeaderDate2_
+
+                    ]
+                },
+                margin: [SIZE_EXPORT, 10, 10, 0]
+            },
+            {
+                table: {
+                    headerRows: 2,
+                    widths: 'auto',
+                    body: [
+                        columnsHeaderDate3,
+                        columnsHeaderDate3_
+
+                    ]
+                },
+                margin: [SIZE_EXPORT, 10, 10, 0]
+            }
+        ],
+        styles: {
+            header: {
+                fontSize: 7,
+                bold: true,
+                italics: true,
+                fillColor: "#f9f9f9"
+            },
+            tableBody: {
+                alignment: 'right',
+                fontSize: 7,
+            }
+        }
+    };
+
+    list.map((x) => {
+        let coteado = 0;
+        let diarios = getValorModalidadDia(x.get("coteos"), 1, dates1);
+        let semanales = getValorModalidadDia(x.get("coteos"), 2, dates1);
+
+        const rows = [
+            { text: x.get("nombres") + " " + x.get("apellidos"), style: 'tableBody' },
+            { text: diarios, style: 'tableBody' },
+            { text: semanales, style: 'tableBody' }
+        ]
+
+        dates1.map((item) => {
+            const rest = getCoteo(x.get("coteos"), item);
+            coteado = coteado + rest;
+            rows.push({ text: rest, style: 'tableBody' })
+        })
+
+        rows.push({ text: coteado, style: 'tableBody' })
+        rows.push({ text: ((diarios * 8) + semanales) - coteado, style: 'tableBody' })
+
+        docDefinition.content[0].table.body.push(rows)
+    })
+
+    list.map((x) => {
+        let coteado = 0;
+        let diarios = getValorModalidadDia(x.get("coteos"), 1, dates2);
+        let semanales = getValorModalidadDia(x.get("coteos"), 2, dates2);
+
+        const rows = [
+            { text: x.get("nombres") + " " + x.get("apellidos"), style: 'tableBody' },
+            { text: diarios, style: 'tableBody' },
+            { text: semanales, style: 'tableBody' }
+        ]
+
+        dates2.map((item) => {
+            const rest = getCoteo(x.get("coteos"), item);
+            coteado = coteado + rest;
+            rows.push({ text: rest, style: 'tableBody' })
+        })
+
+        rows.push({ text: coteado, style: 'tableBody' })
+        rows.push({ text: ((diarios * 8) + semanales) - coteado, style: 'tableBody' })
+
+        docDefinition.content[1].table.body.push(rows)
+    })
+
+    list.map((x) => {
+        let coteado = 0;
+        let diarios = getValorModalidadDia(x.get("coteos"), 1, dates3);
+        let semanales = getValorModalidadDia(x.get("coteos"), 2, dates3);
+
+        const rows = [
+            { text: x.get("nombres") + " " + x.get("apellidos"), style: 'tableBody' },
+            { text: diarios, style: 'tableBody' },
+            { text: semanales, style: 'tableBody' }
+        ]
+
+        dates3.map((item) => {
+            const rest = getCoteo(x.get("coteos"), item);
+            coteado = coteado + rest;
+            rows.push({ text: rest, style: 'tableBody' })
+        })
+
+        rows.push({ text: coteado, style: 'tableBody' })
+        rows.push({ text: ((diarios * 8) + semanales) - coteado, style: 'tableBody' })
+
+        docDefinition.content[2].table.body.push(rows)
+    })
+    
+    console.log(docDefinition.content);
+
+    pdfMake.createPdf(docDefinition).download("Reporte de coteos del " + moment().format("YYYY-MM-DD"));
 }
 
 export function exportAbonos(list) {

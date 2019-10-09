@@ -21,7 +21,8 @@ export function getCoteos(firstDay, lastDay) {
                     type: types.GET_DATA_COTEO,
                     payload: {
                         list: res.data.data,
-                        // cobradores: res.data.tiposCredito
+                        utilidades: res.data.utilidades,
+                        recaudos: res.data.recaudos
                     }
                 });
             })

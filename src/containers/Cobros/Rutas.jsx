@@ -11,7 +11,6 @@ import BoxButton from '../../components/Common/BoxButtonV2'
 import Modal from '../../components/Common/Modal'
 import DataGrid from '../../components/Common/DataGrid'
 import DnDListadoClientes from '../../components/Cobros/Rutas/DnDListadoClientes'
-import SelectComponent from '../../components/Common/SelectComponent';
 import AddCredito from '../../components/Cobros/Rutas/AddCredito'
 import RenovarCredito from '../../components/Cobros/Rutas/RenovarCredito'
 import ObservacionesCredito from '../../components/Cobros/Rutas/ObservacionesCredito'
@@ -26,7 +25,6 @@ import { cleanCliente } from '../../actions/clientes'
 import { selectAction, changeAttr2, toggleModal, newRow } from '../../actions/common'
 import { exportDataGrid } from '../../utils/helpers'
 import { showHideModalFilter } from "../../actions/filtrarData";
-// import { tableColumnsRutas } from '../../utils/headersColumns'
 
 const tipo = "RUTA";
 
@@ -36,6 +34,7 @@ class Rutas extends Component {
         this.changeAction = this.changeAction.bind(this);
         this.actionClick = this.actionClick.bind(this);
         this.actionClickRenovados = this.actionClickRenovados.bind(this);
+        this.actionClickDias = this.actionClickDias.bind(this);
         this.actionClickCancelarRenovado = this.actionClickCancelarRenovado.bind(this);
         this.actionClickRenovadosInmediatos = this.actionClickRenovadosInmediatos.bind(this);
         this.actionClickEliminarCredito = this.actionClickEliminarCredito.bind(this);
@@ -56,7 +55,9 @@ class Rutas extends Component {
             toogleSidebarRigth: false,
             idRenovar: null,
             gridHeight: 350,
-            fechaExporte: moment().add(1, 'days')
+            moras: false,
+            fechaExporte: moment().add(1, 'days'),
+            value_dias: ""
         }
 
     }
@@ -85,8 +86,10 @@ class Rutas extends Component {
         this.props.toggleModal()
     }
 
-    changeAction(tipo, id, attr, value) {
+    changeAction(tipo, id, attr, value, toogle = false) {
         this.props.changeAttr2(tipo, id, attr, value)
+        if (toogle)
+            this.props.toggleModal()
     }
 
     actionClick(id) {
@@ -99,7 +102,12 @@ class Rutas extends Component {
         this.setState({ idRenovar: rowId })
         this.setState({ tipoModal: 2 });
         this.props.saveRenovacion(rowId);
-        // this.props.toggleModal();
+    }
+
+    actionClickDias(rowId) {
+        this.setState({ idRenovar: rowId })
+        this.setState({ tipoModal: 5 });
+        this.props.toggleModal();
     }
 
     actionClickRenovadosInmediatos(rowId) {
@@ -195,7 +203,6 @@ class Rutas extends Component {
     getCoteoCuota(x) {
         let coteo = 0
         const rest = (x.get('cuota') * 1000) / x.get('mod_cuota')
-
         if (x.get('cuota') >= 5) {
             if ((x.get('cuota') * 1000) < x.get('mod_cuota')) {
                 coteo = 1;
@@ -203,11 +210,9 @@ class Rutas extends Component {
             else {
                 coteo = Math.floor(rest);
             }
-
         } else {
             coteo = 0;
         }
-
         return coteo;
     }
 
@@ -238,21 +243,36 @@ class Rutas extends Component {
             salida = salida + (_new)
         }
 
-        Swal.fire({
-            title: 'FLUJO DE CAJA',
-            html: `<div> 
+        Swal.mixin({
+            // input: 'text',
+            confirmButtonText: 'Siguiente',
+            showCancelButton: true,
+            progressSteps: ['1', '2'],
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            // confirmButtonText: 'Confirmar cambios'
+        }).queue([
+            {
+                title: 'FLUJO DE CAJA',
+                html: `<div> 
                     <p> Entran: ${numeral(entrada).format('')} </p>
                     <p> Salen: ${numeral(salida).format('')} </p>
                     <p> Utilidad: ${numeral(utilidad).format('')} </p>
                     <p> Coteos: ${coteos} </p>
                     </div>`,
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Confirmar cambios'
-        }).then((result) => {
+            },
+            {
+                title: "Calculo de moras",
+                input: 'checkbox',
+                inputValue: 1,
+                inputPlaceholder: 'Desea calcular moras?',
+                confirmButtonText: 'Confirmar cambios'
+            }
+        ]).then((result) => {
             if (result.value) {
-                this.props.saveAbonos(entrada, salida, utilidad, coteos)
+                if (result.value[0]) {
+                    this.props.saveAbonos(entrada, salida, utilidad, coteos, result.value[1] === 1 ? true : false)
+                }
             }
         })
     }
@@ -274,158 +294,183 @@ class Rutas extends Component {
             <BoxButton key="b1[0][0]" name="save" onClick={() => exportDataGrid(this.props.list, this.props.idRuta, this.props.cobrador, this.state.fechaExporte)} title="Guardar exporte" classCSS="info" />,
         ]
 
+        const buttons4 = [
+            <BoxButton key="b1[0][0]" name="save" onClick={() => this.changeAction("RUTA", this.state.idRenovar, "obs_dia", this.state.value_dias, true)} title = "Guardar exporte" classCSS = "info" />,
+        ]
+
         const { tabs, tab } = this.state;
 
-        switch (param) {
-            case 0:
-                return (
-                    <Modal title="Gestionar crédito" buttons={buttons} brand={true} width={600} className="modal-lg">
-                        <AddCredito action={this.actionToogleSidebarRigth} />
-                    </Modal>
-                )
-            case 1:
-                return (
-                    <Modal title="Detalles de abono al credito" brand={false}  >
-                        <ul className="nav nav-tabs nav-justified" id="myTab" role="tablist">
+switch (param) {
+    case 0:
+        return (
+            <Modal title="Gestionar crédito" buttons={buttons} brand={true} width={600} className="modal-lg">
+                <AddCredito action={this.actionToogleSidebarRigth} />
+            </Modal>
+        )
+    case 1:
+        return (
+            <Modal title="Detalles de abono al credito" brand={false}  >
+                <ul className="nav nav-tabs nav-justified" id="myTab" role="tablist">
+                    {
+                        tabs.map(x => {
+                            return (
+                                <li key={`li01[${x.id}]`} className={x.active ? "nav-item active" : "nav-item"} >
+                                    <a
+                                        data-toggle="tab"
+                                        aria-expanded={x.active ? "true" : "false"}
+                                        onClick={(e) => this.changeTab(x)}
+                                        className="nav-link"
+                                    >
+                                        {x.caption}
+                                    </a>
+                                </li>
+                            )
+                        })
+                    }
+                </ul>
+                <div className="tab-content">
+                    <div className="tab-pane fade show active">
+                        {tabs[tab].component}
+                    </div>
+                </div>
+            </Modal>
+        )
+    case 2:
+        return (
+            <Modal title="Renovar crédito" buttons={buttons1} brand={true} >
+                <RenovarCredito id={this.state.idRenovar} />
+            </Modal>
+        )
+    case 3:
+        return (
+            <Modal title="Reordenar clientes" buttons={buttons2} brand={true} >
+                <DnDListadoClientes />
+            </Modal>
+        )
+    case 4:
+        return (
+            <Modal title="Exportar ruta" buttons={buttons3} brand={true}>
+                <div className="row" style={{ padding: '10px 0' }}>
+                    <div className="col-md-7">La fecha de exporte es automática, si desea cambiarla por favor seleccione...</div>
+                    <div className="col-md-5">
+                        <input className="form-control form-control-sm" type="date" style={{ marginTop : 15 }} value={moment(this.state.fechaExporte).format('YYYY-MM-DD')} onChange={(e) => this.setState({ fechaExporte: e.target.value })} />
+                    </div>
+                </div>
+            </Modal>
+        )
+    case 5:
+        return (
+            <Modal title="Cambiar día observación" buttons={buttons4} brand={true}>
+                <div className="row" style={{ padding: 20 }}>
+                    <div className="col">Observación día:</div>
+                    <div className="col">
+                        <select className="form-control form-control-sm" id="observacion" onChange={(e) => this.setState({ value_dias: e.target.value })} >
+                            <option value="" key={0}>Seleccione..</option>
                             {
-                                tabs.map(x => {
+                                this.props.obs_dias.map((x, i) => {
                                     return (
-                                        <li key={`li01[${x.id}]`} className={x.active ? "nav-item active" : "nav-item"} >
-                                            <a
-                                                data-toggle="tab"
-                                                aria-expanded={x.active ? "true" : "false"}
-                                                onClick={(e) => this.changeTab(x)}
-                                                className="nav-link"
-                                            >
-                                                {x.caption}
-                                            </a>
-                                        </li>
+                                        <option value={x.get("value")} key={i}>{x.get("value")}</option>
                                     )
                                 })
                             }
-                        </ul>
-                        <div className="tab-content">
-                            <div className="tab-pane fade show active">
-                                {tabs[tab].component}
-                            </div>
-                        </div>
-                    </Modal>
-                )
-            case 2:
-                return (
-                    <Modal title="Renovar crédito" buttons={buttons1} brand={true} >
-                        <RenovarCredito id={this.state.idRenovar} />
-                    </Modal>
-                )
-            case 3:
-                return (
-                    <Modal title="Reordenar clientes" buttons={buttons2} brand={true} >
-                        <DnDListadoClientes />
-                    </Modal>
-                )
-            case 4:
-                return (
-                    <Modal title="Exportar ruta" buttons={buttons3} brand={true}>
-                        <div className="row" style={{ padding : 20}}>
-                            <div className="col">La fecha de exporte es automática, si desea cambiarla por favor seleccione...</div>
-                            <div className="col">
-                                <input className="form-control form-control-sm" type="date" value={moment(this.state.fechaExporte).format('YYYY-MM-DD')} onChange={(e) => this.setState({ fechaExporte : e.target.value})} />
-                            </div>
-                        </div>
-                    </Modal>
-                )
-            default:
-                return null;
-        }
+                        </select>
+                    </div>
+                </div>
+            </Modal>
+        )
+    default:
+        return null;
+}
     }
 
 
-    render() {
-        const { ids, list, rutas, cartera, cobrador, idRuta, user } = this.props;
-        var today = moment((new Date())).format('YYYY-MM-DD');
+render() {
+    const { ids, list, rutas, cartera, cobrador, idRuta, user } = this.props;
+    var today = moment((new Date())).format('YYYY-MM-DD');
 
-        const buttons = [
-            <BoxButton key="br[0][0]" name="plus" onClick={() => this.createAction()} title="Agregar crédito" classCSS="info" disabled={idRuta != null ? false : true} />,
-            <BoxButton key="br[0][1]" name="exchange-alt" onClick={() => this.actionClickReorder()} title="Enrutar" classCSS="info" disabled={idRuta != null ? false : true} />,
-            <BoxButton key="br[0][2]" name="save" onClick={() => this.saveAbonos()} title="Guardar abonos" classCSS="info" disabled={idRuta != null ? false : true} />,
-            // <BoxButton key="br[0][3]" name="filter" onClick={() => this.props.showHideModalFilter(true, tableColumnsRutas, 'rutas')} title="Filtrar información" classCSS="info" disabled={idRuta != null ? false : true} />,
-            <BoxButton key="br[0][4]" name="file-pdf" onClick={() => this.onExportDataGrid(list, idRuta, cobrador)} title="Exportar ruta" classCSS="info" disabled={idRuta != null ? false : true} />,
-        ]
+    const buttons = [
+        <BoxButton key="br[0][0]" name="plus" onClick={() => this.createAction()} title="Agregar crédito" classCSS="info" disabled={idRuta != null ? false : true} />,
+        <BoxButton key="br[0][1]" name="exchange-alt" onClick={() => this.actionClickReorder()} title="Enrutar" classCSS="info" disabled={idRuta != null ? false : true} />,
+        <BoxButton key="br[0][2]" name="save" onClick={() => this.saveAbonos()} title="Guardar abonos" classCSS="info" disabled={idRuta != null ? false : true} />,
+        // <BoxButton key="br[0][3]" name="filter" onClick={() => this.props.showHideModalFilter(true, tableColumnsRutas, 'rutas')} title="Filtrar información" classCSS="info" disabled={idRuta != null ? false : true} />,
+        <BoxButton key="br[0][4]" name="file-pdf" onClick={() => this.onExportDataGrid(list, idRuta, cobrador)} title="Exportar ruta" classCSS="info" disabled={idRuta != null ? false : true} />,
+    ]
 
-        return (
-            <div className="card border-left-success">
-                <BrandButton buttons={buttons} />
-                <div className="row" style={{ marginBottom: 0, background: '#f7f7f7', marginLeft: 0, marginRight: 0, paddingBottom: 0 }}>
-                    <div className="col-md-3">
-                        <label >Ruta</label>
-                        <div className="form-group">
-                            <select className="form-control form-control-sm" id="exampleFormControlSelect1" onChange={(e) => this.onChangeSelect(e.target.value)}>
-                                <option value="0">Seleccione...</option>
-                                {
-                                    rutas.map((x) => {
-                                        return (
-                                            <option value={x.get('value')} key={x.get('value')} >{x.get('label')}</option>
-                                        )
-                                    })
-                                }
-                            </select>
-                        </div>
-                    </div>
-                    <div className="col-md-3">
-                        <label >Fecha</label>
-                        <input className="form-control form-control-sm" type="date" value={today} readOnly ></input>
-                    </div>
-                    <div className="col-md-3">
-                        <label >Cartera</label>
-                        <input className="form-control form-control-sm" type="text" value={cartera} readOnly disabled ></input>
-                    </div>
-                    <div className="col-md-3">
-                        <label >Cobrador</label>
-                        <input className="form-control form-control-sm" type="text" value={cobrador !== 'Sin asignar' ? cobrador.nombres + ' ' + cobrador.apellidos : cobrador} readOnly disabled ></input>
+    return (
+        <div className="card border-left-success">
+            <BrandButton buttons={buttons} />
+            <div className="row" style={{ marginBottom: 0, background: '#f7f7f7', marginLeft: 0, marginRight: 0, paddingBottom: 0 }}>
+                <div className="col-md-3">
+                    <label >Ruta</label>
+                    <div className="form-group">
+                        <select className="form-control form-control-sm" id="exampleFormControlSelect1" onChange={(e) => this.onChangeSelect(e.target.value)}>
+                            <option value="0">Seleccione...</option>
+                            {
+                                rutas.map((x) => {
+                                    return (
+                                        <option value={x.get('value')} key={x.get('value')} >{x.get('label')}</option>
+                                    )
+                                })
+                            }
+                        </select>
                     </div>
                 </div>
-                <div className="col-md-12 col-xs-12" style={{ padding: 0 }} >
-                    <div style={{ height: "calc(100vh - 255px)", maxHeight: "calc(100vh - 255px)" }} ref="dataExport">
-                        <DataGrid
-                            height={this.state.gridHeight}
-                            rows={list}
-                            ids={ids}
-                            changeAction={this.changeAction}
-                            actionClick={this.actionClick}
-                            actionClickRenovados={this.actionClickRenovados}
-                            actionClickCancelarRenovado={this.actionClickCancelarRenovado}
-                            actionClickRenovadosInmediatos={this.actionClickRenovadosInmediatos}
-                            actionClickEliminarCredito={this.actionClickEliminarCredito}
-                            user={user}
-                        />
-                    </div>
+                <div className="col-md-3">
+                    <label >Fecha</label>
+                    <input className="form-control form-control-sm" type="date" value={today} readOnly ></input>
                 </div>
-                {
-                    this.state.toogleSidebarRigth ?
-                        <div className="sidenav">
-                            <div className="row">
-                                <div className="col-md-9" style={{ paddingLeft: 25 }}>
-                                    <h5>
-                                        Agregar nuevo cliente:
+                <div className="col-md-3">
+                    <label >Cartera</label>
+                    <input className="form-control form-control-sm" type="text" value={cartera} readOnly disabled ></input>
+                </div>
+                <div className="col-md-3">
+                    <label >Cobrador</label>
+                    <input className="form-control form-control-sm" type="text" value={cobrador !== 'Sin asignar' ? cobrador.nombres + ' ' + cobrador.apellidos : cobrador} readOnly disabled ></input>
+                </div>
+            </div>
+            <div className="col-md-12 col-xs-12" style={{ padding: 0 }} >
+                <div style={{ height: "calc(100vh - 255px)", maxHeight: "calc(100vh - 255px)" }} ref="dataExport">
+                    <DataGrid
+                        height={this.state.gridHeight}
+                        rows={list}
+                        ids={ids}
+                        changeAction={this.changeAction}
+                        actionClick={this.actionClick}
+                        actionClickRenovados={this.actionClickRenovados}
+                        actionClickDias={this.actionClickDias}
+                        actionClickCancelarRenovado={this.actionClickCancelarRenovado}
+                        actionClickRenovadosInmediatos={this.actionClickRenovadosInmediatos}
+                        actionClickEliminarCredito={this.actionClickEliminarCredito}
+                        user={user}
+                    />
+                </div>
+            </div>
+            {
+                this.state.toogleSidebarRigth ?
+                    <div className="sidenav">
+                        <div className="row">
+                            <div className="col-md-9" style={{ paddingLeft: 25 }}>
+                                <h5>
+                                    Agregar nuevo cliente:
                                     </h5>
-                                </div>
-                                <div className="col-md-3">
-                                    <div className="col">
-                                        <div className="float-right">
-                                            <BoxButton key="bp[0][0]" name="times" onClick={() => this.actionToogleSidebarRigth(0)} title="Cerrar" classCSS="info" />
-                                        </div>
+                            </div>
+                            <div className="col-md-3">
+                                <div className="col">
+                                    <div className="float-right">
+                                        <BoxButton key="bp[0][0]" name="times" onClick={() => this.actionToogleSidebarRigth(0)} title="Cerrar" classCSS="info" />
                                     </div>
                                 </div>
                             </div>
-                            <AddClientes showReferencias={false} />
                         </div>
-                        : null
-                }
-                {this.renderSwitch(this.state.tipoModal)}
-                <ModalFilterMaestras />
-            </div>
-        )
-    }
+                        <AddClientes showReferencias={false} />
+                    </div>
+                    : null
+            }
+            {this.renderSwitch(this.state.tipoModal)}
+            <ModalFilterMaestras />
+        </div>
+    )
+}
 }
 
 function mapStateToProps(state) {
@@ -436,6 +481,7 @@ function mapStateToProps(state) {
         cartera: state.rutas.get('cartera'),
         nuevos: state.rutas.get('nuevos'),
         idRuta: state.rutas.get('idRuta'),
+        obs_dias: state.rutas.get('obs_dias'),
         user: state.auth.user,
         cobrador: state.rutas.get('cobrador')
     }
@@ -451,7 +497,7 @@ function mapDispatchToProps(dispatch) {
         toggleModal: () => dispatch(toggleModal()),
         newRow: (tipo) => dispatch(newRow(tipo)),
         saveCredito: () => dispatch(saveCredito()),
-        saveAbonos: (entrada, salida, utilidad, coteos) => dispatch(saveAbonos(entrada, salida, utilidad, coteos)),
+        saveAbonos: (entrada, salida, utilidad, coteos, moras) => dispatch(saveAbonos(entrada, salida, utilidad, coteos, moras)),
         saveRenovacion: (id) => dispatch(saveRenovacion(id)),
         saveRenovacion1: (id) => dispatch(saveRenovacion1(id)),
         saveRenovacionInmediata: (id) => dispatch(saveRenovacionInmediata(id)),
