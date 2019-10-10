@@ -14,6 +14,9 @@ const INITIAL_STATE = Immutable.fromJS({
     total: 0,
     selected: null,
     selectRow: null,
+    pageNumber: 1,
+    per_page: 1000,
+    countRows: 0
 })
 
 export default function (state = INITIAL_STATE, action) {
@@ -22,6 +25,8 @@ export default function (state = INITIAL_STATE, action) {
         case types.GET_FLUJO_UTILIDADES:
             state = state.set('total', action.payload.sum)
             state = state.set('list', action.payload.data)
+            state = state.set('countRows', action.payload.countRows)
+            state = state.set('per_page', action.payload.per_page)
             return state
         case types.SELECCIONAR_FLUJO_UTILIDADES:
             state = state.set('selected', action.payload)
@@ -35,6 +40,9 @@ export default function (state = INITIAL_STATE, action) {
         case types.CLEAN_FLUJO_UTILIDADES:
             state = state.set('selectRow', INITIAL_STATE.get('selectRow'))
             state = state.set('selected', INITIAL_STATE.get('selected'))
+            return state
+        case types.CAMBIAR_PAGINA_FLUJO_UTILIDADES:
+            state = state.set('pageNumber', action.payload)
             return state
         default:
             return state

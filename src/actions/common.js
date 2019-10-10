@@ -63,4 +63,9 @@ export function setLoading(estado) {
     }
 }
 
+export function changePage(tipo, page) {
+    return (dispatch) => {
+        dispatch({ type: types[`CAMBIAR_PAGINA_${tipo}`], payload:  page  })
+    }
+}
 

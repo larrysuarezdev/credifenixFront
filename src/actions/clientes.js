@@ -20,7 +20,8 @@ export function getClientes() {
                 dispatch({
                     type: types.GET_CLIENTES,
                     payload: {
-                        data
+                        data,
+                        creditosActivos : res.data.creditosActivos
                     }
                 })
             })

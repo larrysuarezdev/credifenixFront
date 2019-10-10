@@ -34,7 +34,7 @@ class TablesCoteo extends Component {
                         ret = item.get("total_creditos_dia") > 0 ? item.get("total_creditos_dia") : ret;
                     }
                     else
-                        ret =  item.get("total_creditos_dia") > 0 ? item.get("total_creditos_sem") : ret
+                        ret = item.get("total_creditos_dia") > 0 ? item.get("total_creditos_sem") : ret
                 })
             }
         })
@@ -43,9 +43,10 @@ class TablesCoteo extends Component {
     }
 
     render() {
+        let sumTotal = 0;
         return (
-            <div style={{ padding: 10 }}>
-                <table className="table table-striped table-hover table-sm table-bordered">
+            <div >
+                <table className="table table-striped table-hover table-sm table-bordered" style={{ margin: 0 }}>
                     <thead>
                         <tr align="center" style={{ fontSize: 13 }}>
                             <td scope="col" rowSpan="2" style={{ backgroundColor: "rgba(93, 194, 70, 0.42)", verticalAlign: "inherit" }}>COBRADOR</td>
@@ -111,6 +112,10 @@ class TablesCoteo extends Component {
                                 )
                             })
                         }
+                        {/* <tr>
+                            <td colSpan={this.props.dates.length + 4} align="right" >Total</td>
+                            <td align="center">{sumTotal}</td>
+                        </tr> */}
                     </tbody>
                 </table>
             </div>

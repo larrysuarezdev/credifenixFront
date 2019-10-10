@@ -11,7 +11,6 @@ const newRow = {
     username: '',
     password: '',
     ruta: 0,
-    ruta: '',
 }
 
 const INITIAL_STATE = Immutable.fromJS({

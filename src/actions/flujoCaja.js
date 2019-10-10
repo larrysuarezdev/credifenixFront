@@ -8,10 +8,10 @@ import { setLoading } from './common'
 
 const axios = createAxiosInstance();
 
-export function getFlujoCaja() {
+export function getFlujoCaja(page = 1) {
 
     function getFlujoCaja() {
-        return axios.get(`${API_URL}/flujoCaja`);
+        return axios.get(`${API_URL}/flujoCaja?page=`+ page);
     }
 
     return (dispatch) => {
@@ -19,21 +19,18 @@ export function getFlujoCaja() {
         Promise.all([getFlujoCaja()])
             .then((res) => {
                 dispatch(setLoading(false));
-                let sum = 0, entradas = 0, salidas = 0;
-                for (let index = 0; index < res[0].data.data.length; index++) {
-                    const item = res[0].data.data[index];
-                    if (item.tipo == 1)
-                        entradas += item["valor"];
-                    else
-                        salidas += item["valor"]
-                }
-                sum = entradas - salidas;
-
+                res[0].data.data.data.map((x) => {
+                    x.fecha = moment(x.fecha).format('YYYY-MM-DD');
+                    x.tipo = x.tipo === 1 ? 'Entrada' : 'Salida' ;
+                })
+                console.log(res[0].data.sum)
                 dispatch({
                     type: types.GET_FLUJO_CAJA,
                     payload: {
-                        data: res[0].data.data,
-                        sum
+                        data: res[0].data.data.data,
+                        countRows: res[0].data.data.total,
+                        per_page: res[0].data.data.per_page,                        
+                        sum: res[0].data.sum
                     }
                 })
             })

@@ -17,12 +17,15 @@ export function getCoteos(firstDay, lastDay) {
           })
             .then((res) => {
                 dispatch(setLoading(false));
+
                 dispatch({
                     type: types.GET_DATA_COTEO,
                     payload: {
                         list: res.data.data,
                         utilidades: res.data.utilidades,
-                        recaudos: res.data.recaudos
+                        recaudos: res.data.recaudos,
+                        nuevos : res.data.nuevos,
+                        renovaciones : res.data.renovaciones
                     }
                 });
             })

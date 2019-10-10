@@ -4,6 +4,7 @@ import objectifyArray from 'objectify-array'
 import Immutable from 'immutable'
 import { API_URL } from '../actions/index'
 import moment from 'moment'
+import numeral from 'numeral'
 
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
@@ -264,9 +265,87 @@ function getCoteo(list, fecha) {
     return ret;
 }
 
-export function exportCoteos(list, dates) {
+function getTotalCorte(fecha, tipo, ruta, text, list, fechas) {
+    let ret = 0;
+    let data = [];
+
+    switch (tipo) {
+        case 0:
+            data = list.filter(item => moment(item.get('fecha')).format('YYYY-MM-DD') <= fecha && item.get("descripcion") == text + ruta)
+            break;
+        case 1:
+            data = list.filter(item => moment(item.get('fecha')).format('YYYY-MM-DD') >= fechas[0] && moment(item.get('fecha')).format('YYYY-MM-DD') <= fecha && item.get("descripcion") == text + ruta)
+            break;
+        case 2:
+            data = list.filter(item => moment(item.get('fecha')).format('YYYY-MM-DD') >= fechas[1] && moment(item.get('fecha')).format('YYYY-MM-DD') <= fecha && item.get("descripcion") == text + ruta)
+            break;
+        default:
+            break;
+    }
+
+
+    if (data !== undefined) {
+        data.map((item) => {
+            ret = ret + item.get("valor")
+        })
+    }
+    return ret;
+}
+
+function getTotalCorteNuevos(fecha, tipo, ruta, lista, fechas) {
+    let ret = 0;
+    let data = [];
+
+    switch (tipo) {
+        case 0:
+            data = lista.filter(item => moment(item.get('inicio_credito')).format('YYYY-MM-DD') <= fecha && item.get('ruta_id') === ruta)
+            break;
+        case 1:
+            data = lista.filter(item => moment(item.get('inicio_credito')).format('YYYY-MM-DD') >= fechas[0] && moment(item.get('inicio_credito')).format('YYYY-MM-DD') <= fecha && item.get('ruta_id') === ruta)
+            break;
+        case 2:
+            data = lista.filter(item => moment(item.get('inicio_credito')).format('YYYY-MM-DD') >= fechas[1] && moment(item.get('inicio_credito')).format('YYYY-MM-DD') <= fecha && item.get('ruta_id') === ruta)
+            break;
+        default:
+            break;
+    }
+
+
+    if (data !== undefined) {
+        ret = data.size;
+    }
+    return ret;
+}
+
+function getTotalCorteRenovaciones(fecha, tipo, ruta, lista, fechas) {
+    let ret = 0;
+    let data = [];
+
+    switch (tipo) {
+        case 0:
+            data = lista.filter(item => moment(item.get('fecha')).format('YYYY-MM-DD') <= fecha && item.getIn(['credito', 'ruta_id']) === ruta)
+            break;
+        case 1:
+            data = lista.filter(item => moment(item.get('fecha')).format('YYYY-MM-DD') >= fechas[0] && moment(item.get('fecha')).format('YYYY-MM-DD') <= fecha && item.getIn(['credito', 'ruta_id']) === ruta)
+            break;
+        case 2:
+            data = lista.filter(item => moment(item.get('fecha')).format('YYYY-MM-DD') >= fechas[1] && moment(item.get('fecha')).format('YYYY-MM-DD') <= fecha && item.getIn(['credito', 'ruta_id']) === ruta)
+            break;
+        default:
+            break;
+    }
+
+
+    if (data !== undefined) {
+        ret = data.size;
+    }
+    return ret;
+}
+
+
+export function exportCoteos(list, dates, fechas1, utilidades, recaudo, nuevos, renovaciones) {
     pdfMake.vfs = pdfFonts.pdfMake.vfs;
-        
+
     // PRIMER RECUADRO
     const dates1 = dates.slice(0, 10);
     const columnsHeaderDate1 = [
@@ -339,6 +418,60 @@ export function exportCoteos(list, dates) {
     columnsHeaderDate3_.push({});
     columnsHeaderDate3_.push({});
 
+    // CUARTO RECUADRO
+    const columnsHeaderUtilidad = [
+        { text: 'COBRADOR', style: 'header', rowSpan: 2 },
+        { text: 'UTILIDAD CORTE 1', style: 'header' },
+        { text: 'UTILIDAD CORTE 2', style: 'header' },
+        { text: 'UTILIDAD CORTE 3', style: 'header' },
+        { text: 'TOTAL MES', style: 'header', rowSpan: 2 },
+    ]
+    const columnsHeaderUtilidad1 = [
+        {},
+    ]
+    fechas1.map(x => {
+        columnsHeaderUtilidad1.push({ text: x, style: 'header' })
+    })
+    columnsHeaderUtilidad1.push({});
+
+    // QUINTO RECUADRO
+    const columnsHeaderRecaudo = [
+        { text: 'COBRADOR', style: 'header', rowSpan: 2 },
+        { text: 'RECAUDO CORTE 1', style: 'header' },
+        { text: 'RECAUDO CORTE 2', style: 'header' },
+        { text: 'RECAUDO CORTE 3', style: 'header' },
+        { text: 'TOTAL MES', style: 'header', rowSpan: 2 },
+    ]
+    const columnsHeaderRecaudo1 = [
+        {},
+    ]
+    fechas1.map(x => {
+        columnsHeaderRecaudo1.push({ text: x, style: 'header' })
+    })
+    columnsHeaderRecaudo1.push({});
+
+    // SEXTO RECUADRO
+    const nuevRen = [
+        { text: 'COBRADOR', style: 'header', rowSpan: 2 },
+    ]
+
+    fechas1.map(x => {
+        nuevRen.push({ text: x, style: 'header', colSpan: 2 })
+        nuevRen.push({})
+    })
+    nuevRen.push({ text: 'TOTAL MES', style: 'header', rowSpan: 2 });
+
+    const nuevRen1 = [
+        {},
+        { text: 'NUEVOS', style: 'header' },
+        { text: 'RENOVACION', style: 'header' },
+        { text: 'NUEVOS', style: 'header' },
+        { text: 'RENOVACION', style: 'header' },
+        { text: 'NUEVOS', style: 'header' },
+        { text: 'RENOVACION', style: 'header' },
+        {}
+    ]
+
     var docDefinition = {
         pageSize: 'LEGAL',
         pageOrientation: 'landscape',
@@ -354,7 +487,7 @@ export function exportCoteos(list, dates) {
 
                     ]
                 },
-                margin: [SIZE_EXPORT, 10, 10, 0]
+                margin: [SIZE_EXPORT, 15, 10, 0]
             },
             {
                 table: {
@@ -366,7 +499,7 @@ export function exportCoteos(list, dates) {
 
                     ]
                 },
-                margin: [SIZE_EXPORT, 10, 10, 0]
+                margin: [SIZE_EXPORT, 15, 10, 0]
             },
             {
                 table: {
@@ -378,7 +511,40 @@ export function exportCoteos(list, dates) {
 
                     ]
                 },
-                margin: [SIZE_EXPORT, 10, 10, 0]
+                margin: [SIZE_EXPORT, 15, 10, 0]
+            },
+            {
+                table: {
+                    headerRows: 2,
+                    widths: 'auto',
+                    body: [
+                        columnsHeaderUtilidad,
+                        columnsHeaderUtilidad1
+                    ]
+                },
+                margin: [SIZE_EXPORT, 35, 10, 0]
+            },
+            {
+                table: {
+                    headerRows: 2,
+                    widths: 'auto',
+                    body: [
+                        columnsHeaderRecaudo,
+                        columnsHeaderRecaudo1
+                    ]
+                },
+                margin: [SIZE_EXPORT, 15, 10, 0]
+            },
+            {
+                table: {
+                    headerRows: 2,
+                    widths: 'auto',
+                    body: [
+                        nuevRen,
+                        nuevRen1
+                    ]
+                },
+                margin: [SIZE_EXPORT, 15, 10, 0]
             }
         ],
         styles: {
@@ -463,7 +629,70 @@ export function exportCoteos(list, dates) {
 
         docDefinition.content[2].table.body.push(rows)
     })
-    
+
+    list.map((x) => {
+        let coteado = 0;
+
+        const rows = [
+            { text: x.get("nombres") + " " + x.get("apellidos"), style: 'tableBody' },
+        ]
+
+        fechas1.map((item, index) => {
+            const rest = getTotalCorte(item, index, x.get("ruta"), "Utilidad ruta ", utilidades, fechas1);
+            coteado = coteado + rest;
+            rows.push({ text: rest, style: 'tableBody' })
+        })
+
+        rows.push({ text: coteado, style: 'tableBody' })
+
+        docDefinition.content[3].table.body.push(rows)
+    })
+
+    list.map((x) => {
+        let coteado = 0;
+
+        const rows = [
+            { text: x.get("nombres") + " " + x.get("apellidos"), style: 'tableBody' },
+        ]
+
+        fechas1.map((item, index) => {
+            const rest = getTotalCorte(item, index, x.get("ruta"), "Cobros ruta ", recaudo, fechas1);
+            coteado = coteado + rest;
+            rows.push({ text: rest, style: 'tableBody' })
+        })
+
+        rows.push({ text: coteado, style: 'tableBody' })
+
+        docDefinition.content[4].table.body.push(rows)
+    })
+
+    list.map((x) => {
+        let nuevosCorte1 = 0, renovadosCorte1 = 0, nuevosCorte2 = 0, renovadosCorte2 = 0, nuevosCorte3 = 0, renovadosCorte3;
+
+        nuevosCorte1 = getTotalCorteNuevos(fechas1[0], 0, x.get("ruta"), nuevos, fechas1);
+        renovadosCorte1 = getTotalCorteRenovaciones(fechas1[0], 0, x.get("ruta"), renovaciones, fechas1);
+
+        nuevosCorte2 = getTotalCorteNuevos(fechas1[1], 1, x.get("ruta"), nuevos, fechas1);
+        renovadosCorte2 = getTotalCorteRenovaciones(fechas1[1], 1, x.get("ruta"), renovaciones, fechas1);
+
+        nuevosCorte3 = getTotalCorteNuevos(fechas1[2], 2, x.get("ruta"), nuevos, fechas1);
+        renovadosCorte3 = getTotalCorteRenovaciones(fechas1[1], 2, x.get("ruta"), renovaciones, fechas1);
+
+        const rows = [
+            { text: x.get("nombres") + " " + x.get("apellidos"), style: 'tableBody' },
+            { text: numeral(nuevosCorte1).format(), style: 'tableBody' },
+            { text: numeral(renovadosCorte1).format(), style: 'tableBody' },
+            { text: numeral(nuevosCorte2).format(), style: 'tableBody' },
+            { text: numeral(renovadosCorte2).format(), style: 'tableBody' },
+            { text: numeral(nuevosCorte3).format(), style: 'tableBody' },
+            { text: numeral(renovadosCorte3).format(), style: 'tableBody' },
+            { text: numeral(nuevosCorte1 + renovadosCorte1 + nuevosCorte2 + renovadosCorte2 + nuevosCorte3 + renovadosCorte3).format(), style: 'tableBody' }
+        ]
+
+
+        docDefinition.content[5].table.body.push(rows)
+    })
+
     console.log(docDefinition.content);
 
     pdfMake.createPdf(docDefinition).download("Reporte de coteos del " + moment().format("YYYY-MM-DD"));

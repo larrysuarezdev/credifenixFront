@@ -38,19 +38,20 @@ class TablesUtilidadRecaudo extends Component {
     }
 
     render() {
+        let sumTotal = 0;
         return (
             <div >
-                <table className="table table-striped table-hover table-sm table-bordered">
+                <table className="table table-striped table-hover table-sm table-bordered" style={{ margin: 0 }}>
                     <thead>
-                        <tr>
+                        {/* <tr>
                             <td colSpan="5" style={{ backgroundColor: "rgba(93, 194, 70, 0.42)", verticalAlign: "inherit", textAlign: "center" }} >{this.props.title}</td>
-                        </tr>
+                        </tr> */}
                         <tr align="center" style={{ fontSize: 13 }}>
                             <td scope="col" rowSpan="2" style={{ backgroundColor: "rgba(93, 194, 70, 0.42)", verticalAlign: "inherit" }}>COBRADOR</td>
                             {
-                                this.props.titles.map((item) => {
+                                this.props.titles.map((item, indexT) => {
                                     return (
-                                        <td scope="col" style={{ backgroundColor: "rgba(93, 194, 70, 0.42)" }}>{item}</td>
+                                        <td scope="col" key={indexT} style={{ backgroundColor: "rgba(93, 194, 70, 0.42)" }}>{item}</td>
                                     )
                                 })
                             }
@@ -86,11 +87,19 @@ class TablesUtilidadRecaudo extends Component {
                                                 )
                                             })
                                         }
+                                        {
+                                            <td style={{ display: 'none' }}>{sumTotal = sumTotal + total}</td>
+                                        }
                                         <td>{numeral(total).format()}</td>
                                     </tr>
                                 )
                             })
                         }
+                        <tr>
+                            <td colSpan="3" align="right" ></td>
+                            <td align="center" >Total</td>
+                            <td align="center">{numeral(sumTotal).format()}</td>
+                        </tr>
                     </tbody>
                 </table>
             </div>

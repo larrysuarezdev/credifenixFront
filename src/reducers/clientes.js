@@ -27,7 +27,7 @@ const newRowReferencia = {
     barrio: '',
     telefono: '',
     parentesco: '',
-    new: true
+    new: true,
 }
 
 const INITIAL_STATE = Immutable.fromJS({
@@ -39,7 +39,8 @@ const INITIAL_STATE = Immutable.fromJS({
     selectedTitular: null,
     selectRow: null,
     selectRowReferencia: null,
-    edit: false
+    edit: false,
+    creditosActivos: 0
 })
 
 
@@ -47,6 +48,7 @@ const INITIAL_STATE = Immutable.fromJS({
 export default function (state = INITIAL_STATE, action) {
     switch (action.type) {
         case types.GET_CLIENTES:
+            state = state.set('creditosActivos', Immutable.fromJS(action.payload.creditosActivos))
             state = state.set('list', Immutable.fromJS(action.payload.data))
             state = state.set('AllList', Immutable.fromJS(action.payload.data))
             state = state.set('ids', state.get('list').sortBy(x => x.get('id')).keySeq().toList())

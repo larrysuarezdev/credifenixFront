@@ -8,10 +8,10 @@ const TipoFormatter = ({ row }) => {
     var res = "";
 
     switch (row.tipo) {
-        case 1:
+        case "Entrada":
             res =  <div style={{ textAlign: 'center', fontSize: '1em' }}> <span className="badge badge-success">Entrada</span> </div>;
             break;
-        case 2:
+        case "Salida":
             res =  <div style={{ textAlign: 'center', fontSize: '1em' }}> <span className="badge badge-warning">Salida</span> </div>;
             break;
     }
@@ -41,6 +41,7 @@ const columns = [
         key: "tipo",
         name: "Tipo",
         formatter : TipoFormatter,
+        filterRenderer: AutoCompleteFilter,
         width: 100,
     },
     {

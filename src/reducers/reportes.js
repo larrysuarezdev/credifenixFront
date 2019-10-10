@@ -4,7 +4,9 @@ import Immutable from 'immutable'
 const INITIAL_STATE = Immutable.fromJS({
     dataCoteo: [],
     utilidades:[],
-    recaudos: []
+    recaudos: [],
+    nuevos: [],
+    renovaciones: []
 })
 
 export default function (state = INITIAL_STATE, action) {
@@ -13,6 +15,8 @@ export default function (state = INITIAL_STATE, action) {
             state = state.set('dataCoteo', Immutable.fromJS(action.payload.list))
             state = state.set('utilidades', Immutable.fromJS(action.payload.utilidades))
             state = state.set('recaudos', Immutable.fromJS(action.payload.recaudos))            
+            state = state.set('nuevos', Immutable.fromJS(action.payload.nuevos))            
+            state = state.set('renovaciones', Immutable.fromJS(action.payload.renovaciones))            
             return state
 
         // case types.CHANGE_PERMISSION:

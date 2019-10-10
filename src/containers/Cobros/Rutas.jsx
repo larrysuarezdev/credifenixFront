@@ -304,7 +304,7 @@ switch (param) {
     case 0:
         return (
             <Modal title="Gestionar crédito" buttons={buttons} brand={true} width={600} className="modal-lg">
-                <AddCredito action={this.actionToogleSidebarRigth} />
+                <AddCredito action={this.actionToogleSidebarRigth} obs_dias={this.props.obs_dias}/>
             </Modal>
         )
     case 1:

@@ -3,7 +3,8 @@ import ReactDOM from 'react-dom';
 import { connect } from 'react-redux'
 import moment from 'moment'
 import numeral from 'numeral'
-
+import Pagination from 'react-js-pagination'
+import FontAwesome from 'react-fontawesome'
 
 //UI
 import BoxButton from '../../components/Common/BoxButtonV2'
@@ -11,15 +12,17 @@ import BrandButton from '../../components/Common/BrandButton'
 import ReactDataGridFilter from '../../components/Cobros/ReactDataGridFilter'
 
 import { getFlujoCaja, saveAction } from '../../actions/flujoCaja'
-import { selectAction, changeAttr, newRow } from '../../actions/common'
+import { selectAction, changeAttr, newRow, changePage } from '../../actions/common'
 
 
 class FlujoCaja extends Component {
 
     constructor(props) {
         super(props);
+        this.changePage = this.changePage.bind(this);
+
         this.state = {
-            gridHeight: 330,
+            gridHeight: 300,
         }
     }
 
@@ -33,8 +36,13 @@ class FlujoCaja extends Component {
         this.setState({ gridHeight: gridHeight - 48 });
     }
 
+    changePage(page) {
+        this.props.getFlujoCaja(page);
+        this.props.changePage("FLUJO_CAJA", page)
+    }
+
     render() {
-        const { ids, list, selectRow, changeAttr, total } = this.props;
+        const { ids, list, selectRow, changeAttr, total, pageNumber, countRows, per_page } = this.props;
         var today = moment((new Date())).format('YYYY-MM-DD');
 
         const buttons = [
@@ -45,13 +53,13 @@ class FlujoCaja extends Component {
         const tipo = "FLUJO_CAJA";
 
         return (
-            <div>
+            <div style={{ marginTop: -7 }}>
                 <div className="card shadow border-left-success mb-4">
                     <div className="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                         <h6 className="m-0 font-weight-bold text-success">Flujo de caja</h6>
                     </div>
                     <BrandButton buttons={buttons} />
-                    <div style={{ height: 'calc(100vh - 248px)', maxHeight: 'calc(100vh - 248px)' }} ref="dataExport">
+                    <div style={{ minHeight: 'calc(100vh - 295px)' }} ref="dataExport">
                         <div className="row col-md-12" >
                             <div className="col-md-4" style={{ padding: 0 }}>
                                 <div className="col-md-12 card-header py-3 d-flex float-right">
@@ -66,7 +74,7 @@ class FlujoCaja extends Component {
                                     </div>
                                     <div className="col-md-12">
                                         <label htmlFor="observaciones">Descripción</label>
-                                        <textarea className="form-control form-control-sm" id="descripcion" rows="3" value={selectRow !== null ? selectRow.get('descripcion') : ''} onChange={(e) => changeAttr(tipo, 'descripcion', e.target.value)}></textarea>
+                                        <textarea className="form-control form-control-sm" id="descripcion" rows="2" value={selectRow !== null ? selectRow.get('descripcion') : ''} onChange={(e) => changeAttr(tipo, 'descripcion', e.target.value)}></textarea>
                                     </div>
                                     <div className="col-md-12">
                                         <label htmlFor="tipo">Tipo</label>
@@ -82,7 +90,7 @@ class FlujoCaja extends Component {
                                 </div>
                             </div>
 
-                            <div className="col-md-8" style={{ paddingLeft : 25}} >
+                            <div className="col-md-8" style={{ paddingLeft: 25 }} >
                                 {
                                     list.size != 0 ?
                                         <ReactDataGridFilter
@@ -91,6 +99,32 @@ class FlujoCaja extends Component {
                                             ids={ids}
                                         /> : null
                                 }
+
+                                <div className="row justify-content-end">
+                                    <div className="col-md-4">
+                                        <div style={{ margin: 7 }}>
+                                            Total registros {countRows}
+                                        </div>
+                                    </div>
+                                    <div className="col-md-8" >
+                                        <div style={{ margin: 7 }}>
+                                            <Pagination
+                                                activePage={pageNumber}
+                                                itemsCountPerPage={per_page}
+                                                totalItemsCount={countRows}
+                                                pageRangeDisplayed={10}
+                                                onChange={n => this.changePage(n)}
+                                                itemClass="page-item"
+                                                innerClass="pagination pagination-sm justify-content-end"
+                                                linkClass="page-link"
+                                                firstPageText={<FontAwesome name="angle-double-left" />}
+                                                prevPageText={<FontAwesome name="angle-left" />}
+                                                nextPageText={<FontAwesome name="angle-right" />}
+                                                lastPageText={<FontAwesome name="angle-double-right" />}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -107,16 +141,20 @@ function mapStateToProps(state) {
         ids: state.flujoCaja.get('ids'),
         selectRow: state.flujoCaja.get('selectRow'),
         total: state.flujoCaja.get('total'),
+        pageNumber: state.flujoCaja.get('pageNumber'),
+        countRows: state.flujoCaja.get('countRows'),
+        per_page: state.flujoCaja.get('per_page'),
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        getFlujoCaja: () => dispatch(getFlujoCaja()),
+        getFlujoCaja: (page) => dispatch(getFlujoCaja(page)),
         saveAction: () => dispatch(saveAction()),
         selectAction: (id, reloadGrid, tipo) => dispatch(selectAction(id, reloadGrid, tipo)),
         changeAttr: (tipo, attr, value) => dispatch(changeAttr(tipo, attr, value)),
-        newRow: (tipo) => dispatch(newRow(tipo))
+        newRow: (tipo) => dispatch(newRow(tipo)),
+        changePage: (tipo, page) => dispatch(changePage(tipo, page))
     }
 }
 

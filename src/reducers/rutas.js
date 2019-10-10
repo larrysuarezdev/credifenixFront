@@ -10,6 +10,7 @@ const newRow = {
     prestamo: null,
     cuota: null,
     dias: null,
+    obs_dia: '',
     observaciones: null,
     modalidad: 1,
 }

@@ -18,14 +18,14 @@ class AddCredito extends Component {
 
         return (
             <div className="row">
-                <div className="col-md-7">
+                <div className="col-md-5">
                     <label >Cliente</label>
                     <SelectorInput
                         value={selectRow.getIn(['cliente', 'titular'])}
                         onClick={() => this.props.toggleModalClientes()} />
                     {/* <input className="form-control form-control-sm" type="text" value={ selectRow.get('cliente') } ></input> */}
                 </div>
-                <div className="col-md-5">
+                <div className="col-md-3">
                     <a className="btn btn-sm btn-success btn-icon-split padding-bottom" href="#" onClick={() => this.props.action()} style={{ marginTop: 27 }} >
                         <span className="icon text-white-50">
                             <i className="fas fa-male"></i>
@@ -34,6 +34,20 @@ class AddCredito extends Component {
                             Cliente nuevo
                         </span>
                     </a>
+                </div>
+                <div className="col-md-4">
+                    <label >Días</label>
+                    <select className="form-control form-control-sm" id="obs_dia" onChange={(e) => changeAttr(tipo, 'obs_dia', e.target.value)} >
+                            <option value="" key={0}>Seleccione..</option>
+                            {
+                                this.props.obs_dias.map((x, i) => {
+                                    return (
+                                        <option value={x.get("value")} key={i}>{x.get("value")}</option>
+                                    )
+                                })
+                            }
+                        </select>
+                    {/* <input className="form-control form-control-sm" type="date" value={selectRow !== null ? moment(selectRow.get('fecha')).format('YYYY-MM-DD') : ''} onChange={(e) => changeAttr(tipo, 'fecha', e.target.value)} /> */}
                 </div>
                 <div className="col-md-4">
                     <label >Fecha del crédito</label>
