@@ -19,10 +19,10 @@ class TablesUtilidadRecaudo extends Component {
                 data = this.props.list.filter(item => moment(item.get('fecha')).format('YYYY-MM-DD') <= fecha && item.get("descripcion") == text + ruta)
                 break;
             case 1:
-                data = this.props.list.filter(item => moment(item.get('fecha')).format('YYYY-MM-DD') >= this.props.fechas[0] && moment(item.get('fecha')).format('YYYY-MM-DD') <= fecha && item.get("descripcion") == text + ruta)
+                data = this.props.list.filter(item => moment(item.get('fecha')).format('YYYY-MM-DD') > this.props.fechas[0] && moment(item.get('fecha')).format('YYYY-MM-DD') <= fecha && item.get("descripcion") == text + ruta)
                 break;
             case 2:
-                data = this.props.list.filter(item => moment(item.get('fecha')).format('YYYY-MM-DD') >= this.props.fechas[1] && moment(item.get('fecha')).format('YYYY-MM-DD') <= fecha && item.get("descripcion") == text + ruta)
+                data = this.props.list.filter(item => moment(item.get('fecha')).format('YYYY-MM-DD') > this.props.fechas[1] && moment(item.get('fecha')).format('YYYY-MM-DD') <= fecha && item.get("descripcion") == text + ruta)
                 break;
             default:
                 break;

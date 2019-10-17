@@ -35,3 +35,21 @@ export function getCoteos(firstDay, lastDay) {
             })
     }
 }
+
+export function getListFechas() {
+    return (dispatch) => {
+
+        axios.get(`${API_URL}/parametros/fechasReporte`)
+            .then((res) => {
+                dispatch({
+                    type: types.GET_FECHAS_REPORTE,
+                    payload: {
+                        data: res.data.data
+                    }
+                })
+            })
+            .catch((err) => {
+                messageHandler(dispatch, err)
+            });
+    }
+}

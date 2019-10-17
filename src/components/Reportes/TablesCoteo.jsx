@@ -77,6 +77,7 @@ class TablesCoteo extends Component {
                         {
                             this.props.data.map((x, index) => {
                                 let coteado = 0;
+                                let dias = 0;
                                 let diarios = this.getValorModalidadDia(x.get("coteos"), 1);
                                 let semanales = this.getValorModalidadDia(x.get("coteos"), 2);
 
@@ -97,6 +98,7 @@ class TablesCoteo extends Component {
                                             this.props.dates.map((item) => {
                                                 const rest = this.getCoteo(x.get("coteos"), item);
                                                 coteado = coteado + rest;
+                                                dias = rest > 0 ? dias + 1 : dias;
                                                 return (
                                                     <td key={item} style={{ minWidth: 100 }}>
                                                         {
@@ -107,7 +109,7 @@ class TablesCoteo extends Component {
                                             })
                                         }
                                         <td>{coteado}</td>
-                                        <td>{((diarios * 8) + semanales) - coteado}</td>
+                                        <td>{((diarios * dias) + semanales) - coteado}</td>
                                     </tr>
                                 )
                             })

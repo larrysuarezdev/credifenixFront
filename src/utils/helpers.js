@@ -128,7 +128,7 @@ export function recalculate(data, id, cargue = false) {
     return { list: Immutable.fromJS(res), cartera: cartera };
 }
 
-export function exportDataGrid(list, ruta, cobrador, fecha) {
+export function exportDataGrid(list, ruta, cobrador, fecha, cartera) {
     pdfMake.vfs = pdfFonts.pdfMake.vfs;
     const data = list.toList().toJS().sort(function (a, b) { return a.orden - b.orden });
 
@@ -140,13 +140,15 @@ export function exportDataGrid(list, ruta, cobrador, fecha) {
         content: [
             {
                 table: {
-                    widths: ['*', '*', '*', '*', '*', '*', '*', '*'],
+                    widths: ['*', '*', '*', '*', '*', '*', '*', '*', '*', '*'],
                     body: [
                         [
-                            'COBRADOR', { text: cobrador !== 'Sin asignar' ? cobrador.nombres.toUpperCase() + ' ' + cobrador.apellidos.toUpperCase() : 'SIN ASIGNAR', italics: true, color: 'gray', alignment: "center" },
-                            'TELEFONO', { text: cobrador !== 'Sin asignar' ? cobrador.telefono1.toUpperCase() : 'SIN ASIGNAR', italics: true, color: 'gray', alignment: "center" },
-                            'FECHA', { text: moment(fecha).format('LL'), italics: true, color: 'gray', alignment: "center" },
-                            'RUTA', { text: ruta, italics: true, color: 'gray', alignment: "center" }],
+                            'COBRADOR', { text: cobrador !== 'Sin asignar' ? cobrador.nombres.toUpperCase() + ' ' + cobrador.apellidos.toUpperCase() : 'SIN ASIGNAR', italics: true, color: 'gray', alignment: "center", fontSize : 8 },
+                            'TELEFONO', { text: cobrador !== 'Sin asignar' ? cobrador.telefono1.toUpperCase() : 'SIN ASIGNAR', italics: true, color: 'gray', alignment: "center", fontSize : 8 },
+                            'FECHA', { text: moment(fecha).format('LL'), italics: true, color: 'gray', alignment: "center", fontSize : 8 },
+                            'RUTA', { text: ruta, italics: true, color: 'gray', alignment: "center", fontSize : 8 },
+                            'cartera', { text: numeral(cartera).format(''), italics: true, color: 'gray', alignment: "center", fontSize : 8 }
+                        ],
                     ]
                 },
                 margin: [SIZE_EXPORT, 5, 20, 5]
@@ -154,7 +156,7 @@ export function exportDataGrid(list, ruta, cobrador, fecha) {
             {
                 table: {
                     headerRows: 1,
-                    widths: [20, 20, 'auto', 'auto', 25, 20, 'auto', 20, 30, 'auto', 'auto', 30, 'auto', 'auto', 'auto', 'auto', 'auto', 'auto'],
+                    widths: [20, 20, 'auto', 'auto', 25, 18, 'auto', 20, 30, 'auto', 'auto', 20, 'auto', 'auto', 'auto', 'auto', 'auto', 'auto'],
                     body: [
                         [
                             { text: 'Obs', style: 'header' },
@@ -274,10 +276,10 @@ function getTotalCorte(fecha, tipo, ruta, text, list, fechas) {
             data = list.filter(item => moment(item.get('fecha')).format('YYYY-MM-DD') <= fecha && item.get("descripcion") == text + ruta)
             break;
         case 1:
-            data = list.filter(item => moment(item.get('fecha')).format('YYYY-MM-DD') >= fechas[0] && moment(item.get('fecha')).format('YYYY-MM-DD') <= fecha && item.get("descripcion") == text + ruta)
+            data = list.filter(item => moment(item.get('fecha')).format('YYYY-MM-DD') > fechas[0] && moment(item.get('fecha')).format('YYYY-MM-DD') <= fecha && item.get("descripcion") == text + ruta)
             break;
         case 2:
-            data = list.filter(item => moment(item.get('fecha')).format('YYYY-MM-DD') >= fechas[1] && moment(item.get('fecha')).format('YYYY-MM-DD') <= fecha && item.get("descripcion") == text + ruta)
+            data = list.filter(item => moment(item.get('fecha')).format('YYYY-MM-DD') > fechas[1] && moment(item.get('fecha')).format('YYYY-MM-DD') <= fecha && item.get("descripcion") == text + ruta)
             break;
         default:
             break;
@@ -301,10 +303,10 @@ function getTotalCorteNuevos(fecha, tipo, ruta, lista, fechas) {
             data = lista.filter(item => moment(item.get('inicio_credito')).format('YYYY-MM-DD') <= fecha && item.get('ruta_id') === ruta)
             break;
         case 1:
-            data = lista.filter(item => moment(item.get('inicio_credito')).format('YYYY-MM-DD') >= fechas[0] && moment(item.get('inicio_credito')).format('YYYY-MM-DD') <= fecha && item.get('ruta_id') === ruta)
+            data = lista.filter(item => moment(item.get('inicio_credito')).format('YYYY-MM-DD') > fechas[0] && moment(item.get('inicio_credito')).format('YYYY-MM-DD') <= fecha && item.get('ruta_id') === ruta)
             break;
         case 2:
-            data = lista.filter(item => moment(item.get('inicio_credito')).format('YYYY-MM-DD') >= fechas[1] && moment(item.get('inicio_credito')).format('YYYY-MM-DD') <= fecha && item.get('ruta_id') === ruta)
+            data = lista.filter(item => moment(item.get('inicio_credito')).format('YYYY-MM-DD') > fechas[1] && moment(item.get('inicio_credito')).format('YYYY-MM-DD') <= fecha && item.get('ruta_id') === ruta)
             break;
         default:
             break;
@@ -326,10 +328,10 @@ function getTotalCorteRenovaciones(fecha, tipo, ruta, lista, fechas) {
             data = lista.filter(item => moment(item.get('fecha')).format('YYYY-MM-DD') <= fecha && item.getIn(['credito', 'ruta_id']) === ruta)
             break;
         case 1:
-            data = lista.filter(item => moment(item.get('fecha')).format('YYYY-MM-DD') >= fechas[0] && moment(item.get('fecha')).format('YYYY-MM-DD') <= fecha && item.getIn(['credito', 'ruta_id']) === ruta)
+            data = lista.filter(item => moment(item.get('fecha')).format('YYYY-MM-DD') > fechas[0] && moment(item.get('fecha')).format('YYYY-MM-DD') <= fecha && item.getIn(['credito', 'ruta_id']) === ruta)
             break;
         case 2:
-            data = lista.filter(item => moment(item.get('fecha')).format('YYYY-MM-DD') >= fechas[1] && moment(item.get('fecha')).format('YYYY-MM-DD') <= fecha && item.getIn(['credito', 'ruta_id']) === ruta)
+            data = lista.filter(item => moment(item.get('fecha')).format('YYYY-MM-DD') > fechas[1] && moment(item.get('fecha')).format('YYYY-MM-DD') <= fecha && item.getIn(['credito', 'ruta_id']) === ruta)
             break;
         default:
             break;
@@ -341,7 +343,6 @@ function getTotalCorteRenovaciones(fecha, tipo, ruta, lista, fechas) {
     }
     return ret;
 }
-
 
 export function exportCoteos(list, dates, fechas1, utilidades, recaudo, nuevos, renovaciones) {
     pdfMake.vfs = pdfFonts.pdfMake.vfs;
@@ -459,7 +460,8 @@ export function exportCoteos(list, dates, fechas1, utilidades, recaudo, nuevos, 
         nuevRen.push({ text: x, style: 'header', colSpan: 2 })
         nuevRen.push({})
     })
-    nuevRen.push({ text: 'TOTAL MES', style: 'header', rowSpan: 2 });
+    nuevRen.push({ text: 'TOTAL NUEVOS', style: 'header', rowSpan: 2 });
+    nuevRen.push({ text: 'TOTAL RENOVADOS', style: 'header', rowSpan: 2 });
 
     const nuevRen1 = [
         {},
@@ -469,6 +471,7 @@ export function exportCoteos(list, dates, fechas1, utilidades, recaudo, nuevos, 
         { text: 'RENOVACION', style: 'header' },
         { text: 'NUEVOS', style: 'header' },
         { text: 'RENOVACION', style: 'header' },
+        {},
         {}
     ]
 
@@ -563,6 +566,7 @@ export function exportCoteos(list, dates, fechas1, utilidades, recaudo, nuevos, 
 
     list.map((x) => {
         let coteado = 0;
+        let dias = 0;
         let diarios = getValorModalidadDia(x.get("coteos"), 1, dates1);
         let semanales = getValorModalidadDia(x.get("coteos"), 2, dates1);
 
@@ -575,17 +579,19 @@ export function exportCoteos(list, dates, fechas1, utilidades, recaudo, nuevos, 
         dates1.map((item) => {
             const rest = getCoteo(x.get("coteos"), item);
             coteado = coteado + rest;
+            dias = rest > 0 ? dias + 1 : dias;
             rows.push({ text: rest, style: 'tableBody' })
         })
 
         rows.push({ text: coteado, style: 'tableBody' })
-        rows.push({ text: ((diarios * 8) + semanales) - coteado, style: 'tableBody' })
+        rows.push({ text: ((diarios * dias) + semanales) - coteado, style: 'tableBody' })
 
         docDefinition.content[0].table.body.push(rows)
     })
 
     list.map((x) => {
         let coteado = 0;
+        let dias = 0;
         let diarios = getValorModalidadDia(x.get("coteos"), 1, dates2);
         let semanales = getValorModalidadDia(x.get("coteos"), 2, dates2);
 
@@ -598,17 +604,19 @@ export function exportCoteos(list, dates, fechas1, utilidades, recaudo, nuevos, 
         dates2.map((item) => {
             const rest = getCoteo(x.get("coteos"), item);
             coteado = coteado + rest;
+            dias = rest > 0 ? dias + 1 : dias;
             rows.push({ text: rest, style: 'tableBody' })
         })
 
         rows.push({ text: coteado, style: 'tableBody' })
-        rows.push({ text: ((diarios * 8) + semanales) - coteado, style: 'tableBody' })
+        rows.push({ text: ((diarios * dias) + semanales) - coteado, style: 'tableBody' })
 
         docDefinition.content[1].table.body.push(rows)
     })
 
     list.map((x) => {
         let coteado = 0;
+        let dias = 0;
         let diarios = getValorModalidadDia(x.get("coteos"), 1, dates3);
         let semanales = getValorModalidadDia(x.get("coteos"), 2, dates3);
 
@@ -621,6 +629,7 @@ export function exportCoteos(list, dates, fechas1, utilidades, recaudo, nuevos, 
         dates3.map((item) => {
             const rest = getCoteo(x.get("coteos"), item);
             coteado = coteado + rest;
+            dias = rest > 0 ? dias + 1 : dias;
             rows.push({ text: rest, style: 'tableBody' })
         })
 
@@ -686,7 +695,8 @@ export function exportCoteos(list, dates, fechas1, utilidades, recaudo, nuevos, 
             { text: numeral(renovadosCorte2).format(), style: 'tableBody' },
             { text: numeral(nuevosCorte3).format(), style: 'tableBody' },
             { text: numeral(renovadosCorte3).format(), style: 'tableBody' },
-            { text: numeral(nuevosCorte1 + renovadosCorte1 + nuevosCorte2 + renovadosCorte2 + nuevosCorte3 + renovadosCorte3).format(), style: 'tableBody' }
+            { text: numeral(nuevosCorte1  + nuevosCorte2  + nuevosCorte3 ).format(), style: 'tableBody' },
+            { text: numeral(renovadosCorte1 + renovadosCorte2  + renovadosCorte3).format(), style: 'tableBody' }
         ]
 
 

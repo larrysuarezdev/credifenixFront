@@ -291,7 +291,7 @@ class Rutas extends Component {
         ]
 
         const buttons3 = [
-            <BoxButton key="b1[0][0]" name="save" onClick={() => exportDataGrid(this.props.list, this.props.idRuta, this.props.cobrador, this.state.fechaExporte)} title="Guardar exporte" classCSS="info" />,
+            <BoxButton key="b1[0][0]" name="save" onClick={() => exportDataGrid(this.props.list, this.props.idRuta, this.props.cobrador, this.state.fechaExporte, this.props.cartera)} title="Guardar exporte" classCSS="info" />,
         ]
 
         const buttons4 = [
@@ -421,7 +421,7 @@ render() {
                 </div>
                 <div className="col-md-3">
                     <label >Cartera</label>
-                    <input className="form-control form-control-sm" type="text" value={cartera} readOnly disabled ></input>
+                    <input className="form-control form-control-sm" type="text" value={numeral(cartera).format('')} readOnly disabled ></input>
                 </div>
                 <div className="col-md-3">
                     <label >Cobrador</label>

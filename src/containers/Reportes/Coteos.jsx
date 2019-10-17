@@ -11,7 +11,7 @@ import TablesNuevosRenovaciones from '../../components/Reportes/TablesNuevosReno
 
 import BoxButtonV2 from '../../components/Common/BoxButtonV2'
 
-import { getCoteos } from '../../actions/reportes'
+import { getCoteos, getListFechas } from '../../actions/reportes'
 
 var getDates = function (startDate, endDate) {
     var dates = [],
@@ -46,7 +46,12 @@ class Coteos extends Component {
             ],
             tab: 0,
             dates: [],
+            year: (new Date()).getFullYear()
         };
+    }
+
+    componentWillMount(){
+        this.props.getListFechas();
     }
 
     changeTab(tab) {
@@ -61,7 +66,7 @@ class Coteos extends Component {
     }
 
     onGetDate(month) {
-        var date = new Date(), y = date.getFullYear();
+        var date = new Date(), y = this.state.year;
         var firstDay = new Date(y, Number(month), 1);
         var lastDay = new Date(y, Number(month) + 1, 0);
         this.setState({ dates: getDates(firstDay, lastDay) });
@@ -70,8 +75,8 @@ class Coteos extends Component {
 
     render() {
         const { tabs, tab } = this.state;
-        const { list, list1, nuevos, renovaciones } = this.props;
-
+        const { list, list1, nuevos, renovaciones, fechasR } = this.props;
+        console.log(fechasR)
         const dates1 = this.state.dates.slice(0, 10);
         const dates2 = this.state.dates.slice(10, 20)
         const dates3 = this.state.dates.slice(20);
@@ -93,7 +98,22 @@ class Coteos extends Component {
                     </div>
                     <div className="row" style={{ marginBottom: 0, background: '#f7f7f7', marginLeft: 0, marginRight: 0, paddingBottom: 0 }}>
                         <div className="col-md-3">
-                            <label >Mes reporte:</label>
+                            <label >Año:</label>
+                            <div className="form-group">
+                                <select className="form-control form-control-sm" value={this.state.year} id="exampleFormControlSelect1" onChange={(e) => this.setState({ year : e.target.value})}>
+                                    <option value="">Seleccione...</option>
+                                    {
+                                        fechasR != "" ? fechasR.map((item) => {
+                                            return(                                                
+                                                <option value={item.get('label')}>{item.get('label')}</option>
+                                            )
+                                        }) : null
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div className="col-md-3">
+                            <label >Mes:</label>
                             <div className="form-group">
                                 <select className="form-control form-control-sm" id="exampleFormControlSelect1" onChange={(e) => this.onGetDate(e.target.value)}>
                                     <option value="">Seleccione...</option>
@@ -150,13 +170,14 @@ function mapStateToProps(state) {
         list1: state.reportes.get('recaudos'),
         nuevos: state.reportes.get('nuevos'),
         renovaciones: state.reportes.get('renovaciones'),
+        fechasR: state.reportes.get('fechas'),
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
         getCoteos: (firstDay, lastDay) => dispatch(getCoteos(firstDay, lastDay)),
-        // selectAction: (id, reloadGrid, tipo) => dispatch(selectAction(id, reloadGrid, tipo)),
+        getListFechas: () => dispatch(getListFechas()),
     }
 }
 

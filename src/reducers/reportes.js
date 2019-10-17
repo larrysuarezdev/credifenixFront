@@ -6,7 +6,8 @@ const INITIAL_STATE = Immutable.fromJS({
     utilidades:[],
     recaudos: [],
     nuevos: [],
-    renovaciones: []
+    renovaciones: [],
+    fechas: []
 })
 
 export default function (state = INITIAL_STATE, action) {
@@ -19,13 +20,9 @@ export default function (state = INITIAL_STATE, action) {
             state = state.set('renovaciones', Immutable.fromJS(action.payload.renovaciones))            
             return state
 
-        // case types.CHANGE_PERMISSION:
-        //     // state = state.set('list', Immutable.fromJS(action.payload.list))
-        //     const index = state.get('list').findIndex(x => x.get('pantalla') === action.payload.vista)
-        //     // console.log(state.getIn(`list.${index}.ver`.split('.')))
-        //     state = state.setIn(`list.${index}.ver`.split('.'), !state.getIn(`list.${index}.ver`.split('.')))
-
-        //     return state
+        case types.GET_FECHAS_REPORTE:
+            state = state.set('fechas', Immutable.fromJS(action.payload.data))
+            return state
 
         default:
             return state

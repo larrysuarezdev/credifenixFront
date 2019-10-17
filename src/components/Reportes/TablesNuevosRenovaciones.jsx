@@ -20,10 +20,10 @@ class TablesNuevosRenovaciones extends Component {
                 data = this.props.nuevos.filter(item => moment(item.get('inicio_credito')).format('YYYY-MM-DD') <= fecha && item.get('ruta_id') === ruta)
                 break;
             case 1:
-                data = this.props.nuevos.filter(item => moment(item.get('inicio_credito')).format('YYYY-MM-DD') >= this.props.fechas[0] && moment(item.get('inicio_credito')).format('YYYY-MM-DD') <= fecha && item.get('ruta_id') === ruta)
+                data = this.props.nuevos.filter(item => moment(item.get('inicio_credito')).format('YYYY-MM-DD') > this.props.fechas[0] && moment(item.get('inicio_credito')).format('YYYY-MM-DD') <= fecha && item.get('ruta_id') === ruta)
                 break;
             case 2:
-                data = this.props.nuevos.filter(item => moment(item.get('inicio_credito')).format('YYYY-MM-DD') >= this.props.fechas[1] && moment(item.get('inicio_credito')).format('YYYY-MM-DD') <= fecha && item.get('ruta_id') === ruta)
+                data = this.props.nuevos.filter(item => moment(item.get('inicio_credito')).format('YYYY-MM-DD') > this.props.fechas[1] && moment(item.get('inicio_credito')).format('YYYY-MM-DD') <= fecha && item.get('ruta_id') === ruta)
                 break;
             default:
                 break;
@@ -45,10 +45,10 @@ class TablesNuevosRenovaciones extends Component {
                 data = this.props.renovaciones.filter(item => moment(item.get('fecha')).format('YYYY-MM-DD') <= fecha && item.getIn(['credito', 'ruta_id']) === ruta)
                 break;
             case 1:
-                data = this.props.renovaciones.filter(item => moment(item.get('fecha')).format('YYYY-MM-DD') >= this.props.fechas[0] && moment(item.get('fecha')).format('YYYY-MM-DD') <= fecha && item.getIn(['credito', 'ruta_id']) === ruta)
+                data = this.props.renovaciones.filter(item => moment(item.get('fecha')).format('YYYY-MM-DD') > this.props.fechas[0] && moment(item.get('fecha')).format('YYYY-MM-DD') <= fecha && item.getIn(['credito', 'ruta_id']) === ruta)
                 break;
             case 2:
-                data = this.props.renovaciones.filter(item => moment(item.get('fecha')).format('YYYY-MM-DD') >= this.props.fechas[1] && moment(item.get('fecha')).format('YYYY-MM-DD') <= fecha && item.getIn(['credito', 'ruta_id']) === ruta)
+                data = this.props.renovaciones.filter(item => moment(item.get('fecha')).format('YYYY-MM-DD') > this.props.fechas[1] && moment(item.get('fecha')).format('YYYY-MM-DD') <= fecha && item.getIn(['credito', 'ruta_id']) === ruta)
                 break;
             default:
                 break;
@@ -78,7 +78,8 @@ class TablesNuevosRenovaciones extends Component {
                                     )
                                 })
                             }
-                            <td scope="col" rowSpan="2" style={{ backgroundColor: "rgba(93, 194, 70, 0.42)", verticalAlign: "inherit" }}>TOTAL MES</td>
+                            <td scope="col" rowSpan="2" style={{ backgroundColor: "rgba(93, 194, 70, 0.42)", verticalAlign: "inherit" }}>TOTAL NUEVOS</td>
+                            <td scope="col" rowSpan="2" style={{ backgroundColor: "rgba(93, 194, 70, 0.42)", verticalAlign: "inherit" }}>TOTAL RENOVADOS</td>
                         </tr>
                         <tr align="center" style={{ fontSize: 13, backgroundColor: "rgb(247, 247, 247)" }}>
                             <td style={{ minWidth: 100 }}>NUEVOS</td>
@@ -111,7 +112,8 @@ class TablesNuevosRenovaciones extends Component {
                                         <td scope="col" style={{ minWidth: 100 }}>{numeral(renovadosCorte2).format()}</td>
                                         <td scope="col" style={{ minWidth: 100 }}>{numeral(nuevosCorte3).format()}</td>
                                         <td scope="col" style={{ minWidth: 100 }}>{numeral(renovadosCorte3).format()}</td>                                       
-                                        <td>{numeral(nuevosCorte1 + renovadosCorte1 + nuevosCorte2 + renovadosCorte2 + nuevosCorte3 + renovadosCorte3).format()}</td>
+                                        <td>{numeral(nuevosCorte1  + nuevosCorte2  + nuevosCorte3 ).format()}</td>
+                                        <td>{numeral(renovadosCorte1 + renovadosCorte2 + renovadosCorte3).format()}</td>
                                     </tr>
                                 )
                             })
