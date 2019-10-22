@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import moment from 'moment';
 
+const COLOR = window.COLOR;
+
 class TablesCoteo extends Component {
 
     constructor(props) {
@@ -49,8 +51,8 @@ class TablesCoteo extends Component {
                 <table className="table table-striped table-hover table-sm table-bordered" style={{ margin: 0 }}>
                     <thead>
                         <tr align="center" style={{ fontSize: 13 }}>
-                            <td scope="col" rowSpan="2" style={{ backgroundColor: "rgba(93, 194, 70, 0.42)", verticalAlign: "inherit" }}>COBRADOR</td>
-                            <td scope="col" colSpan="2" style={{ backgroundColor: "rgba(93, 194, 70, 0.42)" }}>{this.props.title}</td>
+                            <td scope="col" rowSpan="2" style={{ backgroundColor: COLOR, verticalAlign: "inherit" }}>COBRADOR</td>
+                            <td scope="col" colSpan="2" style={{ backgroundColor: COLOR }}>{this.props.title}</td>
                             {
                                 this.props.dates.map((item) => {
                                     return (
@@ -58,8 +60,8 @@ class TablesCoteo extends Component {
                                     )
                                 })
                             }
-                            <td scope="col" rowSpan="2" style={{ backgroundColor: "rgba(93, 194, 70, 0.42)", verticalAlign: "inherit" }}>COTEADO</td>
-                            <td scope="col" rowSpan="2" style={{ backgroundColor: "rgba(93, 194, 70, 0.42)", verticalAlign: "inherit" }}>QUEDADO</td>
+                            <td scope="col" rowSpan="2" style={{ backgroundColor: COLOR, verticalAlign: "inherit" }}>COTEADO</td>
+                            <td scope="col" rowSpan="2" style={{ backgroundColor: COLOR, verticalAlign: "inherit" }}>QUEDADO</td>
                         </tr>
                         <tr align="center" style={{ fontSize: 13, backgroundColor: "rgb(247, 247, 247)" }}>
                             <td scope="col" >DIARIOS</td>

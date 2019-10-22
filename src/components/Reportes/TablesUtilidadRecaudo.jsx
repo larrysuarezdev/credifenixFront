@@ -3,6 +3,8 @@ import { connect } from 'react-redux'
 import moment from 'moment';
 import numeral from 'numeral';
 
+const COLOR = window.COLOR;
+
 class TablesUtilidadRecaudo extends Component {
 
     constructor(props) {
@@ -44,18 +46,18 @@ class TablesUtilidadRecaudo extends Component {
                 <table className="table table-striped table-hover table-sm table-bordered" style={{ margin: 0 }}>
                     <thead>
                         {/* <tr>
-                            <td colSpan="5" style={{ backgroundColor: "rgba(93, 194, 70, 0.42)", verticalAlign: "inherit", textAlign: "center" }} >{this.props.title}</td>
+                            <td colSpan="5" style={{ backgroundColor: COLOR, verticalAlign: "inherit", textAlign: "center" }} >{this.props.title}</td>
                         </tr> */}
                         <tr align="center" style={{ fontSize: 13 }}>
-                            <td scope="col" rowSpan="2" style={{ backgroundColor: "rgba(93, 194, 70, 0.42)", verticalAlign: "inherit" }}>COBRADOR</td>
+                            <td scope="col" rowSpan="2" style={{ backgroundColor: COLOR, verticalAlign: "inherit" }}>COBRADOR</td>
                             {
                                 this.props.titles.map((item, indexT) => {
                                     return (
-                                        <td scope="col" key={indexT} style={{ backgroundColor: "rgba(93, 194, 70, 0.42)" }}>{item}</td>
+                                        <td scope="col" key={indexT} style={{ backgroundColor: COLOR }}>{item}</td>
                                     )
                                 })
                             }
-                            <td scope="col" rowSpan="2" style={{ backgroundColor: "rgba(93, 194, 70, 0.42)", verticalAlign: "inherit" }}>TOTAL MES</td>
+                            <td scope="col" rowSpan="2" style={{ backgroundColor: COLOR, verticalAlign: "inherit" }}>TOTAL MES</td>
                         </tr>
                         <tr align="center" style={{ fontSize: 13, backgroundColor: "rgb(247, 247, 247)" }}>
                             {

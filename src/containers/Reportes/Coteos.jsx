@@ -76,7 +76,7 @@ class Coteos extends Component {
     render() {
         const { tabs, tab } = this.state;
         const { list, list1, nuevos, renovaciones, fechasR } = this.props;
-        console.log(fechasR)
+
         const dates1 = this.state.dates.slice(0, 10);
         const dates2 = this.state.dates.slice(10, 20)
         const dates3 = this.state.dates.slice(20);
@@ -105,7 +105,7 @@ class Coteos extends Component {
                                     {
                                         fechasR != "" ? fechasR.map((item) => {
                                             return(                                                
-                                                <option value={item.get('label')}>{item.get('label')}</option>
+                                                <option key={item.get('label')} value={item.get('label')}>{item.get('label')}</option>
                                             )
                                         }) : null
                                     }

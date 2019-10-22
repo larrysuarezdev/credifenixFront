@@ -3,6 +3,8 @@ import { connect } from 'react-redux'
 import moment from 'moment';
 import numeral from 'numeral';
 
+const COLOR = window.COLOR;
+
 class TablesNuevosRenovaciones extends Component {
 
     constructor(props) {
@@ -39,7 +41,6 @@ class TablesNuevosRenovaciones extends Component {
     getTotalCorteRenovaciones(fecha, tipo, ruta) {
         let ret = 0;
         let data = [];
-
         switch (tipo) {
             case 0:
                 data = this.props.renovaciones.filter(item => moment(item.get('fecha')).format('YYYY-MM-DD') <= fecha && item.getIn(['credito', 'ruta_id']) === ruta)
@@ -54,6 +55,8 @@ class TablesNuevosRenovaciones extends Component {
                 break;
         }
 
+        console.log(data.toJS(), tipo, this.props.fechas[1], fecha)
+
 
         if (data !== undefined) {
             ret = data.size;
@@ -66,11 +69,8 @@ class TablesNuevosRenovaciones extends Component {
             <div >
                 <table className="table table-striped table-hover table-sm table-bordered" style={{ margin: 0 }}>
                     <thead>
-                        {/* <tr>
-                            <td colSpan="8" style={{ backgroundColor: "rgba(93, 194, 70, 0.42)", verticalAlign: "inherit", textAlign: "center" }} >{this.props.title}</td>
-                        </tr> */}
                         <tr align="center" style={{ fontSize: 13 }}>
-                            <td scope="col" rowSpan="2" style={{ backgroundColor: "rgba(93, 194, 70, 0.42)", verticalAlign: "inherit" }}>COBRADOR</td>
+                            <td scope="col" rowSpan="2" style={{ backgroundColor: COLOR, verticalAlign: "inherit" }}>COBRADOR</td>
                             {
                                 this.props.fechas.map((item, index) => {
                                     return (
@@ -78,8 +78,8 @@ class TablesNuevosRenovaciones extends Component {
                                     )
                                 })
                             }
-                            <td scope="col" rowSpan="2" style={{ backgroundColor: "rgba(93, 194, 70, 0.42)", verticalAlign: "inherit" }}>TOTAL NUEVOS</td>
-                            <td scope="col" rowSpan="2" style={{ backgroundColor: "rgba(93, 194, 70, 0.42)", verticalAlign: "inherit" }}>TOTAL RENOVADOS</td>
+                            <td scope="col" rowSpan="2" style={{ backgroundColor: COLOR, verticalAlign: "inherit" }}>TOTAL NUEVOS</td>
+                            <td scope="col" rowSpan="2" style={{ backgroundColor: COLOR, verticalAlign: "inherit" }}>TOTAL RENOVADOS</td>
                         </tr>
                         <tr align="center" style={{ fontSize: 13, backgroundColor: "rgb(247, 247, 247)" }}>
                             <td style={{ minWidth: 100 }}>NUEVOS</td>
@@ -102,7 +102,7 @@ class TablesNuevosRenovaciones extends Component {
                                 renovadosCorte2 = this.getTotalCorteRenovaciones(this.props.fechas[1], 1, x.get("ruta"));
 
                                 nuevosCorte3 = this.getTotalCorteNuevos(this.props.fechas[2], 2, x.get("ruta"));
-                                renovadosCorte3 = this.getTotalCorteRenovaciones(this.props.fechas[1], 2, x.get("ruta"));
+                                renovadosCorte3 = this.getTotalCorteRenovaciones(this.props.fechas[2], 2, x.get("ruta"));
                                 return (
                                     <tr align="center" key={index} style={{ fontSize: 13, verticalAlign: "inherit", padding: 10 }}>
                                         <td scope="col" style={{ minWidth: 200 }} >{x.get("nombres")} {x.get("apellidos")}</td>
