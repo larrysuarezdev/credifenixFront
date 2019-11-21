@@ -88,7 +88,7 @@ class Login extends Component {
                                     <strong>Bienvenido de vuelta</strong>
                                 </div>
                                 <div style={{ textAlign: 'center', margin: '10px' }}>
-                                    <input className="form-control form-control-sm" type="text" autocomplete="off" name="username" onChange={(e) => this.setState({ username: e.target.value })} placeholder="Nombre de usuario" />
+                                    <input className="form-control form-control-sm" type="text" autoComplete="off" name="username" onChange={(e) => this.setState({ username: e.target.value })} placeholder="Nombre de usuario" />
                                 </div>
                                 <div style={{ textAlign: 'center', margin: '10px', position: 'relative' }}>
                                     <input className="form-control form-control-sm flat" type={this.state.showPwd ? 'text' : 'password'} name="password" onChange={(e) => this.setState({ password: e.target.value })} placeholder="Contraseña" />

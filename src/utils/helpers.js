@@ -685,7 +685,7 @@ export function exportCoteos(list, dates, fechas1, utilidades, recaudo, nuevos, 
         renovadosCorte2 = getTotalCorteRenovaciones(fechas1[1], 1, x.get("ruta"), renovaciones, fechas1);
 
         nuevosCorte3 = getTotalCorteNuevos(fechas1[2], 2, x.get("ruta"), nuevos, fechas1);
-        renovadosCorte3 = getTotalCorteRenovaciones(fechas1[1], 2, x.get("ruta"), renovaciones, fechas1);
+        renovadosCorte3 = getTotalCorteRenovaciones(fechas1[2], 2, x.get("ruta"), renovaciones, fechas1);
 
         const rows = [
             { text: x.get("nombres") + " " + x.get("apellidos"), style: 'tableBody' },
@@ -702,8 +702,6 @@ export function exportCoteos(list, dates, fechas1, utilidades, recaudo, nuevos, 
 
         docDefinition.content[5].table.body.push(rows)
     })
-
-    console.log(docDefinition.content);
 
     pdfMake.createPdf(docDefinition).download("Reporte de coteos del " + moment().format("YYYY-MM-DD"));
 }
