@@ -56,7 +56,7 @@ export default function (state = INITIAL_STATE, action) {
             // state = state.set('AllList', creditos.list)
             lista = creditos.list.sortBy(x => x.get('orden')).toList().toJS();
             lista.map((x, i) => {
-                x.NewOrden = i + 1
+                x.NewOrden = ""
             });
             state = state.set('reorder', lista)
             state = state.set('ids', state.get('list').sortBy(x => x.get('orden')).keySeq().toList())
@@ -159,7 +159,7 @@ export default function (state = INITIAL_STATE, action) {
             state = state.set('ids', state.get('list').sortBy(x => x.get('orden')).keySeq().toList())
             lista = creditos.list.sortBy(x => x.get('orden')).toList().toJS();
             lista.map((x, i) => {
-                x.NewOrden = i + 1
+                x.NewOrden = ""
             });
             state = state.set('reorder', lista)
             return state;

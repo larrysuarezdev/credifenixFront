@@ -70,3 +70,9 @@ export function changePage(tipo, page) {
     }
 }
 
+export function toogleSidebar() {
+    return (dispatch) => {
+        dispatch({ type: types.TOOGLE_SIDEBAR  })
+    }
+}
+

@@ -10,6 +10,7 @@ const INITIAL_STATE = Immutable.fromJS({
     modalFilter: false,
     modalFilters: [],
     waiting: false,
+    toogleSidebarRigth1: false,
     searchBack: false
 })
 
@@ -18,6 +19,10 @@ export default function (state = INITIAL_STATE, action) {
     switch (action.type) {
         case types.SHOW_MODAL:
             state = state.set('modal', !state.get('modal'))
+            return state
+
+        case types.TOOGLE_SIDEBAR:
+            state = state.set('toogleSidebarRigth1', !state.get('toogleSidebarRigth1'))
             return state
 
         case types.SHOW_MODAL_CLIENTES:

@@ -23,7 +23,7 @@ import ModalFilterMaestras from '../../components/Common/ModalFilterMaestras'
 
 import { getCreditos, saveCredito, getListRutas, getListPeriodos, saveAbonos, saveRenovacion, saveRenovacion1, cleanDataRutas, reorderData, saveRenovacionInmediata, deleteRenovacion, deleteCredito } from '../../actions/rutas'
 import { cleanCliente } from '../../actions/clientes'
-import { selectAction, changeAttr2, toggleModal, newRow } from '../../actions/common'
+import { selectAction, changeAttr2, toggleModal, newRow, toogleSidebar } from '../../actions/common'
 import { exportDataGrid } from '../../utils/helpers'
 import { showHideModalFilter } from "../../actions/filtrarData";
 
@@ -55,7 +55,6 @@ class Rutas extends Component {
             ],
             tab: 0,
             toogleSidebarRigth: false,
-            toogleSidebarRigth1: false,
             idRenovar: null,
             gridHeight: 350,
             sideBarHeight: "80vh",
@@ -209,9 +208,7 @@ class Rutas extends Component {
     }
 
     actionToogleSidebarRigth1() {
-        // this.setState({ tipoModal: tipo });
-        this.setState({ toogleSidebarRigth1: !this.state.toogleSidebarRigth1 })
-        // this.props.toggleModal();
+        this.props.toogleSidebar();
     }
 
     reorderData(data) {
@@ -419,19 +416,18 @@ class Rutas extends Component {
         return (
             <div>
                 {
-                    this.state.toogleSidebarRigth1 ?
+                    this.props.toogleSidebarRigth1 ?
                         <div className="card border-left-success">
                             <div className="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                                 <h6 className="m-0 text-primary">Enrutar clientes</h6>
                                 <div className="float-right">
-                                    <BoxButton key="bp[0][1]" name="save" onClick={() => this.reorderData()} title="Guardar enrutado" classCSS="info" />
                                     <BoxButton key="bp[0][0]" name="times" onClick={() => this.actionToogleSidebarRigth1()} title="Cerrar" classCSS="info" />
                                 </div>
                             </div>
                             <div className="col-md-12 col-xs-12" style={{ padding: 0 }} >
                                 <div style={{ height: "calc(100vh - 205px)" }} ref="dataExport1">
                                     <Enrutar
-                                        height={this.state.gridHeight + 49}
+                                        height={this.state.gridHeight + 19}
                                         ids={ids}
                                     />
                                 </div>
@@ -526,7 +522,8 @@ function mapStateToProps(state) {
         idRuta: state.rutas.get('idRuta'),
         obs_dias: state.rutas.get('obs_dias'),
         user: state.auth.user,
-        cobrador: state.rutas.get('cobrador')
+        cobrador: state.rutas.get('cobrador'),
+        toogleSidebarRigth1: state.common.get('toogleSidebarRigth1')
     }
 }
 
@@ -549,6 +546,7 @@ function mapDispatchToProps(dispatch) {
         cleanCliente: () => dispatch(cleanCliente()),
         cleanDataRutas: () => dispatch(cleanDataRutas()),
         reorderData: () => dispatch(reorderData()),
+        toogleSidebar: () => dispatch(toogleSidebar()),
         showHideModalFilter: (state, columnas, mode) => dispatch(showHideModalFilter(state, columnas, mode)),
     }
 }
