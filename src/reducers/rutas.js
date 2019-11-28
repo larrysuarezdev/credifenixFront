@@ -26,7 +26,7 @@ const newRenovacion = {
 
 const INITIAL_STATE = Immutable.fromJS({
     list: [],
-    AllList: [],
+    // AllList: [],
     detalles: [],
     renovaciones: [],
     ids: [],
@@ -48,13 +48,17 @@ const INITIAL_STATE = Immutable.fromJS({
 })
 
 export default function (state = INITIAL_STATE, action) {
-    let creditos, row;
+    let creditos, row, lista;
     switch (action.type) {
         case types.GET_RUTAS:
             creditos = recalculate(Immutable.fromJS(action.payload.data), 'id', true)
             state = state.set('list', creditos.list)
-            state = state.set('AllList', creditos.list)
-            state = state.set('reorder', creditos.list.sortBy(x => x.get('orden')).toList().toJS())
+            // state = state.set('AllList', creditos.list)
+            lista = creditos.list.sortBy(x => x.get('orden')).toList().toJS();
+            lista.map((x, i) => {
+                x.NewOrden = i + 1
+            });
+            state = state.set('reorder', lista)
             state = state.set('ids', state.get('list').sortBy(x => x.get('orden')).keySeq().toList())
             state = state.set('idRuta', action.payload.id)
             state = state.set('cartera', creditos.cartera)
@@ -76,7 +80,7 @@ export default function (state = INITIAL_STATE, action) {
             return state
         case types.GET_LISTA_PERIODOS:
             state = state.set('periodos', Immutable.fromJS(action.payload.data))
-            state = state.set('obs_dias', Immutable.fromJS(action.payload.obs_dias))            
+            state = state.set('obs_dias', Immutable.fromJS(action.payload.obs_dias))
             return state
         case types.GET_CLIENTES_RUTA:
             state = state.set('clientes', Immutable.fromJS(action.payload.data))
@@ -153,6 +157,11 @@ export default function (state = INITIAL_STATE, action) {
             state = state.set('list', INITIAL_STATE.get('list'))
             state = state.set('list', creditos.list)
             state = state.set('ids', state.get('list').sortBy(x => x.get('orden')).keySeq().toList())
+            lista = creditos.list.sortBy(x => x.get('orden')).toList().toJS();
+            lista.map((x, i) => {
+                x.NewOrden = i + 1
+            });
+            state = state.set('reorder', lista)
             return state;
 
         case types.SET_RENOVACION:

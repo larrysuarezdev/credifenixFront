@@ -1,5 +1,6 @@
 import * as types from './types'
 import { isFunction } from 'util'
+import { messageHandler } from './index'
 
 export function toggleModal() {
     return (dispatch) => {

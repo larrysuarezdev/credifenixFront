@@ -10,8 +10,8 @@ import BrandButton from '../../components/Common/BrandButton'
 import BoxButton from '../../components/Common/BoxButtonV2'
 import Modal from '../../components/Common/Modal'
 import DataGrid from '../../components/Common/DataGrid'
-import DnDListadoClientes from '../../components/Cobros/Rutas/DnDListadoClientes'
-// import DnDListadoClientes from '../../components/Cobros/Rutas/DnDListadoClientes1'
+// import DnDListadoClientes from '../../components/Cobros/Rutas/DnDListadoClientes'
+import Enrutar from '../../components/Cobros/Rutas/Enrutar'
 import AddCredito from '../../components/Cobros/Rutas/AddCredito'
 import RenovarCredito from '../../components/Cobros/Rutas/RenovarCredito'
 import ObservacionesCredito from '../../components/Cobros/Rutas/ObservacionesCredito'
@@ -58,6 +58,7 @@ class Rutas extends Component {
             toogleSidebarRigth1: false,
             idRenovar: null,
             gridHeight: 350,
+            sideBarHeight: "80vh",
             moras: false,
             fechaExporte: moment().add(1, 'days'),
             value_dias: ""
@@ -77,6 +78,15 @@ class Rutas extends Component {
         var gridHeight = node.clientHeight;
         this.setState({ gridHeight: gridHeight });
     }
+
+    // componentWillUpdate(){
+    //     var node1 = ReactDOM.findDOMNode(this.refs["sidebar"]);
+    //     if (node1) {
+    //         console.log("HACEEEEEEEEEEEEE")
+    //         var sideBarHeight = node1.clientHeight;
+    //         this.setState({ sideBarHeight: sideBarHeight });
+    //     }
+    // }
 
     onExportDataGrid() {
         this.setState({ tipoModal: 4 })
@@ -353,7 +363,7 @@ class Rutas extends Component {
             case 3:
                 return (
                     <Modal title="Reordenar clientes" buttons={buttons2} brand={true} >
-                        <DnDListadoClientes />
+                        {/* <DnDListadoClientes /> */}
                     </Modal>
                 )
             case 4:
@@ -407,99 +417,100 @@ class Rutas extends Component {
         ]
 
         return (
-            <div className="card border-left-success">
-                <BrandButton buttons={buttons} />
-                <div className="row" style={{ marginBottom: 0, background: '#f7f7f7', marginLeft: 0, marginRight: 0, paddingBottom: 0 }}>
-                    <div className="col-md-3">
-                        <label >Ruta</label>
-                        <div className="form-group">
-                            <select className="form-control form-control-sm" id="exampleFormControlSelect1" onChange={(e) => this.onChangeSelect(e.target.value)}>
-                                <option value="0">Seleccione...</option>
-                                {
-                                    rutas.map((x) => {
-                                        return (
-                                            <option value={x.get('value')} key={x.get('value')} >{x.get('label')}</option>
-                                        )
-                                    })
-                                }
-                            </select>
-                        </div>
-                    </div>
-                    <div className="col-md-3">
-                        <label >Fecha</label>
-                        <input className="form-control form-control-sm" type="date" value={today} readOnly ></input>
-                    </div>
-                    <div className="col-md-3">
-                        <label >Cartera</label>
-                        <input className="form-control form-control-sm" type="text" value={numeral(cartera).format('')} readOnly disabled ></input>
-                    </div>
-                    <div className="col-md-3">
-                        <label >Cobrador</label>
-                        <input className="form-control form-control-sm" type="text" value={cobrador !== 'Sin asignar' ? cobrador.nombres + ' ' + cobrador.apellidos : cobrador} readOnly disabled ></input>
-                    </div>
-                </div>
-                <div className="col-md-12 col-xs-12" style={{ padding: 0 }} >
-                    <div style={{ height: "calc(100vh - 255px)", maxHeight: "calc(100vh - 255px)" }} ref="dataExport">
-                        <DataGrid
-                            height={this.state.gridHeight}
-                            rows={list}
-                            ids={ids}
-                            changeAction={this.changeAction}
-                            actionClick={this.actionClick}
-                            actionClickRenovados={this.actionClickRenovados}
-                            actionClickDias={this.actionClickDias}
-                            actionClickCancelarRenovado={this.actionClickCancelarRenovado}
-                            actionClickRenovadosInmediatos={this.actionClickRenovadosInmediatos}
-                            actionClickEliminarCredito={this.actionClickEliminarCredito}
-                            user={user}
-                        />
-                    </div>
-                </div>
-                {
-                    this.state.toogleSidebarRigth ?
-                        <div className="sidenav">
-                            <div className="row">
-                                <div className="col-md-9" style={{ paddingLeft: 25 }}>
-                                    <h5>
-                                        Agregar nuevo cliente:
-                                    </h5>
-                                </div>
-                                <div className="col-md-3">
-                                    <div className="col">
-                                        <div className="float-right">
-                                            <BoxButton key="bp[0][0]" name="times" onClick={() => this.actionToogleSidebarRigth(0)} title="Cerrar" classCSS="info" />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <AddClientes showReferencias={false} />
-                        </div>
-                        : null
-                }
+            <div>
                 {
                     this.state.toogleSidebarRigth1 ?
-                        <div className="sidenav" style={{ width: '30vw', paddingBottom: 70 }}>
-                            <div className="row">
-                                <div className="col-md-9" style={{ paddingLeft: 25 }}>
-                                    <h5>
-                                        Enrutar clientes
-                                    </h5>
-                                </div>
-                                <div className="col-md-3">
-                                    <div className="col">
-                                        <div className="float-right">
-                                            <BoxButton key="bp[0][1]" name="save" onClick={() => this.reorderData()} title="Guardar enrutado" classCSS="info" />,
-                                            <BoxButton key="bp[0][0]" name="times" onClick={() => this.actionToogleSidebarRigth1()} title="Cerrar" classCSS="info" />
-                                        </div>
-                                    </div>
+                        <div className="card border-left-success">
+                            <div className="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                <h6 className="m-0 text-primary">Enrutar clientes</h6>
+                                <div className="float-right">
+                                    <BoxButton key="bp[0][1]" name="save" onClick={() => this.reorderData()} title="Guardar enrutado" classCSS="info" />
+                                    <BoxButton key="bp[0][0]" name="times" onClick={() => this.actionToogleSidebarRigth1()} title="Cerrar" classCSS="info" />
                                 </div>
                             </div>
-                            <DnDListadoClientes />
+                            <div className="col-md-12 col-xs-12" style={{ padding: 0 }} >
+                                <div style={{ height: "calc(100vh - 205px)" }} ref="dataExport1">
+                                    <Enrutar
+                                        height={this.state.gridHeight + 49}
+                                        ids={ids}
+                                    />
+                                </div>
+                            </div>
                         </div>
-                        : null
+                        :
+                        <div className="card border-left-success">
+                            <BrandButton buttons={buttons} />
+                            <div className="row" style={{ marginBottom: 0, background: '#f7f7f7', marginLeft: 0, marginRight: 0, paddingBottom: 0 }}>
+                                <div className="col-md-3">
+                                    <label >Ruta</label>
+                                    <div className="form-group">
+                                        <select className="form-control form-control-sm" id="exampleFormControlSelect1" onChange={(e) => this.onChangeSelect(e.target.value)}>
+                                            <option value="0">Seleccione...</option>
+                                            {
+                                                rutas.map((x) => {
+                                                    return (
+                                                        <option value={x.get('value')} key={x.get('value')} >{x.get('label')}</option>
+                                                    )
+                                                })
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                                <div className="col-md-3">
+                                    <label >Fecha</label>
+                                    <input className="form-control form-control-sm" type="date" value={today} readOnly ></input>
+                                </div>
+                                <div className="col-md-3">
+                                    <label >Cartera</label>
+                                    <input className="form-control form-control-sm" type="text" value={numeral(cartera).format('')} readOnly disabled ></input>
+                                </div>
+                                <div className="col-md-3">
+                                    <label >Cobrador</label>
+                                    <input className="form-control form-control-sm" type="text" value={cobrador !== 'Sin asignar' ? cobrador.nombres + ' ' + cobrador.apellidos : cobrador} readOnly disabled ></input>
+                                </div>
+                            </div>
+                            <div className="col-md-12 col-xs-12" style={{ padding: 0 }} >
+                                <div style={{ height: "calc(100vh - 255px)", maxHeight: "calc(100vh - 255px)" }} ref="dataExport">
+                                    <DataGrid
+                                        height={this.state.gridHeight}
+                                        rows={list}
+                                        ids={ids}
+                                        changeAction={this.changeAction}
+                                        actionClick={this.actionClick}
+                                        actionClickRenovados={this.actionClickRenovados}
+                                        actionClickDias={this.actionClickDias}
+                                        actionClickCancelarRenovado={this.actionClickCancelarRenovado}
+                                        actionClickRenovadosInmediatos={this.actionClickRenovadosInmediatos}
+                                        actionClickEliminarCredito={this.actionClickEliminarCredito}
+                                        user={user}
+                                    />
+                                </div>
+                            </div>
+                            {
+                                this.state.toogleSidebarRigth ?
+                                    <div className="sidenav">
+                                        <div className="row">
+                                            <div className="col-md-9" style={{ paddingLeft: 25 }}>
+                                                <h5>
+                                                    Agregar nuevo cliente:
+                                    </h5>
+                                            </div>
+                                            <div className="col-md-3">
+                                                <div className="col">
+                                                    <div className="float-right">
+                                                        <BoxButton key="bp[0][0]" name="times" onClick={() => this.actionToogleSidebarRigth(0)} title="Cerrar" classCSS="info" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <AddClientes showReferencias={false} />
+                                    </div>
+                                    : null
+                            }
+                            {this.renderSwitch(this.state.tipoModal)}
+                            <ModalFilterMaestras />
+                        </div>
                 }
-                {this.renderSwitch(this.state.tipoModal)}
-                <ModalFilterMaestras />
             </div>
         )
     }

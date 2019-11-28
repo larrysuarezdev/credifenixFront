@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import Swal from 'sweetalert2'
 
 import { reorderList } from '../../../actions/rutas'
 
@@ -36,9 +37,11 @@ class DnDListadoClientes extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            items: this.props.list
+            items: this.props.list,
+            items1: this.props.list,
         };
         this.onDragEnd = this.onDragEnd.bind(this);
+        this.onChange = this.onChange.bind(this);
     }
 
     onDragEnd(result) {
@@ -67,49 +70,99 @@ class DnDListadoClientes extends Component {
             item.NewOrden = i + 1;
             return item
         })
-        // this.setState({ list: data });
+        this.setState({ items: data });
         this.props.reorderList(data);
     }
 
+    onChange(from, to) {
+        if (to) {
+            var data = this.state.items;
+
+            if (to > data.length) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'El numero ingresado es mayor a la cantidad de clientes!',
+                })
+                return;
+            }
+            to = to - 1;
+            data.splice(to, 0, data.splice(from, 1)[0]);
+            data.map((item, i) => {
+                item.NewOrden = i + 1;
+                return item
+            })
+
+            this.setState({ items: data });
+            // console.log(data)
+            this.props.reorderList(data);
+        }
+    }
+
     render() {
-        console.log(COLOR);
+        // console.log(this.state)
         return (
-            <DragDropContext onDragEnd={this.onDragEnd}>
-                <Droppable droppableId="droppable">
-                    {(provided, snapshot) => (
-                        <div
-                            {...provided.droppableProps}
-                            ref={provided.innerRef}
-                            style={getListStyle(snapshot.isDraggingOver)}
-                        >
-                            {
-                                this.state.items.map((item, index) =>
-                                    // console.log(item)
-                                    (
-                                        <Draggable key={item.orden} draggableId={String(item.orden)} index={index}>
-                                            {(provided, snapshot) => (
-                                                <div
-                                                    ref={provided.innerRef}
-                                                    {...provided.draggableProps}
-                                                    {...provided.dragHandleProps}
-                                                    style={getItemStyle(
-                                                        snapshot.isDragging,
-                                                        provided.draggableProps.style
-                                                    )}
-                                                >
-                                                    <span className="badge badge-pill badge-light">{index + 1}</span> |
-                                                    <span className="badge badge-pill badge-dark" style={{ marginLeft: 4 }}>{item.orden}</span> -
-                                                    <span style={{ marginLeft: 4 }}>{item.cliente.titular}</span>
-                                                </div>
-                                            )}
-                                        </Draggable>
-                                    ))
-                            }
-                            {provided.placeholder}
-                        </div>
-                    )}
-                </Droppable>
-            </DragDropContext>
+            <div>
+                <DragDropContext onDragEnd={this.onDragEnd}>
+                    <Droppable droppableId="droppable">
+                        {(provided, snapshot) => (
+                            <div
+                                {...provided.droppableProps}
+                                ref={provided.innerRef}
+                                style={getListStyle(snapshot.isDraggingOver)}
+                            >
+                                {
+                                    this.state.items.map((item, index) =>
+                                        (
+                                            <Draggable key={item.orden} draggableId={String(item.orden)} index={index}>
+                                                {(provided, snapshot) => (
+                                                    <div
+                                                        ref={provided.innerRef}
+                                                        {...provided.draggableProps}
+                                                        {...provided.dragHandleProps}
+                                                        style={getItemStyle(
+                                                            snapshot.isDragging,
+                                                            provided.draggableProps.style
+                                                        )}
+                                                    >
+                                                        <table>
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td>
+                                                                        <input className="form-control form-control-sm" type="number"
+                                                                            key={index} style={{ width: 65, height: 25 }}
+                                                                            onBlur={(e) => this.onChange(index, Number(e.target.value))}
+                                                                        />
+                                                                    </td>
+                                                                    <td>
+                                                                        |
+                                                                </td>
+                                                                    <td>
+                                                                        <span className="badge badge-pill badge-light">{index + 1}</span>
+                                                                    </td>
+                                                                    <td>
+                                                                        <span className="badge badge-pill badge-dark" style={{ marginLeft: 4 }}>{item.orden}</span>
+                                                                    </td>
+                                                                    <td>
+                                                                        -
+                                                                </td>
+                                                                    <td>
+                                                                        <span style={{ marginLeft: 4 }}>{item.cliente.titular}</span>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                )}
+                                            </Draggable>
+                                        ))
+                                }
+                                {provided.placeholder}
+                            </div>
+                        )}
+                    </Droppable>
+                </DragDropContext>
+            </div>
         );
     }
 }
